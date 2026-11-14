@@ -1,0 +1,9 @@
+{
+  "extends": "../tsconfig.esm.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "src/.tsc"
+  },
+  "include": ["src/app/index.ts"],
+  "exclude": []
+}

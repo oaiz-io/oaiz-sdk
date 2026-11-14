@@ -1,0 +1,160 @@
+name: Publish
+
+# A release tag `<folder>-v<version>` publishes the package in `<folder>` to npm. The workflow builds
+# the package from this commit and publishes the tarball only when its sha256 is the one OAIZ
+# recorded in `<folder>/release.json`. npm trusted publishing authenticates the publish job with its
+# OIDC token, so no npm token exists, and `--provenance` links each version to this run. The build
+# job installs, builds, tests and packs without that token; the publish job runs in the `npm` environment,
+# the one npm trusts, and only checks and publishes the tarball the build job uploaded, against the
+# `release.json` of its own checkout.
+
+on:
+  push:
+    tags: ['*-v*']
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publish-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the release
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - name: Read the release
+        id: release
+        shell: bash
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          folder="${TAG%-v*}"
+          version="${TAG##*-v}"
+          if [[ ! "$folder" =~ ^[a-z][a-z0-9-]*$ || ! -f "$folder/release.json" ]]; then
+            echo "::error::The tag $TAG names no package folder with a release.json."
+            exit 1
+          fi
+          if [[ "$(jq -r .version "$folder/release.json")" != "$version" ]]; then
+            echo "::error::$folder/release.json records version $(jq -r .version "$folder/release.json"), not $version."
+            exit 1
+          fi
+          {
+            echo "folder=$folder"
+            echo "tarball=$(jq -r .tarball "$folder/release.json")"
+            echo "sha256=$(jq -r .sha256 "$folder/release.json")"
+          } >>"$GITHUB_OUTPUT"
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6
+        with:
+          package_json_file: ${{ steps.release.outputs.folder }}/package.json
+          run_install: false
+          cache: false
+
+      - name: Install Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .node-version
+          package-manager-cache: false
+
+      - name: Install dependencies
+        working-directory: ${{ steps.release.outputs.folder }}
+        run: pnpm install --frozen-lockfile --ignore-scripts
+
+      - name: Build
+        working-directory: ${{ steps.release.outputs.folder }}
+        run: pnpm run --if-present build
+
+      - name: Check
+        working-directory: ${{ steps.release.outputs.folder }}
+        run: pnpm run --if-present check
+
+      - name: Test
+        working-directory: ${{ steps.release.outputs.folder }}
+        run: pnpm run --if-present test
+
+      - name: Pack
+        working-directory: ${{ steps.release.outputs.folder }}
+        run: pnpm run pack
+
+      - name: Refuse a tarball OAIZ did not record
+        working-directory: ${{ steps.release.outputs.folder }}
+        env:
+          TARBALL: ${{ steps.release.outputs.tarball }}
+          EXPECTED: ${{ steps.release.outputs.sha256 }}
+        shell: bash
+        run: |
+          actual="$(sha256sum "$TARBALL" | cut -d' ' -f1)"
+          if [[ "$actual" != "$EXPECTED" ]]; then
+            echo "::error::$TARBALL has sha256 $actual, but release.json records $EXPECTED. Nothing is published."
+            exit 1
+          fi
+
+      - name: Upload the tarball
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: tarball
+          path: ${{ steps.release.outputs.folder }}/${{ steps.release.outputs.tarball }}
+          if-no-files-found: error
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: npm
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Check out the release
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - name: Install Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .node-version
+          package-manager-cache: false
+
+      - name: Download the tarball
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
+        with:
+          name: tarball
+          path: release
+
+      - name: Refuse a tarball OAIZ did not record
+        id: release
+        env:
+          TAG: ${{ github.ref_name }}
+        shell: bash
+        run: |
+          folder="${TAG%-v*}"
+          if [[ ! "$folder" =~ ^[a-z][a-z0-9-]*$ || ! -f "$folder/release.json" ]]; then
+            echo "::error::The tag $TAG names no package folder with a release.json."
+            exit 1
+          fi
+          tarball="$(jq -r .tarball "$folder/release.json")"
+          expected="$(jq -r .sha256 "$folder/release.json")"
+          files="$(find release -mindepth 1 -printf '%P\n')"
+          if [[ "$files" != "$tarball" ]]; then
+            echo "::error::The download is not $tarball alone. Nothing is published."
+            exit 1
+          fi
+          actual="$(sha256sum "release/$tarball" | cut -d' ' -f1)"
+          if [[ "$actual" != "$expected" ]]; then
+            echo "::error::$tarball has sha256 $actual, but release.json records $expected. Nothing is published."
+            exit 1
+          fi
+          echo "tarball=$tarball" >>"$GITHUB_OUTPUT"
+
+      - name: Publish
+        working-directory: release
+        env:
+          TARBALL: ${{ steps.release.outputs.tarball }}
+        run: npm publish "./$TARBALL" --provenance --access public --registry https://registry.npmjs.org/

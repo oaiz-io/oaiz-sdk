@@ -1,0 +1,63 @@
+{
+  "name": "@oaiz/sdk",
+  "version": "0.1.4130",
+  "license": "MIT",
+  "sideEffects": false,
+  "peerDependencies": {
+    "@electric-sql/pglite": "^0.5.15",
+    "@electric-sql/pglite-pgvector": "^0.0.16",
+    "vite": "^8.3.4"
+  },
+  "peerDependenciesMeta": {
+    "@electric-sql/pglite": {
+      "optional": true
+    },
+    "@electric-sql/pglite-pgvector": {
+      "optional": true
+    },
+    "vite": {
+      "optional": true
+    }
+  },
+  "description": "TypeScript client for OAIZ: databases, sign-in, tools, workflows, events, model calls, embeddings and agent chat",
+  "keywords": [
+    "oaiz",
+    "sdk",
+    "typescript",
+    "database",
+    "agent",
+    "llm"
+  ],
+  "homepage": "https://github.com/oaiz-io/oaiz-sdk/tree/main/sdk#readme",
+  "bugs": {
+    "url": "https://github.com/oaiz-io/oaiz-sdk/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oaiz-io/oaiz-sdk.git",
+    "directory": "sdk"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "type": "module",
+  "files": [
+    "dist/"
+  ],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./test": {
+      "types": "./dist/test.d.mts",
+      "default": "./dist/test.mjs"
+    },
+    "./package.json": "./package.json"
+  }
+}

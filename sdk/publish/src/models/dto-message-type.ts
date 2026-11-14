@@ -1,0 +1,23 @@
+export const DtoMessageType = {
+  AiResponse: "ai_response",
+  Error: "error",
+  GenerationCancelled: "generation_cancelled",
+  GenerationFinished: "generation_finished",
+  GenerationStarted: "generation_started",
+  InitiateIntegration: "initiate_integration",
+  Progress: "progress",
+  SessionCreated: "session_created",
+  SubAgentFinished: "sub_agent_finished",
+  SubAgentStarted: "sub_agent_started",
+  SystemTrigger: "system_trigger",
+  Thinking: "thinking",
+  ToolAccessRequest: "tool_access_request",
+  ToolApprovalRequired: "tool_approval_required",
+  ToolFinished: "tool_finished",
+  ToolStarted: "tool_started",
+  UserAction: "user_action",
+  UserInput: "user_input",
+  VoiceAssistant: "voice_assistant",
+  VoiceUser: "voice_user",
+} as const;
+export type DtoMessageType = (typeof DtoMessageType)[keyof typeof DtoMessageType];

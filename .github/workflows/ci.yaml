@@ -1,0 +1,58 @@
+name: CI
+
+# Every push to main and every pull request installs, builds, checks and tests each package folder
+# that has tests, with the commands the publish workflow runs before it packs. The workflow reads no
+# secret, can only read the repository and caches nothing, so a pull request from a fork runs it as
+# it is.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  sdk:
+    name: sdk
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out the commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6
+        with:
+          package_json_file: sdk/package.json
+          run_install: false
+          cache: false
+
+      - name: Install Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .node-version
+          package-manager-cache: false
+
+      - name: Install dependencies
+        working-directory: sdk
+        run: pnpm install --frozen-lockfile --ignore-scripts
+
+      - name: Build
+        working-directory: sdk
+        run: pnpm run build
+
+      - name: Check
+        working-directory: sdk
+        run: pnpm run check
+
+      - name: Test
+        working-directory: sdk
+        run: pnpm test

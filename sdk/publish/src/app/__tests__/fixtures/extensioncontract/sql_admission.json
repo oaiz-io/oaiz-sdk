@@ -1,0 +1,142 @@
+{
+  "accepted": {
+    "sql": "SET LOCAL hnsw.ef_search = 100; SET LOCAL hnsw.max_scan_tuples TO 100000; SET LOCAL pg_trgm.similarity_threshold = 0.4; SET LOCAL pg_trgm.word_similarity_threshold = 0; SET LOCAL pg_trgm.strict_word_similarity_threshold = 1; SELECT current_setting('hnsw.ef_search'), current_setting('hnsw.max_scan_tuples'), current_setting('pg_trgm.similarity_threshold'), current_setting('pg_trgm.word_similarity_threshold'), current_setting('pg_trgm.strict_word_similarity_threshold')",
+    "rows": [
+      [
+        "100",
+        "100000",
+        "0.4",
+        "0",
+        "1"
+      ]
+    ]
+  },
+  "refused": [
+    {
+      "sql": "SET hnsw.ef_search = 100; SELECT 1",
+      "slug": "storage-customer-sql-local-refused"
+    },
+    {
+      "sql": "SET SESSION hnsw.ef_search = 100; SELECT 1",
+      "slug": "storage-customer-sql-local-refused"
+    },
+    {
+      "sql": "RESET hnsw.ef_search; SELECT 1",
+      "slug": "storage-customer-sql-local-refused"
+    },
+    {
+      "sql": "SET ROLE postgres; SELECT 1",
+      "slug": "storage-customer-sql-local-refused"
+    },
+    {
+      "sql": "SET search_path TO data; SELECT 1",
+      "slug": "storage-customer-sql-local-refused"
+    },
+    {
+      "sql": "SET TRANSACTION READ ONLY; SELECT 1",
+      "slug": "storage-customer-sql-local-refused"
+    },
+    {
+      "sql": "SET LOCAL hnsw.iterative_scan = 987654; SELECT 1",
+      "slug": "storage-customer-sql-local-refused"
+    },
+    {
+      "sql": "SET LOCAL statement_timeout = 987654; SELECT 1",
+      "slug": "storage-customer-sql-local-refused"
+    },
+    {
+      "sql": "SET LOCAL lock_timeout = 987654; SELECT 1",
+      "slug": "storage-customer-sql-local-refused"
+    },
+    {
+      "sql": "SET LOCAL idle_in_transaction_session_timeout = 987654; SELECT 1",
+      "slug": "storage-customer-sql-local-refused"
+    },
+    {
+      "sql": "SET LOCAL role = postgres; SELECT 1",
+      "slug": "storage-customer-sql-local-refused"
+    },
+    {
+      "sql": "SET LOCAL search_path TO data; SELECT 1",
+      "slug": "storage-customer-sql-local-refused"
+    },
+    {
+      "sql": "SET LOCAL unknown.setting = 987654; SELECT 1",
+      "slug": "storage-customer-sql-local-refused"
+    },
+    {
+      "sql": "SET LOCAL hnsw.ef_search = 0; SELECT 1",
+      "slug": "storage-customer-sql-local-refused"
+    },
+    {
+      "sql": "SET LOCAL hnsw.ef_search = 1001; SELECT 1",
+      "slug": "storage-customer-sql-local-refused"
+    },
+    {
+      "sql": "SET LOCAL hnsw.ef_search = 1.5; SELECT 1",
+      "slug": "storage-customer-sql-local-refused"
+    },
+    {
+      "sql": "SET LOCAL hnsw.max_scan_tuples = 100001; SELECT 1",
+      "slug": "storage-customer-sql-local-refused"
+    },
+    {
+      "sql": "SET LOCAL pg_trgm.similarity_threshold = -0.1; SELECT 1",
+      "slug": "storage-customer-sql-local-refused"
+    },
+    {
+      "sql": "SET LOCAL pg_trgm.word_similarity_threshold = 1.1; SELECT 1",
+      "slug": "storage-customer-sql-local-refused"
+    },
+    {
+      "sql": "SET LOCAL pg_trgm.strict_word_similarity_threshold = 1.1; SELECT 1",
+      "slug": "storage-customer-sql-local-refused"
+    },
+    {
+      "sql": "SET LOCAL hnsw.ef_search = 100; SET LOCAL hnsw.ef_search = 200; SELECT 1",
+      "slug": "storage-customer-sql-local-refused"
+    },
+    {
+      "sql": "SELECT 1; SET LOCAL hnsw.ef_search = 100",
+      "slug": "storage-customer-sql-local-refused"
+    },
+    {
+      "sql": "SET LOCAL hnsw.ef_search = 100",
+      "slug": "storage-customer-sql-local-refused"
+    },
+    {
+      "sql": "SET LOCAL hnsw.ef_search = '100'; SELECT 1",
+      "slug": "storage-customer-sql-local-refused"
+    },
+    {
+      "sql": "SET LOCAL hnsw.ef_search = $1; SELECT 1",
+      "slug": "storage-customer-sql-local-refused"
+    },
+    {
+      "sql": "SET LOCAL hnsw.ef_search = DEFAULT; SELECT 1",
+      "slug": "storage-customer-sql-local-refused"
+    },
+    {
+      "sql": "SET LOCAL hnsw.ef_search = 50+50; SELECT 1",
+      "slug": "storage-customer-sql-local-refused"
+    },
+    {
+      "sql": "SET LOCAL hnsw.ef_search = 100; SELECT 1; SELECT 2",
+      "slug": "storage-customer-sql-refused"
+    },
+    {
+      "sql": "SET LOCAL hnsw.ef_search = 100; SELECT set_config('role', 'postgres', true)",
+      "slug": "storage-customer-sql-refused"
+    }
+  ],
+  "indexes": [
+    {
+      "sql": "CREATE INDEX documents_ivf ON data.documents USING ivfflat (embedding extensions.vector_cosine_ops)",
+      "slug": "storage-vector-index-refused"
+    },
+    {
+      "sql": "CREATE INDEX documents_ivf ON data.documents USING IVFFLAT (embedding extensions.vector_cosine_ops)",
+      "slug": "storage-vector-index-refused"
+    }
+  ]
+}

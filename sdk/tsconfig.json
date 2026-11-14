@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "target": "ES6",
+    "lib": [
+      "ES2019",
+      "DOM"
+    ],
+    "module": "commonjs",
+    "ignoreDeprecations": "6.0",
+    "noImplicitAny": true,
+    "outDir": "dist",
+    "rootDir": ".",
+    "typeRoots": [
+      "node_modules/@types"
+    ]
+  }
+}

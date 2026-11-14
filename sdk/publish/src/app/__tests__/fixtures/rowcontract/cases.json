@@ -1,0 +1,1099 @@
+{
+  "app": "7e570000-0000-4000-8000-0000000000a1",
+  "grant": "edit",
+  "teams": [
+    {"id": "7e570000-0000-4000-8000-0000000000c1", "name": "Sales"},
+    {"id": "7e570000-0000-4000-8000-0000000000c2", "name": "Support"}
+  ],
+  "members": [
+    {"id": "7e570000-0000-4000-8000-0000000000b1", "name": "Ada Lovelace", "email": "ada@example.test", "teams": ["7e570000-0000-4000-8000-0000000000c1"]},
+    {"id": "7e570000-0000-4000-8000-0000000000b2", "name": "Grace Hopper", "email": "grace@example.test", "teams": ["7e570000-0000-4000-8000-0000000000c2"]},
+    {"id": "7e570000-0000-4000-8000-0000000000b3", "name": "Alan Turing", "email": "alan@example.test", "teams": []}
+  ],
+  "cases": [
+    {
+      "name": "select_star_renders_every_type", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "select": "*", "order": [{"column": "id"}]},
+      "want": { "status": 200, "rows": [
+          {"id": 1, "project_id": 1, "owner_id": "7e570000-0000-4000-8000-0000000000b1", "title": "Write the brief", "status": "open", "priority": "high", "estimate": 3, "due": "2026-11-10", "created_at": "2026-10-01T09:00:00+00:00"},
+          {"id": 2, "project_id": 1, "owner_id": "7e570000-0000-4000-8000-0000000000b1", "title": "Book the venue", "status": "doing", "priority": "low", "estimate": 9007199254740993, "due": null, "created_at": "2026-10-02T09:00:00+00:00"},
+          {"id": 3, "project_id": 2, "owner_id": "7e570000-0000-4000-8000-0000000000b1", "title": "Call Acme", "status": "done", "priority": null, "estimate": null, "due": "2026-11-03", "created_at": "2026-10-03T09:00:00+00:00"}
+        ] }
+    },
+    {
+      "name": "select_empty_select_is_every_column", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "projects", "order": [{"column": "id"}]},
+      "want": { "status": 200, "rows": [
+          {"id": 1, "name": "Launch", "team_id": null},
+          {"id": 2, "name": "Pipeline", "team_id": "7e570000-0000-4000-8000-0000000000c1"}
+        ] }
+    },
+    {
+      "name": "select_bytea_renders_as_hex", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "notes", "select": "id, attachment", "order": [{"column": "id"}]},
+      "want": { "status": 200, "rows": [
+          {"id": 1, "attachment": "\\x6f61697a"},
+          {"id": 2, "attachment": null},
+          {"id": 3, "attachment": null}
+        ] }
+    },
+    {
+      "name": "filter_on_bytea_reads_the_value_as_hex", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "notes", "select": "id", "filters": [{"column": "attachment", "operator": "eq", "value": "\\x6f61697a"}]},
+      "want": {"status": 200, "rows": [{"id": 1}]}
+    },
+    {
+      "name": "filter_on_boolean_reads_postgresql_boolean_text", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "notes", "select": "id", "filters": [{"column": "pinned", "operator": "eq", "value": "yes"}]},
+      "want": {"status": 200, "rows": [{"id": 1}]}
+    },
+    {
+      "name": "select_alias_renames_a_column", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "select": "id, name:title", "order": [{"column": "id"}], "limit": 1},
+      "want": {"status": 200, "rows": [{"id": 1, "name": "Write the brief"}]}
+    },
+    {
+      "name": "owner_policy_ada_sees_her_tasks", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "select": "id", "order": [{"column": "id"}]},
+      "want": {"status": 200, "rows": [{"id": 1}, {"id": 2}, {"id": 3}]}
+    },
+    {
+      "name": "owner_policy_grace_sees_her_tasks", "member": "7e570000-0000-4000-8000-0000000000b2", "operation": "select",
+      "request": {"table": "tasks", "select": "id", "order": [{"column": "id"}]},
+      "want": {"status": 200, "rows": [{"id": 4}, {"id": 5}]}
+    },
+    {
+      "name": "team_policy_sales_member_sees_sales_projects", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "projects", "select": "name", "order": [{"column": "id"}]},
+      "want": {"status": 200, "rows": [{"name": "Launch"}, {"name": "Pipeline"}]}
+    },
+    {
+      "name": "team_policy_support_member_sees_support_projects", "member": "7e570000-0000-4000-8000-0000000000b2", "operation": "select",
+      "request": {"table": "projects", "select": "name", "order": [{"column": "id"}]},
+      "want": {"status": 200, "rows": [{"name": "Launch"}, {"name": "Helpdesk"}]}
+    },
+    {
+      "name": "team_policy_member_without_a_team_sees_unteamed_projects", "member": "7e570000-0000-4000-8000-0000000000b3", "operation": "select",
+      "request": {"table": "projects", "select": "name", "order": [{"column": "id"}]},
+      "want": {"status": 200, "rows": [{"name": "Launch"}]}
+    },
+    {
+      "name": "filter_eq", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "select": "id", "filters": [{"column": "status", "operator": "eq", "value": "open"}]},
+      "want": {"status": 200, "rows": [{"id": 1}]}
+    },
+    {
+      "name": "filter_neq", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "select": "id", "filters": [{"column": "status", "operator": "neq", "value": "open"}], "order": [{"column": "id"}]},
+      "want": {"status": 200, "rows": [{"id": 2}, {"id": 3}]}
+    },
+    {
+      "name": "filter_gt_on_bigint_past_2_53", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "select": "id, estimate", "filters": [{"column": "estimate", "operator": "gt", "value": "9007199254740992"}]},
+      "want": {"status": 200, "rows": [{"id": 2, "estimate": 9007199254740993}]}
+    },
+    {
+      "name": "filter_gte_on_date", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "select": "id", "filters": [{"column": "due", "operator": "gte", "value": "2026-11-03"}], "order": [{"column": "id"}]},
+      "want": {"status": 200, "rows": [{"id": 1}, {"id": 3}]}
+    },
+    {
+      "name": "filter_lt_on_timestamptz", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "select": "id", "filters": [{"column": "created_at", "operator": "lt", "value": "2026-10-02T09:00:00Z"}]},
+      "want": {"status": 200, "rows": [{"id": 1}]}
+    },
+    {
+      "name": "filter_lte", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "select": "id", "filters": [{"column": "estimate", "operator": "lte", "value": "3"}]},
+      "want": {"status": 200, "rows": [{"id": 1}]}
+    },
+    {
+      "name": "filter_like", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "select": "id", "filters": [{"column": "title", "operator": "like", "value": "%the%"}], "order": [{"column": "id"}]},
+      "want": {"status": 200, "rows": [{"id": 1}, {"id": 2}]}
+    },
+    {
+      "name": "filter_ilike", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "select": "id", "filters": [{"column": "title", "operator": "ilike", "value": "call%"}]},
+      "want": {"status": 200, "rows": [{"id": 3}]}
+    },
+    {
+      "name": "filter_in_on_enum", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "select": "id, priority", "filters": [{"column": "priority", "operator": "in", "values": ["high", "low"]}], "order": [{"column": "id"}]},
+      "want": {"status": 200, "rows": [{"id": 1, "priority": "high"}, {"id": 2, "priority": "low"}]}
+    },
+    {
+      "name": "filter_in_with_no_values_matches_no_row", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "select": "id", "filters": [{"column": "priority", "operator": "in", "values": []}]},
+      "want": {"status": 200, "rows": []}
+    },
+    {
+      "name": "filter_is_without_a_value_tests_for_null", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "select": "id", "filters": [{"column": "priority", "operator": "is"}]},
+      "want": {"status": 200, "rows": [{"id": 3}]}
+    },
+    {
+      "name": "filter_is_null", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "select": "id", "filters": [{"column": "due", "operator": "is", "value": "null"}]},
+      "want": {"status": 200, "rows": [{"id": 2}]}
+    },
+    {
+      "name": "filter_not_negates_a_condition", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "select": "id", "filters": [{"column": "status", "operator": "eq", "value": "open", "not": true}], "order": [{"column": "id"}]},
+      "want": {"status": 200, "rows": [{"id": 2}, {"id": 3}]}
+    },
+    {
+      "name": "filter_not_in", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "select": "id", "filters": [{"column": "status", "operator": "in", "values": ["open", "doing"], "not": true}]},
+      "want": {"status": 200, "rows": [{"id": 3}]}
+    },
+    {
+      "name": "filter_or_group", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "select": "id", "filters": [{"or": [{"column": "status", "operator": "eq", "value": "done"}, {"column": "priority", "operator": "eq", "value": "high"}]}], "order": [{"column": "id"}]},
+      "want": {"status": 200, "rows": [{"id": 1}, {"id": 3}]}
+    },
+    {
+      "name": "filter_and_group_inside_or", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "select": "id", "filters": [{"or": [{"and": [{"column": "status", "operator": "eq", "value": "doing"}, {"column": "priority", "operator": "eq", "value": "low"}]}, {"column": "status", "operator": "eq", "value": "done"}]}], "order": [{"column": "id"}]},
+      "want": {"status": 200, "rows": [{"id": 2}, {"id": 3}]}
+    },
+    {
+      "name": "filter_not_and_group", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "select": "id", "filters": [{"not": true, "and": [{"column": "status", "operator": "eq", "value": "open"}, {"column": "priority", "operator": "eq", "value": "high"}]}], "order": [{"column": "id"}]},
+      "want": {"status": 200, "rows": [{"id": 2}, {"id": 3}]}
+    },
+    {
+      "name": "filter_top_level_filters_are_anded", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "select": "id", "filters": [{"column": "project_id", "operator": "eq", "value": "1"}, {"column": "status", "operator": "neq", "value": "open"}]},
+      "want": {"status": 200, "rows": [{"id": 2}]}
+    },
+    {
+      "name": "filter_on_an_embed_column_narrows_the_embed", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "select": "id, projects(name)", "filters": [{"column": "projects.name", "operator": "eq", "value": "Pipeline"}], "order": [{"column": "id"}]},
+      "want": { "status": 200, "rows": [
+          {"id": 1, "projects": null},
+          {"id": 2, "projects": null},
+          {"id": 3, "projects": {"name": "Pipeline"}}
+        ] }
+    },
+    {
+      "name": "filter_on_an_inner_embed_column_narrows_the_rows", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "select": "id, projects!inner(name)", "filters": [{"column": "projects.name", "operator": "eq", "value": "Pipeline"}]},
+      "want": {"status": 200, "rows": [{"id": 3, "projects": {"name": "Pipeline"}}]}
+    },
+    {
+      "name": "embed_to_one_with_alias", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "select": "id, project:projects(name)", "order": [{"column": "id"}]},
+      "want": { "status": 200, "rows": [
+          {"id": 1, "project": {"name": "Launch"}},
+          {"id": 2, "project": {"name": "Launch"}},
+          {"id": 3, "project": {"name": "Pipeline"}}
+        ] }
+    },
+    {
+      "name": "embed_to_many_reads_only_policy_visible_rows", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "projects", "select": "name, tasks(title)", "order": [{"column": "id"}]},
+      "want": { "status": 200, "rows": [
+          {"name": "Launch", "tasks": [{"title": "Write the brief"}, {"title": "Book the venue"}]},
+          {"name": "Pipeline", "tasks": [{"title": "Call Acme"}]}
+        ] }
+    },
+    {
+      "name": "embed_to_many_with_star", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "projects", "select": "id, tasks(*)", "filters": [{"column": "id", "operator": "eq", "value": "2"}]},
+      "want": { "status": 200, "rows": [
+          {"id": 2, "tasks": [{"id": 3, "project_id": 2, "owner_id": "7e570000-0000-4000-8000-0000000000b1", "title": "Call Acme", "status": "done", "priority": null, "estimate": null, "due": "2026-11-03", "created_at": "2026-10-03T09:00:00+00:00"}]}
+        ] }
+    },
+    {
+      "name": "embed_by_foreign_key_hint", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "select": "id, notes!notes_task_id_fkey(body)", "order": [{"column": "id"}]},
+      "want": { "status": 200, "rows": [
+          {"id": 1, "notes": [{"body": "Draft is in the shared folder"}, {"body": "Ask Grace to review"}]},
+          {"id": 2, "notes": []},
+          {"id": 3, "notes": []}
+        ] }
+    },
+    {
+      "name": "embed_by_the_other_foreign_key_hint", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "select": "id, follow_ups:notes!notes_follow_up_task_id_fkey(body)", "order": [{"column": "id"}]},
+      "want": { "status": 200, "rows": [
+          {"id": 1, "follow_ups": []},
+          {"id": 2, "follow_ups": [{"body": "Draft is in the shared folder"}]},
+          {"id": 3, "follow_ups": []}
+        ] }
+    },
+    {
+      "name": "embed_by_column_name_is_null_where_a_policy_hides_the_row", "member": "7e570000-0000-4000-8000-0000000000b2", "operation": "select",
+      "request": {"table": "notes", "select": "id, task:task_id(title)", "order": [{"column": "id"}]},
+      "want": { "status": 200, "rows": [
+          {"id": 1, "task": null},
+          {"id": 2, "task": null},
+          {"id": 3, "task": {"title": "Answer tickets"}}
+        ] }
+    },
+    {
+      "name": "embed_nests_two_levels", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "notes", "select": "body, task:tasks!notes_task_id_fkey(title, projects(name))", "filters": [{"column": "id", "operator": "eq", "value": "1"}]},
+      "want": { "status": 200, "rows": [
+          {"body": "Draft is in the shared folder", "task": {"title": "Write the brief", "projects": {"name": "Launch"}}}
+        ] }
+    },
+    {
+      "name": "embed_to_one_is_null_where_the_team_policy_hides_the_row", "member": "7e570000-0000-4000-8000-0000000000b3", "operation": "select",
+      "request": {"table": "tasks", "select": "id, projects(name)"},
+      "want": {"status": 200, "rows": [{"id": 6, "projects": null}]}
+    },
+    {
+      "name": "embed_inner_drops_rows_whose_embed_is_hidden", "member": "7e570000-0000-4000-8000-0000000000b3", "operation": "select",
+      "request": {"table": "tasks", "select": "id, projects!inner(name)"},
+      "want": {"status": 200, "rows": []}
+    },
+    {
+      "name": "order_nulls_first", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "select": "id, due", "order": [{"column": "due", "nullsFirst": true}]},
+      "want": {"status": 200, "rows": [{"id": 2, "due": null}, {"id": 3, "due": "2026-11-03"}, {"id": 1, "due": "2026-11-10"}]}
+    },
+    {
+      "name": "order_ascending_puts_nulls_last", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "select": "id", "order": [{"column": "due"}]},
+      "want": {"status": 200, "rows": [{"id": 3}, {"id": 1}, {"id": 2}]}
+    },
+    {
+      "name": "order_descending_puts_nulls_first", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "select": "id", "order": [{"column": "due", "ascending": false}]},
+      "want": {"status": 200, "rows": [{"id": 2}, {"id": 1}, {"id": 3}]}
+    },
+    {
+      "name": "order_descending_with_nulls_last", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "select": "id", "order": [{"column": "due", "ascending": false, "nullsFirst": false}]},
+      "want": {"status": 200, "rows": [{"id": 1}, {"id": 3}, {"id": 2}]}
+    },
+    {
+      "name": "order_ties_break_by_primary_key", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "select": "id", "order": [{"column": "project_id", "ascending": false}]},
+      "want": {"status": 200, "rows": [{"id": 3}, {"id": 1}, {"id": 2}]}
+    },
+    {
+      "name": "limit_and_offset", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "select": "id", "order": [{"column": "id"}], "limit": 1, "offset": 1},
+      "want": {"status": 200, "rows": [{"id": 2}]}
+    },
+    {
+      "name": "offset_past_the_rows_is_empty", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "select": "id", "offset": 10},
+      "want": {"status": 200, "rows": []}
+    },
+    {
+      "name": "count_exact_counts_beyond_the_page", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "readings", "select": "id", "order": [{"column": "id"}], "limit": 2, "count": "exact"},
+      "want": {"status": 200, "rows": [{"id": 1}, {"id": 2}], "count": 1001}
+    },
+    {
+      "name": "aggregate_groups_by_the_other_columns", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "select": "status, total:estimate.sum(), count()"},
+      "want": {"status": 200, "rows": [{"status": "doing", "total": 9007199254740993, "count": 1}, {"status": "done", "total": null, "count": 1}, {"status": "open", "total": 3, "count": 1}]}
+    },
+    {
+      "name": "aggregate_without_a_group_reads_one_row", "member": "7e570000-0000-4000-8000-0000000000b2", "operation": "select",
+      "request": {"table": "tasks", "select": "estimate.sum(), estimate.avg(), estimate.min(), estimate.max(), rows:count(), estimated:estimate.count()"},
+      "want": {"status": 200, "rows": [{"sum": 7, "avg": 3.5000000000000000, "min": 2, "max": 5, "rows": 2, "estimated": 2}]}
+    },
+    {
+      "name": "aggregate_owner_policy_ada_sums_her_tasks", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "select": "rows:count(), estimated:estimate.count()"},
+      "want": {"status": 200, "rows": [{"rows": 3, "estimated": 2}]}
+    },
+    {
+      "name": "aggregate_owner_policy_grace_sums_her_tasks", "member": "7e570000-0000-4000-8000-0000000000b2", "operation": "select",
+      "request": {"table": "tasks", "select": "total:estimate.sum(), count()"},
+      "want": {"status": 200, "rows": [{"total": 7, "count": 2}]}
+    },
+    {
+      "name": "aggregate_owner_policy_alan_sums_his_tasks", "member": "7e570000-0000-4000-8000-0000000000b3", "operation": "select",
+      "request": {"table": "tasks", "select": "total:estimate.sum(), count()"},
+      "want": {"status": 200, "rows": [{"total": 8, "count": 1}]}
+    },
+    {
+      "name": "aggregate_owner_policy_keeps_other_groups_out", "member": "7e570000-0000-4000-8000-0000000000b2", "operation": "select",
+      "request": {"table": "tasks", "select": "status, count()"},
+      "want": {"status": 200, "rows": [{"status": "open", "count": 2}]}
+    },
+    {
+      "name": "aggregate_team_policy_sales_member_counts_sales_projects", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "projects", "select": "count()"},
+      "want": {"status": 200, "rows": [{"count": 2}]}
+    },
+    {
+      "name": "aggregate_view_grant_reads", "member": "7e570000-0000-4000-8000-0000000000b1", "grant": "view", "operation": "select",
+      "request": {"table": "tasks", "select": "count()"},
+      "want": {"status": 200, "rows": [{"count": 3}]}
+    },
+    {
+      "name": "aggregate_filters_the_rows_it_reads", "member": "7e570000-0000-4000-8000-0000000000b2", "operation": "select",
+      "request": {"table": "tasks", "select": "status, count()", "filters": [{"column": "estimate", "operator": "gt", "value": "2"}]},
+      "want": {"status": 200, "rows": [{"status": "open", "count": 1}]}
+    },
+    {
+      "name": "aggregate_over_no_rows_reads_one_row", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "select": "total:estimate.sum(), count()", "filters": [{"column": "title", "operator": "eq", "value": "Nothing"}]},
+      "want": {"status": 200, "rows": [{"total": null, "count": 0}]}
+    },
+    {
+      "name": "aggregate_with_a_group_over_no_rows_reads_none", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "select": "status, count()", "filters": [{"column": "title", "operator": "eq", "value": "Nothing"}]},
+      "want": {"status": 200, "rows": []}
+    },
+    {
+      "name": "aggregate_counts_past_the_row_limit", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "readings", "select": "count()"},
+      "want": {"status": 200, "rows": [{"count": 1001}]}
+    },
+    {
+      "name": "aggregate_count_exact_counts_groups", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "select": "status, count()", "limit": 1, "count": "exact"},
+      "want": {"status": 200, "rows": [{"status": "doing", "count": 1}], "count": 3}
+    },
+    {
+      "name": "aggregate_count_exact_with_a_filter_counts_groups", "member": "7e570000-0000-4000-8000-0000000000b2", "operation": "select",
+      "request": {"table": "tasks", "select": "status, count()", "filters": [{"column": "estimate", "operator": "gt", "value": "2"}], "count": "exact"},
+      "want": {"status": 200, "rows": [{"status": "open", "count": 1}], "count": 1}
+    },
+    {
+      "name": "aggregate_count_exact_without_a_group_is_one", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "select": "count()", "count": "exact"},
+      "want": {"status": 200, "rows": [{"count": 3}], "count": 1}
+    },
+    {
+      "name": "aggregate_pages_over_groups", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "select": "status, count()", "limit": 1, "offset": 1},
+      "want": {"status": 200, "rows": [{"status": "done", "count": 1}]}
+    },
+    {
+      "name": "aggregate_orders_by_a_group", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "select": "status, count()", "order": [{"column": "status", "ascending": false}]},
+      "want": {"status": 200, "rows": [{"status": "open", "count": 1}, {"status": "done", "count": 1}, {"status": "doing", "count": 1}]}
+    },
+    {
+      "name": "aggregate_order_ends_with_the_other_groups", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "select": "project_id, state:status, count()", "order": [{"column": "project_id"}]},
+      "want": {"status": 200, "rows": [{"project_id": 1, "state": "doing", "count": 1}, {"project_id": 1, "state": "open", "count": 1}, {"project_id": 2, "state": "done", "count": 1}]}
+    },
+    {
+      "name": "aggregate_single_reads_one_group", "member": "7e570000-0000-4000-8000-0000000000b2", "operation": "select",
+      "request": {"table": "tasks", "select": "status, count()", "single": true},
+      "want": {"status": 200, "rows": [{"status": "open", "count": 2}]}
+    },
+    {
+      "name": "error_aggregate_of_text_fails_in_the_database", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "select": "title.sum()"},
+      "want": {"status": 400, "slug": "storage-customer-sql-failed", "sqlState": "42883"}
+    },
+    {
+      "name": "error_aggregates_with_one_key_are_refused", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "select": "estimate.sum(), project_id.sum()"},
+      "want": {"status": 400, "slug": "storage-table-request-invalid"}
+    },
+    {
+      "name": "error_aggregate_of_an_unknown_column", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "select": "nope.sum()"},
+      "want": {"status": 400, "slug": "storage-table-request-invalid"}
+    },
+    {
+      "name": "error_aggregate_unknown_function", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "select": "estimate.median()"},
+      "want": {"status": 400, "slug": "storage-table-request-invalid"}
+    },
+    {
+      "name": "error_aggregate_quoted_function", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "select": "estimate.\"sum\"()"},
+      "want": {"status": 400, "slug": "storage-table-request-invalid"}
+    },
+    {
+      "name": "error_aggregate_cast", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "select": "estimate.sum()::int"},
+      "want": {"status": 400, "slug": "storage-table-request-invalid"}
+    },
+    {
+      "name": "error_aggregate_beside_star", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "select": "*, count()"},
+      "want": {"status": 400, "slug": "storage-table-request-invalid"}
+    },
+    {
+      "name": "error_aggregate_beside_an_embed", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "select": "count(), projects(name)"},
+      "want": {"status": 400, "slug": "storage-table-request-invalid"}
+    },
+    {
+      "name": "error_aggregate_inside_an_embed", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "select": "id, projects(count())"},
+      "want": {"status": 400, "slug": "storage-table-request-invalid"}
+    },
+    {
+      "name": "error_aggregate_order_by_an_unselected_column", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "select": "status, count()", "order": [{"column": "estimate"}]},
+      "want": {"status": 400, "slug": "storage-table-request-invalid"}
+    },
+    {
+      "name": "error_aggregate_order_by_its_alias", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "select": "status, rows:count()", "order": [{"column": "rows"}]},
+      "want": {"status": 400, "slug": "storage-table-request-invalid"}
+    },
+    {
+      "name": "error_aggregate_in_an_insert_result", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "insert",
+      "request": {"table": "tasks", "rows": [{"project_id": 1, "owner_id": "7e570000-0000-4000-8000-0000000000b1", "title": "Count me"}], "select": "count()"},
+      "want": {"status": 400, "slug": "storage-table-request-invalid"}
+    },
+    {
+      "name": "error_aggregate_in_an_update_result", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "update",
+      "request": {"table": "tasks", "values": {"title": "Count me"}, "filters": [{"column": "id", "operator": "eq", "value": "1"}], "select": "estimate.sum()"},
+      "want": {"status": 400, "slug": "storage-table-request-invalid"}
+    },
+    {
+      "name": "error_aggregate_in_a_delete_result", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "delete",
+      "request": {"table": "tasks", "filters": [{"column": "id", "operator": "eq", "value": "1"}], "select": "count()"},
+      "want": {"status": 400, "slug": "storage-table-request-invalid"}
+    },
+    {
+      "name": "limit_past_1000_returns_1000_rows", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "readings", "select": "id", "order": [{"column": "id"}], "limit": 5000},
+      "want": { "status": 200, "rows": [
+          {"id": 1}, {"id": 2}, {"id": 3}, {"id": 4}, {"id": 5}, {"id": 6}, {"id": 7}, {"id": 8}, {"id": 9},
+          {"id": 10}, {"id": 11}, {"id": 12}, {"id": 13}, {"id": 14}, {"id": 15}, {"id": 16}, {"id": 17},
+          {"id": 18}, {"id": 19}, {"id": 20}, {"id": 21}, {"id": 22}, {"id": 23}, {"id": 24}, {"id": 25},
+          {"id": 26}, {"id": 27}, {"id": 28}, {"id": 29}, {"id": 30}, {"id": 31}, {"id": 32}, {"id": 33},
+          {"id": 34}, {"id": 35}, {"id": 36}, {"id": 37}, {"id": 38}, {"id": 39}, {"id": 40}, {"id": 41},
+          {"id": 42}, {"id": 43}, {"id": 44}, {"id": 45}, {"id": 46}, {"id": 47}, {"id": 48}, {"id": 49},
+          {"id": 50}, {"id": 51}, {"id": 52}, {"id": 53}, {"id": 54}, {"id": 55}, {"id": 56}, {"id": 57},
+          {"id": 58}, {"id": 59}, {"id": 60}, {"id": 61}, {"id": 62}, {"id": 63}, {"id": 64}, {"id": 65},
+          {"id": 66}, {"id": 67}, {"id": 68}, {"id": 69}, {"id": 70}, {"id": 71}, {"id": 72}, {"id": 73},
+          {"id": 74}, {"id": 75}, {"id": 76}, {"id": 77}, {"id": 78}, {"id": 79}, {"id": 80}, {"id": 81},
+          {"id": 82}, {"id": 83}, {"id": 84}, {"id": 85}, {"id": 86}, {"id": 87}, {"id": 88}, {"id": 89},
+          {"id": 90}, {"id": 91}, {"id": 92}, {"id": 93}, {"id": 94}, {"id": 95}, {"id": 96}, {"id": 97},
+          {"id": 98}, {"id": 99}, {"id": 100}, {"id": 101}, {"id": 102}, {"id": 103}, {"id": 104}, {"id": 105},
+          {"id": 106}, {"id": 107}, {"id": 108}, {"id": 109}, {"id": 110}, {"id": 111}, {"id": 112}, {"id": 113},
+          {"id": 114}, {"id": 115}, {"id": 116}, {"id": 117}, {"id": 118}, {"id": 119}, {"id": 120}, {"id": 121},
+          {"id": 122}, {"id": 123}, {"id": 124}, {"id": 125}, {"id": 126}, {"id": 127}, {"id": 128}, {"id": 129},
+          {"id": 130}, {"id": 131}, {"id": 132}, {"id": 133}, {"id": 134}, {"id": 135}, {"id": 136}, {"id": 137},
+          {"id": 138}, {"id": 139}, {"id": 140}, {"id": 141}, {"id": 142}, {"id": 143}, {"id": 144}, {"id": 145},
+          {"id": 146}, {"id": 147}, {"id": 148}, {"id": 149}, {"id": 150}, {"id": 151}, {"id": 152}, {"id": 153},
+          {"id": 154}, {"id": 155}, {"id": 156}, {"id": 157}, {"id": 158}, {"id": 159}, {"id": 160}, {"id": 161},
+          {"id": 162}, {"id": 163}, {"id": 164}, {"id": 165}, {"id": 166}, {"id": 167}, {"id": 168}, {"id": 169},
+          {"id": 170}, {"id": 171}, {"id": 172}, {"id": 173}, {"id": 174}, {"id": 175}, {"id": 176}, {"id": 177},
+          {"id": 178}, {"id": 179}, {"id": 180}, {"id": 181}, {"id": 182}, {"id": 183}, {"id": 184}, {"id": 185},
+          {"id": 186}, {"id": 187}, {"id": 188}, {"id": 189}, {"id": 190}, {"id": 191}, {"id": 192}, {"id": 193},
+          {"id": 194}, {"id": 195}, {"id": 196}, {"id": 197}, {"id": 198}, {"id": 199}, {"id": 200}, {"id": 201},
+          {"id": 202}, {"id": 203}, {"id": 204}, {"id": 205}, {"id": 206}, {"id": 207}, {"id": 208}, {"id": 209},
+          {"id": 210}, {"id": 211}, {"id": 212}, {"id": 213}, {"id": 214}, {"id": 215}, {"id": 216}, {"id": 217},
+          {"id": 218}, {"id": 219}, {"id": 220}, {"id": 221}, {"id": 222}, {"id": 223}, {"id": 224}, {"id": 225},
+          {"id": 226}, {"id": 227}, {"id": 228}, {"id": 229}, {"id": 230}, {"id": 231}, {"id": 232}, {"id": 233},
+          {"id": 234}, {"id": 235}, {"id": 236}, {"id": 237}, {"id": 238}, {"id": 239}, {"id": 240}, {"id": 241},
+          {"id": 242}, {"id": 243}, {"id": 244}, {"id": 245}, {"id": 246}, {"id": 247}, {"id": 248}, {"id": 249},
+          {"id": 250}, {"id": 251}, {"id": 252}, {"id": 253}, {"id": 254}, {"id": 255}, {"id": 256}, {"id": 257},
+          {"id": 258}, {"id": 259}, {"id": 260}, {"id": 261}, {"id": 262}, {"id": 263}, {"id": 264}, {"id": 265},
+          {"id": 266}, {"id": 267}, {"id": 268}, {"id": 269}, {"id": 270}, {"id": 271}, {"id": 272}, {"id": 273},
+          {"id": 274}, {"id": 275}, {"id": 276}, {"id": 277}, {"id": 278}, {"id": 279}, {"id": 280}, {"id": 281},
+          {"id": 282}, {"id": 283}, {"id": 284}, {"id": 285}, {"id": 286}, {"id": 287}, {"id": 288}, {"id": 289},
+          {"id": 290}, {"id": 291}, {"id": 292}, {"id": 293}, {"id": 294}, {"id": 295}, {"id": 296}, {"id": 297},
+          {"id": 298}, {"id": 299}, {"id": 300}, {"id": 301}, {"id": 302}, {"id": 303}, {"id": 304}, {"id": 305},
+          {"id": 306}, {"id": 307}, {"id": 308}, {"id": 309}, {"id": 310}, {"id": 311}, {"id": 312}, {"id": 313},
+          {"id": 314}, {"id": 315}, {"id": 316}, {"id": 317}, {"id": 318}, {"id": 319}, {"id": 320}, {"id": 321},
+          {"id": 322}, {"id": 323}, {"id": 324}, {"id": 325}, {"id": 326}, {"id": 327}, {"id": 328}, {"id": 329},
+          {"id": 330}, {"id": 331}, {"id": 332}, {"id": 333}, {"id": 334}, {"id": 335}, {"id": 336}, {"id": 337},
+          {"id": 338}, {"id": 339}, {"id": 340}, {"id": 341}, {"id": 342}, {"id": 343}, {"id": 344}, {"id": 345},
+          {"id": 346}, {"id": 347}, {"id": 348}, {"id": 349}, {"id": 350}, {"id": 351}, {"id": 352}, {"id": 353},
+          {"id": 354}, {"id": 355}, {"id": 356}, {"id": 357}, {"id": 358}, {"id": 359}, {"id": 360}, {"id": 361},
+          {"id": 362}, {"id": 363}, {"id": 364}, {"id": 365}, {"id": 366}, {"id": 367}, {"id": 368}, {"id": 369},
+          {"id": 370}, {"id": 371}, {"id": 372}, {"id": 373}, {"id": 374}, {"id": 375}, {"id": 376}, {"id": 377},
+          {"id": 378}, {"id": 379}, {"id": 380}, {"id": 381}, {"id": 382}, {"id": 383}, {"id": 384}, {"id": 385},
+          {"id": 386}, {"id": 387}, {"id": 388}, {"id": 389}, {"id": 390}, {"id": 391}, {"id": 392}, {"id": 393},
+          {"id": 394}, {"id": 395}, {"id": 396}, {"id": 397}, {"id": 398}, {"id": 399}, {"id": 400}, {"id": 401},
+          {"id": 402}, {"id": 403}, {"id": 404}, {"id": 405}, {"id": 406}, {"id": 407}, {"id": 408}, {"id": 409},
+          {"id": 410}, {"id": 411}, {"id": 412}, {"id": 413}, {"id": 414}, {"id": 415}, {"id": 416}, {"id": 417},
+          {"id": 418}, {"id": 419}, {"id": 420}, {"id": 421}, {"id": 422}, {"id": 423}, {"id": 424}, {"id": 425},
+          {"id": 426}, {"id": 427}, {"id": 428}, {"id": 429}, {"id": 430}, {"id": 431}, {"id": 432}, {"id": 433},
+          {"id": 434}, {"id": 435}, {"id": 436}, {"id": 437}, {"id": 438}, {"id": 439}, {"id": 440}, {"id": 441},
+          {"id": 442}, {"id": 443}, {"id": 444}, {"id": 445}, {"id": 446}, {"id": 447}, {"id": 448}, {"id": 449},
+          {"id": 450}, {"id": 451}, {"id": 452}, {"id": 453}, {"id": 454}, {"id": 455}, {"id": 456}, {"id": 457},
+          {"id": 458}, {"id": 459}, {"id": 460}, {"id": 461}, {"id": 462}, {"id": 463}, {"id": 464}, {"id": 465},
+          {"id": 466}, {"id": 467}, {"id": 468}, {"id": 469}, {"id": 470}, {"id": 471}, {"id": 472}, {"id": 473},
+          {"id": 474}, {"id": 475}, {"id": 476}, {"id": 477}, {"id": 478}, {"id": 479}, {"id": 480}, {"id": 481},
+          {"id": 482}, {"id": 483}, {"id": 484}, {"id": 485}, {"id": 486}, {"id": 487}, {"id": 488}, {"id": 489},
+          {"id": 490}, {"id": 491}, {"id": 492}, {"id": 493}, {"id": 494}, {"id": 495}, {"id": 496}, {"id": 497},
+          {"id": 498}, {"id": 499}, {"id": 500}, {"id": 501}, {"id": 502}, {"id": 503}, {"id": 504}, {"id": 505},
+          {"id": 506}, {"id": 507}, {"id": 508}, {"id": 509}, {"id": 510}, {"id": 511}, {"id": 512}, {"id": 513},
+          {"id": 514}, {"id": 515}, {"id": 516}, {"id": 517}, {"id": 518}, {"id": 519}, {"id": 520}, {"id": 521},
+          {"id": 522}, {"id": 523}, {"id": 524}, {"id": 525}, {"id": 526}, {"id": 527}, {"id": 528}, {"id": 529},
+          {"id": 530}, {"id": 531}, {"id": 532}, {"id": 533}, {"id": 534}, {"id": 535}, {"id": 536}, {"id": 537},
+          {"id": 538}, {"id": 539}, {"id": 540}, {"id": 541}, {"id": 542}, {"id": 543}, {"id": 544}, {"id": 545},
+          {"id": 546}, {"id": 547}, {"id": 548}, {"id": 549}, {"id": 550}, {"id": 551}, {"id": 552}, {"id": 553},
+          {"id": 554}, {"id": 555}, {"id": 556}, {"id": 557}, {"id": 558}, {"id": 559}, {"id": 560}, {"id": 561},
+          {"id": 562}, {"id": 563}, {"id": 564}, {"id": 565}, {"id": 566}, {"id": 567}, {"id": 568}, {"id": 569},
+          {"id": 570}, {"id": 571}, {"id": 572}, {"id": 573}, {"id": 574}, {"id": 575}, {"id": 576}, {"id": 577},
+          {"id": 578}, {"id": 579}, {"id": 580}, {"id": 581}, {"id": 582}, {"id": 583}, {"id": 584}, {"id": 585},
+          {"id": 586}, {"id": 587}, {"id": 588}, {"id": 589}, {"id": 590}, {"id": 591}, {"id": 592}, {"id": 593},
+          {"id": 594}, {"id": 595}, {"id": 596}, {"id": 597}, {"id": 598}, {"id": 599}, {"id": 600}, {"id": 601},
+          {"id": 602}, {"id": 603}, {"id": 604}, {"id": 605}, {"id": 606}, {"id": 607}, {"id": 608}, {"id": 609},
+          {"id": 610}, {"id": 611}, {"id": 612}, {"id": 613}, {"id": 614}, {"id": 615}, {"id": 616}, {"id": 617},
+          {"id": 618}, {"id": 619}, {"id": 620}, {"id": 621}, {"id": 622}, {"id": 623}, {"id": 624}, {"id": 625},
+          {"id": 626}, {"id": 627}, {"id": 628}, {"id": 629}, {"id": 630}, {"id": 631}, {"id": 632}, {"id": 633},
+          {"id": 634}, {"id": 635}, {"id": 636}, {"id": 637}, {"id": 638}, {"id": 639}, {"id": 640}, {"id": 641},
+          {"id": 642}, {"id": 643}, {"id": 644}, {"id": 645}, {"id": 646}, {"id": 647}, {"id": 648}, {"id": 649},
+          {"id": 650}, {"id": 651}, {"id": 652}, {"id": 653}, {"id": 654}, {"id": 655}, {"id": 656}, {"id": 657},
+          {"id": 658}, {"id": 659}, {"id": 660}, {"id": 661}, {"id": 662}, {"id": 663}, {"id": 664}, {"id": 665},
+          {"id": 666}, {"id": 667}, {"id": 668}, {"id": 669}, {"id": 670}, {"id": 671}, {"id": 672}, {"id": 673},
+          {"id": 674}, {"id": 675}, {"id": 676}, {"id": 677}, {"id": 678}, {"id": 679}, {"id": 680}, {"id": 681},
+          {"id": 682}, {"id": 683}, {"id": 684}, {"id": 685}, {"id": 686}, {"id": 687}, {"id": 688}, {"id": 689},
+          {"id": 690}, {"id": 691}, {"id": 692}, {"id": 693}, {"id": 694}, {"id": 695}, {"id": 696}, {"id": 697},
+          {"id": 698}, {"id": 699}, {"id": 700}, {"id": 701}, {"id": 702}, {"id": 703}, {"id": 704}, {"id": 705},
+          {"id": 706}, {"id": 707}, {"id": 708}, {"id": 709}, {"id": 710}, {"id": 711}, {"id": 712}, {"id": 713},
+          {"id": 714}, {"id": 715}, {"id": 716}, {"id": 717}, {"id": 718}, {"id": 719}, {"id": 720}, {"id": 721},
+          {"id": 722}, {"id": 723}, {"id": 724}, {"id": 725}, {"id": 726}, {"id": 727}, {"id": 728}, {"id": 729},
+          {"id": 730}, {"id": 731}, {"id": 732}, {"id": 733}, {"id": 734}, {"id": 735}, {"id": 736}, {"id": 737},
+          {"id": 738}, {"id": 739}, {"id": 740}, {"id": 741}, {"id": 742}, {"id": 743}, {"id": 744}, {"id": 745},
+          {"id": 746}, {"id": 747}, {"id": 748}, {"id": 749}, {"id": 750}, {"id": 751}, {"id": 752}, {"id": 753},
+          {"id": 754}, {"id": 755}, {"id": 756}, {"id": 757}, {"id": 758}, {"id": 759}, {"id": 760}, {"id": 761},
+          {"id": 762}, {"id": 763}, {"id": 764}, {"id": 765}, {"id": 766}, {"id": 767}, {"id": 768}, {"id": 769},
+          {"id": 770}, {"id": 771}, {"id": 772}, {"id": 773}, {"id": 774}, {"id": 775}, {"id": 776}, {"id": 777},
+          {"id": 778}, {"id": 779}, {"id": 780}, {"id": 781}, {"id": 782}, {"id": 783}, {"id": 784}, {"id": 785},
+          {"id": 786}, {"id": 787}, {"id": 788}, {"id": 789}, {"id": 790}, {"id": 791}, {"id": 792}, {"id": 793},
+          {"id": 794}, {"id": 795}, {"id": 796}, {"id": 797}, {"id": 798}, {"id": 799}, {"id": 800}, {"id": 801},
+          {"id": 802}, {"id": 803}, {"id": 804}, {"id": 805}, {"id": 806}, {"id": 807}, {"id": 808}, {"id": 809},
+          {"id": 810}, {"id": 811}, {"id": 812}, {"id": 813}, {"id": 814}, {"id": 815}, {"id": 816}, {"id": 817},
+          {"id": 818}, {"id": 819}, {"id": 820}, {"id": 821}, {"id": 822}, {"id": 823}, {"id": 824}, {"id": 825},
+          {"id": 826}, {"id": 827}, {"id": 828}, {"id": 829}, {"id": 830}, {"id": 831}, {"id": 832}, {"id": 833},
+          {"id": 834}, {"id": 835}, {"id": 836}, {"id": 837}, {"id": 838}, {"id": 839}, {"id": 840}, {"id": 841},
+          {"id": 842}, {"id": 843}, {"id": 844}, {"id": 845}, {"id": 846}, {"id": 847}, {"id": 848}, {"id": 849},
+          {"id": 850}, {"id": 851}, {"id": 852}, {"id": 853}, {"id": 854}, {"id": 855}, {"id": 856}, {"id": 857},
+          {"id": 858}, {"id": 859}, {"id": 860}, {"id": 861}, {"id": 862}, {"id": 863}, {"id": 864}, {"id": 865},
+          {"id": 866}, {"id": 867}, {"id": 868}, {"id": 869}, {"id": 870}, {"id": 871}, {"id": 872}, {"id": 873},
+          {"id": 874}, {"id": 875}, {"id": 876}, {"id": 877}, {"id": 878}, {"id": 879}, {"id": 880}, {"id": 881},
+          {"id": 882}, {"id": 883}, {"id": 884}, {"id": 885}, {"id": 886}, {"id": 887}, {"id": 888}, {"id": 889},
+          {"id": 890}, {"id": 891}, {"id": 892}, {"id": 893}, {"id": 894}, {"id": 895}, {"id": 896}, {"id": 897},
+          {"id": 898}, {"id": 899}, {"id": 900}, {"id": 901}, {"id": 902}, {"id": 903}, {"id": 904}, {"id": 905},
+          {"id": 906}, {"id": 907}, {"id": 908}, {"id": 909}, {"id": 910}, {"id": 911}, {"id": 912}, {"id": 913},
+          {"id": 914}, {"id": 915}, {"id": 916}, {"id": 917}, {"id": 918}, {"id": 919}, {"id": 920}, {"id": 921},
+          {"id": 922}, {"id": 923}, {"id": 924}, {"id": 925}, {"id": 926}, {"id": 927}, {"id": 928}, {"id": 929},
+          {"id": 930}, {"id": 931}, {"id": 932}, {"id": 933}, {"id": 934}, {"id": 935}, {"id": 936}, {"id": 937},
+          {"id": 938}, {"id": 939}, {"id": 940}, {"id": 941}, {"id": 942}, {"id": 943}, {"id": 944}, {"id": 945},
+          {"id": 946}, {"id": 947}, {"id": 948}, {"id": 949}, {"id": 950}, {"id": 951}, {"id": 952}, {"id": 953},
+          {"id": 954}, {"id": 955}, {"id": 956}, {"id": 957}, {"id": 958}, {"id": 959}, {"id": 960}, {"id": 961},
+          {"id": 962}, {"id": 963}, {"id": 964}, {"id": 965}, {"id": 966}, {"id": 967}, {"id": 968}, {"id": 969},
+          {"id": 970}, {"id": 971}, {"id": 972}, {"id": 973}, {"id": 974}, {"id": 975}, {"id": 976}, {"id": 977},
+          {"id": 978}, {"id": 979}, {"id": 980}, {"id": 981}, {"id": 982}, {"id": 983}, {"id": 984}, {"id": 985},
+          {"id": 986}, {"id": 987}, {"id": 988}, {"id": 989}, {"id": 990}, {"id": 991}, {"id": 992}, {"id": 993},
+          {"id": 994}, {"id": 995}, {"id": 996}, {"id": 997}, {"id": 998}, {"id": 999}, {"id": 1000}
+        ] }
+    },
+    {
+      "name": "limit_zero_returns_no_rows_and_the_count", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "select": "id", "limit": 0, "count": "exact"},
+      "want": {"status": 200, "rows": [], "count": 3}
+    },
+    {
+      "name": "single_select_returns_one_row", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "select": "id, title", "filters": [{"column": "id", "operator": "eq", "value": "1"}], "single": true},
+      "want": {"status": 200, "rows": [{"id": 1, "title": "Write the brief"}]}
+    },
+    {
+      "name": "error_single_select_of_no_row", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select", "kind": "singular-mismatch",
+      "request": {"table": "tasks", "select": "id", "filters": [{"column": "id", "operator": "eq", "value": "4"}], "single": true},
+      "want": {"status": 400, "slug": "storage-table-request-invalid"}
+    },
+    {
+      "name": "error_single_select_of_many_rows", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select", "kind": "singular-mismatch",
+      "request": {"table": "tasks", "select": "id", "single": true},
+      "want": {"status": 400, "slug": "storage-table-request-invalid"}
+    },
+    {
+      "name": "single_update_returns_one_row", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "update",
+      "request": {"table": "tasks", "values": {"status": "done"}, "filters": [{"column": "id", "operator": "eq", "value": "1"}], "select": "id, status", "single": true},
+      "want": {"status": 200, "rows": [{"id": 1, "status": "done"}]}
+    },
+    {
+      "name": "error_single_update_of_many_rows", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "update", "kind": "singular-mismatch",
+      "request": {"table": "tasks", "values": {"status": "done"}, "filters": [{"column": "status", "operator": "neq", "value": "done"}], "select": "id", "single": true},
+      "want": {"status": 400, "slug": "storage-table-request-invalid"}
+    },
+    {
+      "name": "insert_takes_identity_and_defaults", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "insert",
+      "request": {"table": "tasks", "rows": [{"project_id": 1, "owner_id": "7e570000-0000-4000-8000-0000000000b1", "title": "Order coffee", "created_at": "2026-10-07T09:00:00Z"}], "select": "*", "count": "exact"},
+      "want": { "status": 200, "count": 1, "rows": [
+          {"id": 7, "project_id": 1, "owner_id": "7e570000-0000-4000-8000-0000000000b1", "title": "Order coffee", "status": "open", "priority": null, "estimate": null, "due": null, "created_at": "2026-10-07T09:00:00+00:00"}
+        ] }
+    },
+    {
+      "name": "insert_keeps_every_digit_of_a_bigint", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "insert",
+      "request": {"table": "tasks", "rows": [{"project_id": 1, "owner_id": "7e570000-0000-4000-8000-0000000000b1", "title": "Count the chairs", "estimate": 9007199254740995}], "select": "estimate"},
+      "want": {"status": 200, "rows": [{"estimate": 9007199254740995}]}
+    },
+    {
+      "name": "insert_into_a_serial_key_continues_past_the_seed", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "insert",
+      "request": {"table": "notes", "rows": [{"task_id": 2, "body": "Venue holds 80", "attachment": "\\x01ff"}], "select": "id, body, attachment"},
+      "want": {"status": 200, "rows": [{"id": 4, "body": "Venue holds 80", "attachment": "\\x01ff"}]}
+    },
+    {
+      "name": "insert_without_select_returns_no_rows", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "insert",
+      "request": {"table": "notes", "rows": [{"task_id": 2, "body": "Deposit paid"}]},
+      "want": {"status": 200, "rows": []}
+    },
+    {
+      "name": "insert_with_default_to_null_false_gives_omitted_columns_their_default", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "insert",
+      "request": {"table": "tasks", "rows": [{"project_id": 1, "owner_id": "7e570000-0000-4000-8000-0000000000b1", "title": "Hire a band", "status": "doing"}, {"project_id": 1, "owner_id": "7e570000-0000-4000-8000-0000000000b1", "title": "Pick a date"}], "defaultToNull": false, "select": "title, status"},
+      "want": {"status": 200, "rows": [{"title": "Hire a band", "status": "doing"}, {"title": "Pick a date", "status": "open"}]}
+    },
+    {
+      "name": "error_insert_omitted_column_is_null_by_default", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "insert",
+      "request": {"table": "tasks", "rows": [{"project_id": 1, "owner_id": "7e570000-0000-4000-8000-0000000000b1", "title": "Hire a band", "status": "doing"}, {"project_id": 1, "owner_id": "7e570000-0000-4000-8000-0000000000b1", "title": "Pick a date"}]},
+      "want": {"status": 400, "slug": "storage-customer-sql-failed", "sqlState": "23502"}
+    },
+    {
+      "name": "upsert_merges_on_the_primary_key_and_keeps_columns_it_omits", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "upsert",
+      "request": {"table": "notes", "rows": [{"id": 1, "task_id": 1, "body": "Draft moved to the wiki"}], "select": "id, follow_up_task_id, body"},
+      "want": {"status": 200, "rows": [{"id": 1, "follow_up_task_id": 2, "body": "Draft moved to the wiki"}]}
+    },
+    {
+      "name": "upsert_inserts_a_new_key", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "upsert",
+      "request": {"table": "notes", "rows": [{"id": 9, "task_id": 2, "body": "Caterer booked"}], "select": "id, body"},
+      "want": {"status": 200, "rows": [{"id": 9, "body": "Caterer booked"}]}
+    },
+    {
+      "name": "upsert_ignores_duplicates_on_a_unique_key", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "upsert",
+      "request": {"table": "projects", "rows": [{"name": "Launch"}, {"name": "Hiring"}], "onConflict": ["name"], "ignoreDuplicates": true, "select": "id, name"},
+      "want": {"status": 200, "rows": [{"id": 5, "name": "Hiring"}]}
+    },
+    {
+      "name": "update_with_count", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "update",
+      "request": {"table": "tasks", "values": {"status": "done", "due": null}, "filters": [{"column": "project_id", "operator": "eq", "value": "1"}], "select": "id, status, due", "count": "exact"},
+      "want": {"status": 200, "rows": [{"id": 1, "status": "done", "due": null}, {"id": 2, "status": "done", "due": null}], "count": 2}
+    },
+    {
+      "name": "delete_returns_the_removed_rows", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "delete",
+      "request": {"table": "notes", "filters": [{"column": "id", "operator": "eq", "value": "2"}], "select": "id, body", "count": "exact"},
+      "want": {"status": 200, "rows": [{"id": 2, "body": "Ask Grace to review"}], "count": 1}
+    },
+    {
+      "name": "delete_cascades_to_referencing_rows", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "delete",
+      "request": {"table": "projects", "filters": [{"column": "id", "operator": "eq", "value": "2"}], "select": "id"},
+      "want": {"status": 200, "rows": [{"id": 2}]}
+    },
+    {
+      "name": "policy_hidden_update_changes_nothing", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "update",
+      "request": {"table": "tasks", "values": {"title": "Taken over"}, "filters": [{"column": "id", "operator": "eq", "value": "4"}], "select": "id", "count": "exact"},
+      "want": {"status": 200, "rows": [], "count": 0}
+    },
+    {
+      "name": "policy_hidden_delete_removes_nothing", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "delete",
+      "request": {"table": "tasks", "filters": [{"column": "id", "operator": "eq", "value": "4"}], "select": "id", "count": "exact"},
+      "want": {"status": 200, "rows": [], "count": 0}
+    },
+    {
+      "name": "error_insert_failing_with_check_is_refused", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "insert",
+      "request": {"table": "tasks", "rows": [{"project_id": 1, "owner_id": "7e570000-0000-4000-8000-0000000000b2", "title": "Not mine"}]},
+      "want": {"status": 403, "slug": "storage-customer-sql-permission-denied", "sqlState": "42501"}
+    },
+    {
+      "name": "error_update_failing_with_check_is_refused", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "update",
+      "request": {"table": "tasks", "values": {"owner_id": "7e570000-0000-4000-8000-0000000000b2"}, "filters": [{"column": "id", "operator": "eq", "value": "1"}]},
+      "want": {"status": 403, "slug": "storage-customer-sql-permission-denied", "sqlState": "42501"}
+    },
+    {
+      "name": "view_grant_reads", "member": "7e570000-0000-4000-8000-0000000000b1", "grant": "view", "operation": "select",
+      "request": {"table": "notes", "select": "id", "order": [{"column": "id"}]},
+      "want": {"status": 200, "rows": [{"id": 1}, {"id": 2}, {"id": 3}]}
+    },
+    {
+      "name": "error_view_grant_insert_is_refused", "member": "7e570000-0000-4000-8000-0000000000b1", "grant": "view", "operation": "insert",
+      "request": {"table": "notes", "rows": [{"task_id": 1, "body": "Read only"}]},
+      "want": {"status": 403, "slug": "storage-customer-sql-permission-denied", "sqlState": "42501"}
+    },
+    {
+      "name": "error_view_grant_delete_is_refused", "member": "7e570000-0000-4000-8000-0000000000b1", "grant": "view", "operation": "delete",
+      "request": {"table": "notes", "filters": [{"column": "id", "operator": "eq", "value": "1"}]},
+      "want": {"status": 403, "slug": "storage-customer-sql-permission-denied", "sqlState": "42501"}
+    },
+    {
+      "name": "select_a_view_reads_as_its_caller", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "open_tasks", "select": "*", "order": [{"column": "id"}]},
+      "want": {"status": 200, "rows": [
+          {"id": 1, "owner_id": "7e570000-0000-4000-8000-0000000000b1", "title": "Write the brief", "status": "open"},
+          {"id": 2, "owner_id": "7e570000-0000-4000-8000-0000000000b1", "title": "Book the venue", "status": "doing"}
+        ]}
+    },
+    {
+      "name": "select_a_view_reads_as_another_caller", "member": "7e570000-0000-4000-8000-0000000000b2", "operation": "select",
+      "request": {"table": "open_tasks", "select": "id, title", "filters": [{"column": "status", "operator": "eq", "value": "open"}], "order": [{"column": "id"}]},
+      "want": {"status": 200, "rows": [{"id": 4, "title": "Answer tickets"}, {"id": 5, "title": "Print badges"}]}
+    },
+    {
+      "name": "error_insert_into_a_view", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "insert", "kind": "unsupported",
+      "request": {"table": "open_tasks", "rows": [{"owner_id": "7e570000-0000-4000-8000-0000000000b1", "title": "Through the view"}]},
+      "want": {"status": 400, "slug": "storage-table-request-invalid"}
+    },
+    {
+      "name": "error_upsert_into_a_view", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "upsert", "kind": "unsupported",
+      "request": {"table": "open_tasks", "rows": [{"id": 1, "title": "Through the view"}]},
+      "want": {"status": 400, "slug": "storage-table-request-invalid"}
+    },
+    {
+      "name": "error_update_of_a_view", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "update", "kind": "unsupported",
+      "request": {"table": "open_tasks", "values": {"title": "Through the view"}, "filters": [{"column": "id", "operator": "eq", "value": "1"}]},
+      "want": {"status": 400, "slug": "storage-table-request-invalid"}
+    },
+    {
+      "name": "error_delete_from_a_view", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "delete", "kind": "unsupported",
+      "request": {"table": "open_tasks", "filters": [{"column": "id", "operator": "eq", "value": "1"}]},
+      "want": {"status": 400, "slug": "storage-table-request-invalid"}
+    },
+    {
+      "name": "select_audit_rows_a_trigger_wrote", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "before": [
+        {"operation": "insert", "request": {"table": "tasks", "rows": [{"project_id": 1, "owner_id": "7e570000-0000-4000-8000-0000000000b1", "title": "Draft the agenda"}]}},
+        {"operation": "update", "request": {"table": "tasks", "values": {"status": "doing"}, "filters": [{"column": "id", "operator": "eq", "value": "1"}]}}
+      ],
+      "request": {"table": "task_audit", "select": "id, task_id, operation", "order": [{"column": "id"}]},
+      "want": {"status": 200, "rows": [
+          {"id": 1, "task_id": 1, "operation": "INSERT"},
+          {"id": 2, "task_id": 2, "operation": "INSERT"},
+          {"id": 3, "task_id": 3, "operation": "INSERT"},
+          {"id": 7, "task_id": 7, "operation": "INSERT"},
+          {"id": 8, "task_id": 1, "operation": "UPDATE"}
+        ]}
+    },
+    {
+      "name": "error_insert_into_a_table_only_a_trigger_writes", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "insert",
+      "request": {"table": "task_audit", "rows": [{"task_id": 1, "owner_id": "7e570000-0000-4000-8000-0000000000b1", "operation": "INSERT"}]},
+      "want": {"status": 403, "slug": "storage-customer-sql-permission-denied", "sqlState": "42501"}
+    },
+    {
+      "name": "error_unique_violation", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "insert",
+      "request": {"table": "projects", "rows": [{"name": "Launch"}]},
+      "want": {"status": 400, "slug": "storage-customer-sql-failed", "sqlState": "23505"}
+    },
+    {
+      "name": "error_check_violation", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "insert",
+      "request": {"table": "tasks", "rows": [{"project_id": 1, "owner_id": "7e570000-0000-4000-8000-0000000000b1", "title": "Wait", "status": "blocked"}]},
+      "want": {"status": 400, "slug": "storage-customer-sql-failed", "sqlState": "23514"}
+    },
+    {
+      "name": "error_foreign_key_violation", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "delete",
+      "request": {"table": "tasks", "filters": [{"column": "id", "operator": "eq", "value": "1"}]},
+      "want": {"status": 400, "slug": "storage-customer-sql-failed", "sqlState": "23503"}
+    },
+    {
+      "name": "error_generated_always_identity_refuses_a_value", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "insert",
+      "request": {"table": "tasks", "rows": [{"id": 50, "project_id": 1, "owner_id": "7e570000-0000-4000-8000-0000000000b1", "title": "Pinned"}]},
+      "want": {"status": 400, "slug": "storage-customer-sql-failed", "sqlState": "428C9"}
+    },
+    {
+      "name": "error_invalid_enum_value", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "insert",
+      "request": {"table": "tasks", "rows": [{"project_id": 1, "owner_id": "7e570000-0000-4000-8000-0000000000b1", "title": "Rush", "priority": "urgent"}]},
+      "want": {"status": 400, "slug": "storage-customer-sql-failed", "sqlState": "22P02"}
+    },
+    {
+      "name": "error_filter_value_the_column_cannot_hold", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "filters": [{"column": "estimate", "operator": "eq", "value": "many"}]},
+      "want": {"status": 400, "slug": "storage-customer-sql-failed", "sqlState": "22P02"}
+    },
+    {
+      "name": "error_filter_value_a_boolean_cannot_hold", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "notes", "filters": [{"column": "pinned", "operator": "eq", "value": "maybe"}]},
+      "want": {"status": 400, "slug": "storage-customer-sql-failed", "sqlState": "22P02"}
+    },
+    {
+      "name": "error_is_true_on_a_column_that_is_not_boolean", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "filters": [{"column": "due", "operator": "is", "value": "true"}]},
+      "want": {"status": 400, "slug": "storage-customer-sql-failed", "sqlState": "42804"}
+    },
+    {
+      "name": "error_unknown_table", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select", "kind": "table-not-found",
+      "request": {"table": "invoices"},
+      "want": {"status": 400, "slug": "storage-table-not-found"}
+    },
+    {
+      "name": "error_insert_into_unknown_table", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "insert", "kind": "table-not-found",
+      "request": {"table": "invoices", "rows": [{"id": 1}]},
+      "want": {"status": 400, "slug": "storage-table-not-found"}
+    },
+    {
+      "name": "error_negative_limit", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select", "kind": "invalid",
+      "request": {"table": "tasks", "limit": -1},
+      "want": {"status": 400, "slug": "storage-table-request-invalid"}
+    },
+    {
+      "name": "error_alias_that_is_not_an_identifier", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select", "kind": "invalid",
+      "request": {"table": "tasks", "select": "a$b:title"},
+      "want": {"status": 400, "slug": "storage-table-request-invalid"}
+    },
+    {
+      "name": "error_too_many_order_terms", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select", "kind": "limit-exceeded",
+      "request": {"table": "tasks", "order": [{"column": "id"}, {"column": "id"}, {"column": "id"}, {"column": "id"}, {"column": "id"}, {"column": "id"}, {"column": "id"}, {"column": "id"}, {"column": "id"}, {"column": "id"}, {"column": "id"}, {"column": "id"}, {"column": "id"}, {"column": "id"}, {"column": "id"}, {"column": "id"}, {"column": "id"}]},
+      "want": {"status": 400, "slug": "storage-table-request-invalid"}
+    },
+    {
+      "name": "error_unknown_select_column", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select", "kind": "column-not-found",
+      "request": {"table": "tasks", "select": "id, colour"},
+      "want": {"status": 400, "slug": "storage-table-request-invalid"}
+    },
+    {
+      "name": "error_unknown_filter_column", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select", "kind": "column-not-found",
+      "request": {"table": "tasks", "filters": [{"column": "colour", "operator": "eq", "value": "red"}]},
+      "want": {"status": 400, "slug": "storage-table-request-invalid"}
+    },
+    {
+      "name": "error_unknown_order_column", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select", "kind": "column-not-found",
+      "request": {"table": "tasks", "order": [{"column": "colour"}]},
+      "want": {"status": 400, "slug": "storage-table-request-invalid"}
+    },
+    {
+      "name": "error_embed_filter_without_the_embed", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select", "kind": "embed-path-not-found",
+      "request": {"table": "tasks", "select": "id", "filters": [{"column": "projects.name", "operator": "eq", "value": "Launch"}]},
+      "want": {"status": 400, "slug": "storage-table-request-invalid"}
+    },
+    {
+      "name": "error_embed_without_a_foreign_key", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select", "kind": "relationship-not-found",
+      "request": {"table": "projects", "select": "name, notes(body)"},
+      "want": {"status": 400, "slug": "storage-table-request-invalid"}
+    },
+    {
+      "name": "error_embed_over_two_foreign_keys", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select", "kind": "relationship-ambiguous",
+      "request": {"table": "tasks", "select": "id, notes(body)"},
+      "want": {"status": 400, "slug": "storage-table-request-invalid"}
+    },
+    {
+      "name": "error_update_that_sets_no_column", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "update", "kind": "invalid-body",
+      "request": {"table": "tasks", "values": {}, "filters": [{"column": "id", "operator": "eq", "value": "1"}]},
+      "want": {"status": 400, "slug": "storage-table-request-invalid"}
+    },
+    {
+      "name": "error_insert_of_an_unknown_column", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "insert", "kind": "payload-column-not-found",
+      "request": {"table": "tasks", "rows": [{"project_id": 1, "owner_id": "7e570000-0000-4000-8000-0000000000b1", "title": "Paint", "colour": "red"}]},
+      "want": {"status": 400, "slug": "storage-table-request-invalid"}
+    },
+    {
+      "name": "error_update_without_a_filter", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "update", "kind": "filter-required",
+      "request": {"table": "tasks", "values": {"status": "done"}, "filters": []},
+      "want": {"status": 400, "slug": "storage-table-request-invalid"}
+    },
+    {
+      "name": "error_delete_without_a_filter", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "delete", "kind": "filter-required",
+      "request": {"table": "notes", "filters": []},
+      "want": {"status": 400, "slug": "storage-table-request-invalid"}
+    },
+    {
+      "name": "error_select_grammar", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "select": "id,,title"},
+      "want": {"status": 400, "slug": "storage-table-request-invalid"}
+    },
+    {
+      "name": "error_select_cast", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "select": "title::text"},
+      "want": {"status": 400, "slug": "storage-table-request-invalid"}
+    },
+    {
+      "name": "error_select_spread", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "select": "id, ...projects(name)"},
+      "want": {"status": 400, "slug": "storage-table-request-invalid"}
+    },
+    {
+      "name": "error_count_other_than_exact", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "count": "planned"},
+      "want": {"status": 400, "slug": "storage-table-request-invalid"}
+    },
+    {
+      "name": "error_in_with_a_value", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "filters": [{"column": "status", "operator": "in", "value": "open"}]},
+      "want": {"status": 400, "slug": "storage-table-request-invalid"}
+    },
+    {
+      "name": "error_is_with_another_value", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "filters": [{"column": "due", "operator": "is", "value": "maybe"}]},
+      "want": {"status": 400, "slug": "storage-table-request-invalid"}
+    },
+    {
+      "name": "error_filter_without_an_operator", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "filters": [{"column": "status", "value": "open"}]},
+      "want": {"status": 400, "slug": "storage-table-request-invalid"}
+    },
+    {
+      "name": "error_unknown_request_field", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"table": "tasks", "where": [{"column": "status", "operator": "eq", "value": "open"}]},
+      "want": {"status": 400, "slug": "invalid-input"}
+    },
+    {
+      "name": "error_request_without_a_table", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "request": {"select": "id"},
+      "want": {"status": 400, "slug": "validation-error"}
+    },
+    {
+      "name": "call_counts_ada_s_tasks", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "call",
+      "request": {"name": "task_count"},
+      "want": {"status": 200, "data": 3}
+    },
+    {
+      "name": "call_counts_grace_s_tasks", "member": "7e570000-0000-4000-8000-0000000000b2", "operation": "call",
+      "request": {"name": "task_count", "args": {}},
+      "want": {"status": 200, "data": 2}
+    },
+    {
+      "name": "call_of_a_stable_function_with_a_view_grant", "member": "7e570000-0000-4000-8000-0000000000b2", "grant": "view", "operation": "call",
+      "request": {"name": "task_count"},
+      "want": {"status": 200, "data": 2}
+    },
+    {
+      "name": "call_of_a_set_takes_the_default", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "call",
+      "request": {"name": "my_tasks"},
+      "want": {"status": 200, "data": [
+          {"id": 1, "project_id": 1, "owner_id": "7e570000-0000-4000-8000-0000000000b1", "title": "Write the brief", "status": "open", "priority": "high", "estimate": 3, "due": "2026-11-10", "created_at": "2026-10-01T09:00:00+00:00"},
+          {"id": 2, "project_id": 1, "owner_id": "7e570000-0000-4000-8000-0000000000b1", "title": "Book the venue", "status": "doing", "priority": "low", "estimate": 9007199254740993, "due": null, "created_at": "2026-10-02T09:00:00+00:00"},
+          {"id": 3, "project_id": 2, "owner_id": "7e570000-0000-4000-8000-0000000000b1", "title": "Call Acme", "status": "done", "priority": null, "estimate": null, "due": "2026-11-03", "created_at": "2026-10-03T09:00:00+00:00"}
+        ]}
+    },
+    {
+      "name": "call_of_a_set_with_an_explicit_arg", "member": "7e570000-0000-4000-8000-0000000000b2", "operation": "call",
+      "request": {"name": "my_tasks", "args": {"p_limit": 1}},
+      "want": {"status": 200, "data": [
+          {"id": 4, "project_id": 3, "owner_id": "7e570000-0000-4000-8000-0000000000b2", "title": "Answer tickets", "status": "open", "priority": "high", "estimate": 5, "due": "2026-11-05", "created_at": "2026-10-04T09:00:00+00:00"}
+        ]}
+    },
+    {
+      "name": "call_of_a_set_that_returns_no_row", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "call",
+      "request": {"name": "my_tasks", "args": {"p_limit": 0}},
+      "want": {"status": 200, "data": []}
+    },
+    {
+      "name": "call_of_a_set_of_a_view_s_rows_reads_as_its_caller", "member": "7e570000-0000-4000-8000-0000000000b2", "operation": "call",
+      "request": {"name": "my_open_tasks"},
+      "want": {"status": 200, "data": [
+          {"id": 4, "owner_id": "7e570000-0000-4000-8000-0000000000b2", "title": "Answer tickets", "status": "open"},
+          {"id": 5, "owner_id": "7e570000-0000-4000-8000-0000000000b2", "title": "Print badges", "status": "open"}
+        ]}
+    },
+    {
+      "name": "call_of_a_function_whose_name_and_arg_need_quoting", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "call",
+      "request": {"name": "TaskTotal", "args": {"left": 2}},
+      "want": {"status": 200, "data": 2}
+    },
+    {
+      "name": "error_call_of_a_set_past_1000_rows", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "call",
+      "request": {"name": "numbers", "args": {"p_count": 1001}},
+      "want": {"status": 400, "slug": "storage-function-result-too-large"}
+    },
+    {
+      "name": "call_of_a_volatile_function_adds_a_task", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "call",
+      "request": {"name": "add_task", "args": {"p_title": "Draft the agenda"}},
+      "want": {"status": 200, "data": 7}
+    },
+    {
+      "name": "select_audit_row_a_called_function_s_trigger_wrote", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "before": [
+        {"operation": "call", "request": {"name": "add_task", "args": {"p_title": "Draft the agenda"}}}
+      ],
+      "request": {"table": "task_audit", "select": "id, task_id, operation", "order": [{"column": "id"}]},
+      "want": {"status": 200, "rows": [
+          {"id": 1, "task_id": 1, "operation": "INSERT"},
+          {"id": 2, "task_id": 2, "operation": "INSERT"},
+          {"id": 3, "task_id": 3, "operation": "INSERT"},
+          {"id": 7, "task_id": 7, "operation": "INSERT"}
+        ]}
+    },
+    {
+      "name": "call_of_a_void_function_answers_null_data", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "call",
+      "request": {"name": "rename_task", "args": {"p_id": 1, "p_title": "Rewrite the brief"}},
+      "want": {"status": 200, "data": null}
+    },
+    {
+      "name": "select_title_a_void_function_changed", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "select",
+      "before": [
+        {"operation": "call", "request": {"name": "rename_task", "args": {"p_id": 1, "p_title": "Rewrite the brief"}}}
+      ],
+      "request": {"table": "tasks", "select": "id, title", "filters": [{"column": "id", "operator": "eq", "value": "1"}]},
+      "want": {"status": 200, "rows": [{"id": 1, "title": "Rewrite the brief"}]}
+    },
+    {
+      "name": "call_of_a_single_row_of_out_columns_answers_an_object", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "call",
+      "request": {"name": "task_summary"},
+      "want": {"status": 200, "data": {"total": 3, "largest_estimate": 9007199254740993}}
+    },
+    {
+      "name": "error_call_of_a_volatile_function_with_a_view_grant", "member": "7e570000-0000-4000-8000-0000000000b1", "grant": "view", "operation": "call",
+      "request": {"name": "add_task", "args": {"p_title": "Draft the agenda"}},
+      "want": {"status": 403, "slug": "storage-database-edit-required"}
+    },
+    {
+      "name": "error_call_of_a_stable_function_that_writes", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "call",
+      "request": {"name": "sneaky_stable"},
+      "want": {"status": 400, "slug": "storage-customer-sql-failed", "sqlState": "25006"}
+    },
+    {
+      "name": "error_call_of_a_name_that_starts_with_an_underscore", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "call",
+      "request": {"name": "_hidden"},
+      "want": {"status": 404, "slug": "storage-function-not-found"}
+    },
+    {
+      "name": "error_call_of_a_trigger_function", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "call",
+      "request": {"name": "task_audit_write"},
+      "want": {"status": 404, "slug": "storage-function-not-found"}
+    },
+    {
+      "name": "error_call_of_a_platform_function", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "call",
+      "request": {"name": "oaiz_private.oaiz_subject"},
+      "want": {"status": 404, "slug": "storage-function-not-found"}
+    },
+    {
+      "name": "error_call_of_a_catalogue_function", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "call",
+      "request": {"name": "pg_sleep", "args": {"seconds": 1}},
+      "want": {"status": 404, "slug": "storage-function-not-found"}
+    },
+    {
+      "name": "error_call_of_an_unknown_function", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "call",
+      "request": {"name": "task_total"},
+      "want": {"status": 404, "slug": "storage-function-not-found"}
+    },
+    {
+      "name": "error_call_with_an_unknown_arg", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "call",
+      "request": {"name": "task_count", "args": {"p_owner": "7e570000-0000-4000-8000-0000000000b2"}},
+      "want": {"status": 400, "slug": "storage-function-call-invalid"}
+    },
+    {
+      "name": "error_call_without_a_required_arg", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "call",
+      "request": {"name": "add_task"},
+      "want": {"status": 400, "slug": "storage-function-call-invalid"}
+    },
+    {
+      "name": "error_call_with_an_arg_of_the_wrong_type", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "call",
+      "request": {"name": "my_tasks", "args": {"p_limit": "many"}},
+      "want": {"status": 400, "slug": "storage-customer-sql-failed", "sqlState": "22P02"}
+    },
+    {
+      "name": "error_call_with_an_unknown_request_field", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "call",
+      "request": {"name": "task_count", "schema": "oaiz_private"},
+      "want": {"status": 400, "slug": "invalid-input"}
+    },
+    {
+      "name": "error_call_without_a_name", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "call",
+      "request": {"args": {}},
+      "want": {"status": 400, "slug": "validation-error"}
+    },
+    {
+      "name": "error_call_of_a_name_longer_than_an_identifier", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "call",
+      "request": {"name": "tttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt"},
+      "want": {"status": 400, "slug": "storage-function-call-invalid"}
+    },
+    {
+      "name": "error_call_with_more_than_100_args", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "call",
+      "request": {"name": "task_count", "args": {"p_0": 0, "p_1": 1, "p_2": 2, "p_3": 3, "p_4": 4, "p_5": 5, "p_6": 6, "p_7": 7, "p_8": 8, "p_9": 9, "p_10": 10, "p_11": 11, "p_12": 12, "p_13": 13, "p_14": 14, "p_15": 15, "p_16": 16, "p_17": 17, "p_18": 18, "p_19": 19, "p_20": 20, "p_21": 21, "p_22": 22, "p_23": 23, "p_24": 24, "p_25": 25, "p_26": 26, "p_27": 27, "p_28": 28, "p_29": 29, "p_30": 30, "p_31": 31, "p_32": 32, "p_33": 33, "p_34": 34, "p_35": 35, "p_36": 36, "p_37": 37, "p_38": 38, "p_39": 39, "p_40": 40, "p_41": 41, "p_42": 42, "p_43": 43, "p_44": 44, "p_45": 45, "p_46": 46, "p_47": 47, "p_48": 48, "p_49": 49, "p_50": 50, "p_51": 51, "p_52": 52, "p_53": 53, "p_54": 54, "p_55": 55, "p_56": 56, "p_57": 57, "p_58": 58, "p_59": 59, "p_60": 60, "p_61": 61, "p_62": 62, "p_63": 63, "p_64": 64, "p_65": 65, "p_66": 66, "p_67": 67, "p_68": 68, "p_69": 69, "p_70": 70, "p_71": 71, "p_72": 72, "p_73": 73, "p_74": 74, "p_75": 75, "p_76": 76, "p_77": 77, "p_78": 78, "p_79": 79, "p_80": 80, "p_81": 81, "p_82": 82, "p_83": 83, "p_84": 84, "p_85": 85, "p_86": 86, "p_87": 87, "p_88": 88, "p_89": 89, "p_90": 90, "p_91": 91, "p_92": 92, "p_93": 93, "p_94": 94, "p_95": 95, "p_96": 96, "p_97": 97, "p_98": 98, "p_99": 99, "p_100": 100}},
+      "want": {"status": 400, "slug": "storage-function-call-invalid"}
+    },
+    {
+      "name": "error_call_with_args_that_are_an_array", "member": "7e570000-0000-4000-8000-0000000000b1", "operation": "call",
+      "request": {"name": "task_count", "args": []},
+      "want": {"status": 400, "slug": "invalid-input"}
+    },
+    {
+      "name": "call_with_null_args_passes_no_argument", "member": "7e570000-0000-4000-8000-0000000000b2", "grant": "view", "operation": "call",
+      "request": {"name": "task_count", "args": null},
+      "want": {"status": 200, "data": 2}
+    }
+  ]
+}

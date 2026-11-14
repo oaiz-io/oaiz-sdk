@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Report a vulnerability
+    url: https://github.com/oaiz-io/oaiz-sdk/blob/main/SECURITY.md
+    about: Email security@oaiz.io instead of opening an issue.

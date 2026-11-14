@@ -1,0 +1,5 @@
+# Generated from the OAIZ API; collapsed in diffs and left out of language statistics.
+sdk/publish/src/apis/** linguist-generated
+sdk/publish/src/models/** linguist-generated
+sdk/publish/src/client.ts linguist-generated
+sdk/publish/src/errors.ts linguist-generated

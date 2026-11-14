@@ -1,0 +1,9 @@
+{
+  "extends": "../tsconfig.testmode.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "src/.tsc"
+  },
+  "include": ["src/app/testmode/index.ts"],
+  "exclude": []
+}

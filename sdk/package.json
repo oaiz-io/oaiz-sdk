@@ -1,0 +1,39 @@
+{
+  "name": "oaiz-sdk-build",
+  "private": true,
+  "packageManager": "pnpm@12.1.0",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "peerDependencies": {
+    "@electric-sql/pglite": "^0.5.15",
+    "@electric-sql/pglite-pgvector": "^0.0.16",
+    "vite": "^8.3.4"
+  },
+  "peerDependenciesMeta": {
+    "@electric-sql/pglite": {
+      "optional": true
+    },
+    "@electric-sql/pglite-pgvector": {
+      "optional": true
+    },
+    "vite": {
+      "optional": true
+    }
+  },
+  "scripts": {
+    "build": "cd publish && tsdown --log-level warn",
+    "check": "tsc -p publish/tsconfig.json --noEmit && tsc -p publish/tsconfig.testmode.json --noEmit",
+    "test": "vitest run --config publish/vitest.config.mjs && node --test publish/smoke.test.mjs publish/readme.test.mjs",
+    "pack": "node publish/pack.mjs oaiz-sdk-0.1.4130.tgz package/package.json=publish.json package/README.md=README.md package/LICENSE=LICENSE package/dist=publish/dist"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "0.5.15",
+    "@electric-sql/pglite-pgvector": "0.0.16",
+    "@types/node": "^26.0.0",
+    "tsdown": "0.23.5",
+    "typescript": "7.0.2",
+    "vite": "8.3.5",
+    "vitest": "5.0.5"
+  }
+}

@@ -1,0 +1,40 @@
+name: Bug report
+description: Something in @oaiz/sdk or @oaiz/app-kit does not work as documented.
+labels: [bug]
+body:
+  - type: input
+    id: package
+    attributes:
+      label: Package and version
+      placeholder: "@oaiz/sdk 0.1.0"
+    validations:
+      required: true
+  - type: input
+    id: runtime
+    attributes:
+      label: Runtime
+      description: The browser or Node.js version your code runs in.
+      placeholder: "Chrome 140, or Node.js 24.4"
+    validations:
+      required: true
+  - type: textarea
+    id: ran
+    attributes:
+      label: What you ran
+      description: The smallest code that shows the problem. Leave out keys and tokens.
+      render: ts
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+  - type: textarea
+    id: happened
+    attributes:
+      label: What happened
+      description: Include `error.code` and `error.message` when a call returned an error.
+    validations:
+      required: true

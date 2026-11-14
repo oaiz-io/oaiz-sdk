@@ -1,0 +1,23 @@
+name: Feature request
+description: Something you want @oaiz/sdk or @oaiz/app-kit to do.
+labels: [enhancement]
+body:
+  - type: input
+    id: package
+    attributes:
+      label: Package
+      placeholder: "@oaiz/sdk"
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What you are trying to do
+      description: The task, and what stops you today.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What would help
+      description: The call, option or component you have in mind, if any.

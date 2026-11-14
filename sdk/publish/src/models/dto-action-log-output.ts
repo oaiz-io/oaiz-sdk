@@ -1,0 +1,36 @@
+export interface DtoActionLogOutput {
+  actionExecutionLogUuid?: string;
+  actionType?: string;
+  cachedInputTokens?: number;
+  completedAt?: string;
+  correlationId?: string;
+  errorCode?: string;
+  inputTokens?: number;
+  integrationName?: string;
+  kind?: string;
+  latencyMs?: number;
+  logLevel?: string;
+  message: string;
+  model?: string;
+  operationId?: string;
+  outputTokens?: number;
+  payloadContentType?: string;
+  payloadJson?: unknown;
+  payloadTruncated?: boolean;
+  phase?: string;
+  provider?: string;
+  requestId?: string;
+  requestSize?: number;
+  responseSize?: number;
+  sequence?: number;
+  source?: string;
+  startedAt?: string;
+  status?: string;
+  thinkingTokens?: number;
+  time: string;
+  toolName?: string;
+  toolType?: string;
+  unitType?: string;
+  units?: number;
+  uuid?: string;
+}
