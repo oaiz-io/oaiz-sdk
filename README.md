@@ -13,6 +13,7 @@ npm install @oaiz/sdk
 | Folder | Package |
 | --- | --- |
 | [`sdk/`](sdk/) | [`@oaiz/sdk`](https://www.npmjs.com/package/@oaiz/sdk), the TypeScript client. |
+| [`app-kit/`](app-kit/) | [`@oaiz/app-kit`](https://www.npmjs.com/package/@oaiz/app-kit), components, hooks and a theme for apps built on OAIZ. You copy the source into your app. |
 
 > **Not stable yet.** The packages are versioned `0.x`. A release can change the API, so pin the
 > exact version: `npm install --save-exact @oaiz/sdk`.

@@ -1,0 +1,20 @@
+@layer base {
+  ::-webkit-scrollbar {
+    width: 0.3125rem;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    /* No matching radius token; the narrow thumb should remain fully round. */
+    border-radius: calc(infinity * 1px);
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-border) transparent;
+  }
+}

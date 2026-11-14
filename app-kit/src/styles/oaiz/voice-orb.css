@@ -1,0 +1,39 @@
+@layer utilities {
+  /* Live-voice Drift orb. The animation frame writes --voice-body on the svg;
+     each spot swells from its own centre and the mesh sways while speaking. */
+  .voice-orb-mesh {
+    transform-box: view-box;
+    transform-origin: 100px 100px;
+  }
+
+  .voice-orb-spot {
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  [data-speaking='true'] .voice-orb-mesh {
+    animation: voice-orb-sway 1.6s ease-in-out infinite;
+  }
+
+  @keyframes voice-orb-sway {
+    0%,
+    100% {
+      rotate: -6deg;
+    }
+    50% {
+      rotate: 6deg;
+    }
+  }
+
+  @keyframes voice-orb-speaking-fade {
+    50% {
+      opacity: 0.8;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-speaking='true'] .voice-orb-mesh {
+      animation: voice-orb-speaking-fade 1.2s ease-in-out infinite;
+    }
+  }
+}

@@ -1,0 +1,952 @@
+/* ============================================================================
+   OAIZ DESIGN TOKENS — single source of truth
+
+   Every colour, radius, font, motion, elevation and layout token, plus the
+   base/utility layers shared by the OAIZ web apps. Every stylesheet that needs
+   a token imports this file, so a token is defined once and cannot drift
+   between them.
+
+   Colour formats: OKLCH for product shades; fixed HSL/hex for brand marks. Three tiers: primitive -> semantic -> component.
+   Dark mode is class-based (`.dark`), never the OS preference.
+
+   Contrast: values here are checked against WCAG AA, and the exemptions are
+   commented inline with their reasoning. The design tokens story renders this
+   file live with a measured ratio per token — change a colour and check that
+   story before shipping it.
+   ============================================================================ */
+
+@import './scrollbars.css';
+@import './voice-orb.css';
+
+/* The application controls dark mode with the `dark` class. Do not use the
+   operating system color preference for `dark:` utilities. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Restore pre-4.3.3 font stack (Tailwind 4.3.3 PR #20318 replaced
+   system-ui with explicit platform fonts, changing rendering everywhere). */
+@theme {
+  --font-sans:
+    ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    'Segoe UI Symbol', 'Noto Color Emoji';
+  --font-inter:
+    'Inter Variable', 'Inter', ui-sans-serif, system-ui, sans-serif,
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+
+  /* Compact status labels. */
+  --text-2xs: 0.625rem;
+  --text-2xs--line-height: 1.4;
+
+  /* Responsive Breakpoints */
+  --breakpoint-mobile: 40rem; /* 640px: single column / mobile drawer */
+  --breakpoint-half: 56.25rem; /* 900px: half page / split screen */
+  --breakpoint-normal: 75rem; /* 1200px: standard desktop */
+  --breakpoint-ultrawide: 96rem; /* 1536px: ultrawide monitors */
+
+  /* Tailwind's own sm/md/lg/xl/2xl are cleared. Carrying both vocabularies is
+     what let `--breakpoint-xl` quietly mean 1200px here against Tailwind's
+     1280px, and it split every responsive decision across two ramps that
+     describe different layouts. The product tiers above are the only ones. */
+  --breakpoint-sm: initial;
+  --breakpoint-md: initial;
+  --breakpoint-lg: initial;
+  --breakpoint-xl: initial;
+  --breakpoint-2xl: initial;
+
+  /* Border Radius. Three steps plus `rounded-full`; --radius-md is the base
+     and the other two derive from it, so retuning the corner rounding is a
+     one-line change here. `--radius-full` is deliberately absent: Tailwind's
+     own `calc(infinity * 1px)` rounds correctly at any element size, which a
+     fixed pixel value does not.
+
+       sm  6px  chips, inline code, small tags
+       md  8px  the default — buttons, inputs, cards, menus
+       lg 12px  panels, dialogs, canvas nodes
+
+     Tailwind's other radius keys are cleared so `rounded`, `rounded-xs`,
+     `rounded-xl` and the rest cannot silently reintroduce a fourth step. Note
+     these are not Tailwind's values: the scale is shifted up one notch from its
+     4/6/8. A genuine one-off corner still has `rounded-[…]`. */
+  --radius-md: 0.5rem;
+  --radius-sm: calc(var(--radius-md) - 0.125rem);
+  --radius-lg: calc(var(--radius-md) + 0.25rem);
+  --radius: initial;
+  --radius-xs: initial;
+  --radius-xl: initial;
+  --radius-2xl: initial;
+  --radius-3xl: initial;
+  --radius-4xl: initial;
+}
+
+/* ============================================================================
+   PRIMITIVE COLOR SCALE
+
+   Fixed OKLCH shades shared by both themes
+   Named for WHAT they are (color + shade)
+   ============================================================================ */
+
+:root {
+  /* ============================================================================
+     5-STEP OKLCH PRIMITIVE PALETTE
+
+     Shared step lightness; colored families share step chroma.
+     Each family keeps a constant hue; zinc uses neutral chroma:
+       Step 1: Surface / Tint (L=0.965, subtle background)
+       Step 2: Muted / Hover (L=0.890, hover state / secondary surface)
+       Step 3: Border / Focus (L=0.620)
+       Step 4: Solid / Action (L=0.480)
+       Step 5: High-Contrast Text (L=0.340)
+     ============================================================================ */
+  --palette-white: oklch(1 0 0);
+
+  --palette-zinc-1: oklch(0.965 0.001 260);
+  --palette-zinc-2: oklch(0.89 0.003 260);
+  --palette-zinc-3: oklch(0.62 0.007 260);
+  --palette-zinc-4: oklch(0.48 0.01 260);
+  --palette-zinc-5: oklch(0.34 0.005 260);
+
+  --palette-blue-1: oklch(0.965 0.015 255);
+  --palette-blue-2: oklch(0.89 0.045 255);
+  --palette-blue-3: oklch(0.62 0.115 255);
+  --palette-blue-4: oklch(0.48 0.095 255);
+  --palette-blue-5: oklch(0.34 0.055 255);
+
+  --palette-purple-1: oklch(0.965 0.015 295);
+  --palette-purple-2: oklch(0.89 0.045 295);
+  --palette-purple-3: oklch(0.62 0.115 295);
+  --palette-purple-4: oklch(0.48 0.095 295);
+  --palette-purple-5: oklch(0.34 0.055 295);
+
+  --palette-green-1: oklch(0.965 0.015 145);
+  --palette-green-2: oklch(0.89 0.045 145);
+  --palette-green-3: oklch(0.62 0.115 145);
+  --palette-green-4: oklch(0.48 0.095 145);
+  --palette-green-5: oklch(0.34 0.055 145);
+
+  --palette-red-1: oklch(0.965 0.015 27);
+  --palette-red-2: oklch(0.89 0.045 27);
+  --palette-red-3: oklch(0.62 0.115 27);
+  --palette-red-4: oklch(0.48 0.095 27);
+  --palette-red-5: oklch(0.34 0.055 27);
+
+  --palette-amber-1: oklch(0.965 0.015 85);
+  --palette-amber-2: oklch(0.89 0.045 85);
+  --palette-amber-3: oklch(0.62 0.115 85);
+  --palette-amber-4: oklch(0.48 0.095 85);
+  --palette-amber-5: oklch(0.34 0.055 85);
+
+  --palette-orange-1: oklch(0.965 0.015 50);
+  --palette-orange-2: oklch(0.89 0.045 50);
+  --palette-orange-3: oklch(0.62 0.115 50);
+  --palette-orange-4: oklch(0.48 0.095 50);
+  --palette-orange-5: oklch(0.34 0.055 50);
+
+  /* Semantic role mappings (light theme) */
+  /* Neutral roles share anchors; interaction surfaces derive from the scale. */
+  --role-background: var(--palette-white);
+  --role-foreground: var(--palette-zinc-5);
+  --role-primary: var(--palette-zinc-5);
+  --role-primary-foreground: var(--palette-zinc-1);
+  --role-secondary: color-mix(
+    in oklch,
+    var(--palette-zinc-1) 80%,
+    var(--palette-zinc-2)
+  );
+  --role-muted-foreground: var(--palette-zinc-4);
+  --role-text-shimmer-base: var(--role-foreground);
+  --role-text-shimmer-highlight: color-mix(
+    in oklch,
+    var(--role-muted-foreground) 92%,
+    var(--palette-white)
+  );
+  --role-border: color-mix(
+    in oklch,
+    var(--palette-zinc-1) 70%,
+    var(--palette-zinc-3)
+  );
+  --role-input-fill: var(--role-secondary);
+  --role-input-fill-hover: color-mix(
+    in oklch,
+    var(--palette-zinc-1) 55%,
+    var(--palette-zinc-2)
+  );
+  --role-surface-hover: color-mix(
+    in oklab,
+    var(--palette-amber-1) 70%,
+    var(--palette-zinc-2)
+  );
+  --role-sidebar: var(--role-background);
+  --role-sidebar-foreground: var(--role-muted-foreground);
+  --role-sidebar-primary: var(--role-primary);
+  --role-sidebar-primary-foreground: var(--role-primary-foreground);
+  --role-sidebar-accent: var(--role-secondary);
+  --role-sidebar-accent-foreground: var(--role-foreground);
+  --role-sidebar-border: var(--role-border);
+  --role-sidebar-ring: var(--role-muted-foreground);
+  --role-sidebar-selected: var(--role-surface-hover);
+  --role-sidebar-selected-pressed: color-mix(
+    in oklab,
+    var(--role-surface-hover) 70%,
+    var(--palette-zinc-2)
+  );
+  --role-nav-rail: color-mix(
+    in oklab,
+    var(--palette-zinc-1) 80%,
+    var(--palette-amber-1)
+  );
+  --role-library-preview: var(--role-nav-rail);
+
+  /* Status pills sit between pale feedback surfaces and solid actions. */
+  --role-badge-success: color-mix(
+    in oklch,
+    var(--palette-green-2) 75%,
+    var(--palette-green-3)
+  );
+  --role-badge-success-foreground: var(--palette-green-5);
+  --role-badge-warning: color-mix(
+    in oklch,
+    var(--palette-amber-2) 75%,
+    var(--palette-amber-3)
+  );
+  --role-badge-warning-foreground: var(--palette-amber-5);
+  --role-badge-neutral: color-mix(
+    in oklch,
+    var(--palette-zinc-2) 75%,
+    var(--palette-zinc-3)
+  );
+  --role-badge-neutral-foreground: var(--palette-zinc-5);
+
+  /* Soft feedback pairs reverse with the theme; solid pairs retain light ink. */
+  --role-info-bg: var(--palette-blue-1);
+  --role-info-text: var(--palette-blue-5);
+  --role-success-bg-subtle: var(--palette-green-1);
+  --role-success-text: var(--palette-green-5);
+  --role-destructive-bg-subtle: var(--palette-red-1);
+  --role-destructive-text: var(--palette-red-4);
+  --role-warning-bg-subtle: var(--palette-amber-1);
+  --role-warning-text: var(--palette-amber-5);
+  --role-knowledge-bg: var(--palette-amber-1);
+  --role-knowledge-text: var(--palette-amber-5);
+  --role-recording: var(--palette-red-5);
+  --role-version-compare: var(--palette-orange-5);
+
+  /* Parser roles share four inks, independent of feedback semantics. */
+  --role-code-key-text: var(--palette-red-4);
+  --role-code-string-text: var(--palette-green-4);
+  --role-code-number-text: var(--role-code-key-text);
+  --role-code-boolean-text: var(--role-code-key-text);
+  --role-code-null-text: var(--palette-purple-4);
+  --role-code-punctuation-text: var(--palette-blue-4);
+
+  /* Brand marks keep their fixed physical colors. */
+  --role-brand-ocean: hsl(208 100% 45%);
+  --role-logo-yellow: hsl(47 100% 51%);
+  --role-logo-petal: #d1529d;
+
+  /* The flower loading mark keeps its artwork colors in both themes. */
+  --role-orb-blue: #308aea;
+  --role-orb-lime: #9fdf40;
+  --role-orb-green: #75bf0c;
+  --role-orb-lime-bright: #9ae530;
+  --role-orb-gold: #ebc550;
+  --role-orb-blue-muted: #6193b3;
+  --role-orb-cream: #f3d588;
+  --role-orb-red: #ea3030;
+  --role-orb-orange: #ea7730;
+  --role-orb-amber: #eab830;
+  --role-orb-center-light: #fff471;
+  --role-orb-center: #ffeb00;
+
+  /* Motion Primitives — the raw millisecond scale the semantic
+     `--transition-duration-*` tokens below are built from. */
+  --duration-150: 150ms;
+  --duration-200: 200ms;
+  --duration-300: 300ms;
+  --duration-350: 350ms;
+  --duration-500: 500ms;
+
+  /* Elevation tint (Light Mode)
+
+     Shadow *geometry* lives in the `@theme` block below and is identical in
+     both themes; only the ink changes. Splitting them this way is what lets a
+     shadow respond to `.dark` at all: an `@theme` value is baked into the
+     utility at build time, so `.dark { --shadow-md: ... }` would never be
+     read. Indirecting through a colour keeps the utility theme-reactive and
+     keeps Tailwind's `--tw-shadow-color` hook intact, so `shadow-primary/20`
+     and friends still tint the shadow. */
+  --shadow-tint-weak: rgb(0 0 0 / 0.05);
+  --shadow-tint: rgb(0 0 0 / 0.1);
+  --shadow-tint-strong: rgb(0 0 0 / 0.25);
+
+  /* Layout Dimensions */
+  --layout-header-height: 3rem;
+  --layout-sidebar-width: 16rem;
+  --layout-sidebar-collapsed: 3rem;
+  --layout-container-max: 96rem;
+
+  /* Touch Targets (Ergonomics) */
+  --touch-target-min: 2.75rem; /* 44px - WCAG 2.5.5 / Apple HIG minimum */
+  --touch-target-compact: 2.25rem; /* 36px - dense touch target */
+  --touch-target-comfortable: 3rem; /* 48px - comfortable touch target (Android) */
+
+  /* Safe Area Insets (Mobile viewport) */
+  --safe-area-top: env(safe-area-inset-top, 0px);
+  --safe-area-right: env(safe-area-inset-right, 0px);
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-left: env(safe-area-inset-left, 0px);
+
+  /* Mobile Shell Heights */
+  --mobile-header-height: 3.5rem;
+  --mobile-nav-height: 4rem;
+
+  /* The page gutter steps up with the viewport. It is a primitive rather than
+     a literal in `@theme` so it stays reactive: `--spacing-page` below points
+     at it, the `*-page` utilities emit `var(--spacing-page)`, and redefining
+     this one value under a media query retunes every `px-page` on the page.
+     Same trick as `--shadow-tint-*` for dark mode. */
+  --layout-page-gutter: 1rem;
+}
+
+/* --breakpoint-half */
+@media (min-width: 56.25rem) {
+  :root {
+    --layout-page-gutter: 1.5rem;
+  }
+}
+
+/* --breakpoint-normal */
+@media (min-width: 75rem) {
+  :root {
+    --layout-page-gutter: 2rem;
+  }
+}
+
+/* ============================================================================
+   MOTION, ELEVATION AND LAYOUT SCALES
+
+   Plain `@theme`, not `@theme inline`. These values are theme-independent, and
+   a non-inline entry is emitted as a real custom property *and* referenced by
+   the utility that uses it — which keeps the design tokens story able to
+   read every one of them back out of the CSSOM. An `inline` entry is folded
+   into the utility and can then be dropped from the stylesheet entirely.
+
+   The shadow geometry matches Tailwind's own scale exactly, so no existing
+   `shadow-*` call site changes appearance in light mode; the only edit is the
+   colour, indirected through `--shadow-tint-*` so `.dark` can deepen it.
+   Because that colour is a `var()` rather than a literal, Tailwind still wraps
+   it as `var(--tw-shadow-color, var(--shadow-tint))`, so colour modifiers like
+   `shadow-primary/20` keep tinting the shadow.
+   ============================================================================ */
+
+@theme {
+  /* Durations — `duration-fast`, `duration-normal`, `duration-slow`,
+     `duration-slower`, `duration-spring`. */
+  --transition-duration-fast: var(--duration-150);
+  --transition-duration-normal: var(--duration-200);
+  --transition-duration-slow: var(--duration-300);
+  --transition-duration-spring: var(--duration-350);
+  --transition-duration-slower: var(--duration-500);
+
+  /* Easings. `--ease-move` is Tailwind's `ease-in-out` curve under a name that
+     says what it is for: state changes on something already on screen (colour,
+     opacity, transform). `--ease-enter` and `--ease-exit` are the asymmetric
+     pair for things arriving on and leaving the screen. `--ease-spring` provides
+     an iOS-style spring overshoot curve for tactile arrivals. */
+  --ease-enter: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-exit: cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-move: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-spring: cubic-bezier(0.16, 1.2, 0.3, 1);
+
+  /* Looping animations — `animate-float` gently bobs a transient hint so the
+     eye finds it. Reduced motion stops it with every other animation. */
+  --animate-float: oaiz-float 1.6s var(--ease-move) infinite;
+
+  /* Elevation */
+  --shadow-2xs: 0 1px var(--shadow-tint-weak);
+  --shadow-xs: 0 1px 2px 0 var(--shadow-tint-weak);
+  --shadow-sm:
+    0 1px 3px 0 var(--shadow-tint), 0 1px 2px -1px var(--shadow-tint);
+  --shadow-md:
+    0 4px 6px -1px var(--shadow-tint), 0 2px 4px -2px var(--shadow-tint);
+  --shadow-lg:
+    0 10px 15px -3px var(--shadow-tint), 0 4px 6px -4px var(--shadow-tint);
+  --shadow-xl:
+    0 20px 25px -5px var(--shadow-tint), 0 8px 10px -6px var(--shadow-tint);
+  --shadow-2xl: 0 25px 50px -12px var(--shadow-tint-strong);
+
+  /* Layout — `h-header`, `w-sidebar`, `w-sidebar-collapsed`. */
+  --spacing-header: var(--layout-header-height);
+  --spacing-sidebar: var(--layout-sidebar-width);
+  --spacing-sidebar-collapsed: var(--layout-sidebar-collapsed);
+
+  /* Spacing roles. Five defaults answering "how far apart?" without having to
+     pick a number, plus the page gutter. They land in the `--spacing-*`
+     namespace, so every spacing utility can reach them: `gap-inline`,
+     `space-y-stack`, `mb-section`, `p-inset`, `px-panel`, `px-page`.
+
+     Reach for the role first. Drop to a raw step (`gap-1`, `p-4`) only when a
+     specific piece of UI genuinely needs to be tighter or looser than its
+     role, and stay on the scale when you do: 0.5, 1, 1.5, 2, 3, 4, 6, 8.
+     Anything else (`p-2.5`, `gap-5`, `mt-7`) is off-scale — round to a
+     neighbour.
+
+       inline   8px   gap between items sitting in a row
+       stack   16px   gap or margin-bottom between stacked components
+       panel   20px   horizontal content gutter inside a side panel
+       section 32px   between major regions of a page
+       inset   12px   padding inside a card, row or menu
+       page    16px   page gutter; 24px from `half`, 32px from `normal` */
+  --spacing-inline: 0.5rem;
+  --spacing-stack: 1rem;
+  --spacing-panel: 1.25rem;
+  --spacing-section: 2rem;
+  --spacing-inset: 0.75rem;
+  --spacing-page: var(--layout-page-gutter);
+  --spacing-chat-message-gap: 2rem;
+}
+
+/* ============================================================================
+   SEMANTIC TOKENS (shadcn/ui compatibility)
+
+   Define semantic tokens that reference @theme primitives
+   Tailwind v4 auto-generates utilities: bg-background, text-foreground, etc.
+   Using "inline" directive so utilities use var() references correctly
+   ============================================================================ */
+
+@theme inline {
+  /* Neutral surfaces and their paired foregrounds. */
+  --color-background: var(--role-background);
+  --color-foreground: var(--role-foreground);
+  --color-card: var(--role-background);
+  --color-card-foreground: var(--role-foreground);
+  --color-popover: var(--role-background);
+  --color-popover-foreground: var(--role-foreground);
+  --color-primary: var(--role-primary);
+  --color-primary-foreground: var(--role-primary-foreground);
+  --color-secondary: var(--role-secondary);
+  --color-secondary-foreground: var(--role-foreground);
+  --color-accent: var(--role-secondary);
+  --color-accent-foreground: var(--role-foreground);
+  --color-muted: var(--role-secondary);
+  --color-muted-foreground: var(--role-muted-foreground);
+  --color-text-shimmer-base: var(--role-text-shimmer-base);
+  --color-text-shimmer-highlight: var(--role-text-shimmer-highlight);
+
+  /* Decorative dividers use a softer mix than meaningful focus and graph ink. */
+  --color-border: var(--role-border);
+  --color-input: var(--role-border);
+  --color-input-fill: var(--role-input-fill);
+  --color-input-fill-hover: var(--role-input-fill-hover);
+  --color-input-disabled-text: var(--role-muted-foreground);
+  --color-ring: var(--role-muted-foreground);
+  --color-canvas-edge: var(--palette-zinc-3);
+
+  /* Four roles per feedback family: soft pair and solid pair. */
+  --color-info-bg: var(--role-info-bg);
+  --color-info-text: var(--role-info-text);
+  --color-info-solid: var(--palette-blue-4);
+  --color-info-solid-foreground: var(--palette-zinc-1);
+  --color-success-bg-subtle: var(--role-success-bg-subtle);
+  --color-success-text: var(--role-success-text);
+  --color-success: var(--palette-green-4);
+  --color-success-foreground: var(--palette-zinc-1);
+  --color-destructive-bg-subtle: var(--role-destructive-bg-subtle);
+  --color-destructive-text: var(--role-destructive-text);
+  --color-destructive: var(--palette-red-4);
+  --color-destructive-foreground: var(--palette-zinc-1);
+  --color-warning-bg-subtle: var(--role-warning-bg-subtle);
+  --color-warning-text: var(--role-warning-text);
+  --color-warning: var(--palette-amber-4);
+  --color-warning-foreground: var(--palette-zinc-1);
+
+  --color-badge-success: var(--role-badge-success);
+  --color-badge-success-foreground: var(--role-badge-success-foreground);
+  --color-badge-warning: var(--role-badge-warning);
+  --color-badge-warning-foreground: var(--role-badge-warning-foreground);
+  --color-badge-neutral: var(--role-badge-neutral);
+  --color-badge-neutral-foreground: var(--role-badge-neutral-foreground);
+
+  /* Domain roles can share physical shades without sharing status meaning. */
+  --color-knowledge-bg: var(--role-knowledge-bg);
+  --color-knowledge-text: var(--role-knowledge-text);
+  --color-recording: var(--role-recording);
+  --color-version-compare: var(--role-version-compare);
+  --color-brand-ocean: var(--role-brand-ocean);
+  --color-brand-foreground: var(--palette-zinc-5);
+  --color-logo-yellow: var(--role-logo-yellow);
+  --color-logo-petal: var(--role-logo-petal);
+  --color-orb-blue: var(--role-orb-blue);
+  --color-orb-lime: var(--role-orb-lime);
+  --color-orb-green: var(--role-orb-green);
+  --color-orb-lime-bright: var(--role-orb-lime-bright);
+  --color-orb-gold: var(--role-orb-gold);
+  --color-orb-blue-muted: var(--role-orb-blue-muted);
+  --color-orb-cream: var(--role-orb-cream);
+  --color-orb-red: var(--role-orb-red);
+  --color-orb-orange: var(--role-orb-orange);
+  --color-orb-amber: var(--role-orb-amber);
+  --color-orb-center-light: var(--role-orb-center-light);
+  --color-orb-center: var(--role-orb-center);
+
+  /* Code and JSON reuse neutral surfaces and four parser inks. */
+  --color-code-background: var(--role-background);
+  --color-code-hover-background: var(--role-secondary);
+  --color-code-foreground: var(--role-foreground);
+  --color-code-border: var(--role-border);
+  --color-code-key-text: var(--role-code-key-text);
+  --color-code-string-text: var(--role-code-string-text);
+  --color-code-number-text: var(--role-code-number-text);
+  --color-code-boolean-text: var(--role-code-boolean-text);
+  --color-code-null-text: var(--role-code-null-text);
+  --color-code-punctuation-text: var(--role-code-punctuation-text);
+
+  /* Sidebar roles can be themed independently of the page. */
+  --color-sidebar: var(--role-sidebar);
+  --color-sidebar-background: var(--role-sidebar);
+  --color-sidebar-foreground: var(--role-sidebar-foreground);
+  --color-sidebar-primary: var(--role-sidebar-primary);
+  --color-sidebar-primary-foreground: var(--role-sidebar-primary-foreground);
+  --color-sidebar-accent: var(--role-sidebar-accent);
+  --color-sidebar-accent-foreground: var(--role-sidebar-accent-foreground);
+  --color-sidebar-border: var(--role-sidebar-border);
+  --color-sidebar-ring: var(--role-sidebar-ring);
+  --color-surface-hover: var(--role-surface-hover);
+  --color-sidebar-selected: var(--role-sidebar-selected);
+  --color-sidebar-selected-pressed: var(--role-sidebar-selected-pressed);
+  --color-nav-rail: var(--role-nav-rail);
+  --color-library-preview: var(--role-library-preview);
+
+  /* Categorical series keep distinct hues and visible ink in both themes. */
+  --color-chart-1: var(--palette-blue-3);
+  --color-chart-2: var(--palette-green-3);
+  --color-chart-3: var(--palette-purple-3);
+  --color-chart-4: var(--palette-amber-3);
+  --color-chart-5: var(--palette-orange-3);
+
+  /* Custom integration default icons: twenty hues 18° apart. The lightness keeps
+     the light glyph above the 3:1 non-text contrast on every hue, and the chroma
+     is the highest all twenty keep inside sRGB. Both themes share them. */
+  --color-integration-icon-foreground: var(--palette-zinc-1);
+  --color-integration-icon-red: oklch(0.58 0.098 27);
+  --color-integration-icon-coral: oklch(0.58 0.098 45);
+  --color-integration-icon-orange: oklch(0.58 0.098 63);
+  --color-integration-icon-amber: oklch(0.58 0.098 81);
+  --color-integration-icon-yellow: oklch(0.58 0.098 99);
+  --color-integration-icon-olive: oklch(0.58 0.098 117);
+  --color-integration-icon-lime: oklch(0.58 0.098 135);
+  --color-integration-icon-green: oklch(0.58 0.098 153);
+  --color-integration-icon-emerald: oklch(0.58 0.098 171);
+  --color-integration-icon-teal: oklch(0.58 0.098 189);
+  --color-integration-icon-cyan: oklch(0.58 0.098 207);
+  --color-integration-icon-sky: oklch(0.58 0.098 225);
+  --color-integration-icon-azure: oklch(0.58 0.098 243);
+  --color-integration-icon-blue: oklch(0.58 0.098 261);
+  --color-integration-icon-indigo: oklch(0.58 0.098 279);
+  --color-integration-icon-violet: oklch(0.58 0.098 297);
+  --color-integration-icon-purple: oklch(0.58 0.098 315);
+  --color-integration-icon-magenta: oklch(0.58 0.098 333);
+  --color-integration-icon-pink: oklch(0.58 0.098 351);
+  --color-integration-icon-rose: oklch(0.58 0.098 9);
+
+  /* Physical shades are fixed; component code selects semantic roles above. */
+  --color-white: var(--palette-white);
+  --color-zinc-1: var(--palette-zinc-1);
+  --color-zinc-2: var(--palette-zinc-2);
+  --color-zinc-3: var(--palette-zinc-3);
+  --color-zinc-4: var(--palette-zinc-4);
+  --color-zinc-5: var(--palette-zinc-5);
+  --color-blue-1: var(--palette-blue-1);
+  --color-blue-2: var(--palette-blue-2);
+  --color-blue-3: var(--palette-blue-3);
+  --color-blue-4: var(--palette-blue-4);
+  --color-blue-5: var(--palette-blue-5);
+  --color-purple-1: var(--palette-purple-1);
+  --color-purple-2: var(--palette-purple-2);
+  --color-purple-3: var(--palette-purple-3);
+  --color-purple-4: var(--palette-purple-4);
+  --color-purple-5: var(--palette-purple-5);
+  --color-green-1: var(--palette-green-1);
+  --color-green-2: var(--palette-green-2);
+  --color-green-3: var(--palette-green-3);
+  --color-green-4: var(--palette-green-4);
+  --color-green-5: var(--palette-green-5);
+  --color-red-1: var(--palette-red-1);
+  --color-red-2: var(--palette-red-2);
+  --color-red-3: var(--palette-red-3);
+  --color-red-4: var(--palette-red-4);
+  --color-red-5: var(--palette-red-5);
+  --color-amber-1: var(--palette-amber-1);
+  --color-amber-2: var(--palette-amber-2);
+  --color-amber-3: var(--palette-amber-3);
+  --color-amber-4: var(--palette-amber-4);
+  --color-amber-5: var(--palette-amber-5);
+  --color-orange-1: var(--palette-orange-1);
+  --color-orange-2: var(--palette-orange-2);
+  --color-orange-3: var(--palette-orange-3);
+  --color-orange-4: var(--palette-orange-4);
+  --color-orange-5: var(--palette-orange-5);
+}
+
+/* Radix measures each panel and exposes its exact block size through this
+   custom property, so Accordion content can animate without guessed heights. */
+@keyframes oaiz-accordion-expand {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+
+@keyframes oaiz-accordion-collapse {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
+}
+
+/* Radix Collapsible height keyframes matching Accordion */
+@keyframes oaiz-collapsible-expand {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-collapsible-content-height);
+  }
+}
+
+@keyframes oaiz-collapsible-collapse {
+  from {
+    height: var(--radix-collapsible-content-height);
+  }
+  to {
+    height: 0;
+  }
+}
+
+/* Route and page level smooth entrance animation */
+@keyframes oaiz-page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Identical alternate name lets route changes replay without remounting content. */
+@keyframes oaiz-page-enter-alternate {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Gentle vertical float that draws the eye to a transient hint. */
+@keyframes oaiz-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+/* Horizontal shimmer sweep for text. */
+@keyframes oaiz-text-shimmer {
+  from {
+    background-position: 120% 0;
+  }
+  to {
+    background-position: -20% 0;
+  }
+}
+
+/* One word or character of TypewriterText fading into place. */
+@keyframes oaiz-text-reveal {
+  from {
+    opacity: 0;
+    filter: blur(0.25rem);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+/* Dark Mode Overrides */
+.dark {
+  --role-background: oklch(from var(--palette-zinc-5) calc(l * 0.7) c h);
+  --role-foreground: var(--palette-zinc-1);
+  --role-primary: var(--palette-zinc-1);
+  --role-primary-foreground: var(--palette-zinc-5);
+  --role-text-shimmer-base: color-mix(
+    in oklch,
+    var(--role-muted-foreground) 75%,
+    var(--role-background)
+  );
+  --role-text-shimmer-highlight: var(--palette-white);
+  --role-secondary: color-mix(
+    in oklch,
+    var(--role-background) 80%,
+    var(--palette-zinc-4)
+  );
+  --role-muted-foreground: color-mix(
+    in oklch,
+    var(--palette-zinc-2) 80%,
+    var(--palette-zinc-3)
+  );
+  --role-border: color-mix(
+    in oklch,
+    var(--role-background) 70%,
+    var(--palette-zinc-3)
+  );
+  --role-input-fill-hover: color-mix(
+    in oklch,
+    var(--role-background) 65%,
+    var(--palette-zinc-4)
+  );
+  --role-surface-hover: color-mix(
+    in oklab,
+    var(--role-background) 85%,
+    var(--palette-amber-4)
+  );
+  --role-sidebar: var(--role-background);
+  --role-sidebar-foreground: var(--role-muted-foreground);
+  --role-sidebar-primary: var(--role-primary);
+  --role-sidebar-primary-foreground: var(--role-primary-foreground);
+  --role-sidebar-accent: var(--role-secondary);
+  --role-sidebar-accent-foreground: var(--role-foreground);
+  --role-sidebar-border: var(--role-border);
+  --role-sidebar-ring: var(--role-muted-foreground);
+  --role-sidebar-selected: var(--role-surface-hover);
+  --role-sidebar-selected-pressed: color-mix(
+    in oklab,
+    var(--role-surface-hover) 70%,
+    var(--palette-zinc-4)
+  );
+  --role-nav-rail: color-mix(
+    in oklab,
+    var(--role-background) 80%,
+    var(--palette-amber-5)
+  );
+  --role-library-preview: color-mix(
+    in oklab,
+    var(--role-background) 80%,
+    var(--palette-zinc-5)
+  );
+
+  --role-info-bg: var(--palette-blue-5);
+  --role-badge-success: var(--palette-green-5);
+  --role-badge-success-foreground: var(--palette-green-1);
+  --role-badge-warning: var(--palette-amber-5);
+  --role-badge-warning-foreground: var(--palette-amber-1);
+  --role-badge-neutral: var(--palette-zinc-5);
+  --role-badge-neutral-foreground: var(--palette-zinc-1);
+  --role-info-text: var(--palette-blue-1);
+  --role-success-bg-subtle: var(--palette-green-5);
+  --role-success-text: var(--palette-green-1);
+  --role-destructive-bg-subtle: var(--palette-red-5);
+  --role-destructive-text: color-mix(
+    in oklch,
+    var(--palette-red-2) 50%,
+    var(--palette-red-3)
+  );
+  --role-warning-bg-subtle: var(--palette-amber-5);
+  --role-warning-text: var(--palette-amber-1);
+  --role-knowledge-bg: var(--palette-amber-5);
+  --role-knowledge-text: var(--palette-amber-1);
+  --role-recording: var(--palette-red-1);
+  --role-version-compare: var(--palette-orange-1);
+  --role-code-key-text: var(--palette-red-2);
+  --role-code-string-text: var(--palette-green-2);
+  --role-code-null-text: var(--palette-purple-2);
+  --role-code-punctuation-text: var(--palette-blue-2);
+
+  /* Elevation tint (Dark Mode) — a 10% black shadow is invisible on a near-black
+     ground, so the ink deepens while the geometry stays put. */
+  --shadow-tint-weak: rgb(0 0 0 / 0.3);
+  --shadow-tint: rgb(0 0 0 / 0.5);
+  --shadow-tint-strong: rgb(0 0 0 / 0.7);
+}
+
+/* Collapsed navigation uses the warm rail and neutral item surfaces.
+   Inline utilities resolve role variables directly, so these selectors override
+   the actual surface rather than an exposed Tailwind color alias. */
+[data-collapsible='icon'] [data-sidebar='sidebar'] {
+  background-color: var(--role-nav-rail);
+}
+
+[data-collapsible='icon'] [data-sidebar='menu-button']:hover,
+[data-collapsible='icon'] [data-sidebar='menu-button'][data-active='true'] {
+  background-color: var(--role-background);
+}
+
+[data-collapsible='icon'] [data-sidebar='menu-button']:active {
+  background-color: var(--role-secondary);
+}
+
+/* ============================================================================
+   BASE LAYER STYLES
+   ============================================================================ */
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html {
+    color-scheme: light;
+    scroll-behavior: smooth;
+    overscroll-behavior-x: none;
+    height: 100%;
+  }
+
+  html.dark {
+    color-scheme: dark;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-synthesis-weight: none;
+    text-rendering: optimizeLegibility;
+    overscroll-behavior-x: none;
+    min-height: 100%;
+    overflow-x: hidden;
+  }
+
+  #root {
+    min-height: 100%;
+  }
+
+  /* Suppresses false-positive :focus-visible outlines when an overlay closes
+     via pointer selection and programmatically restores focus onto its trigger. */
+  [data-pointer-close-focus]:focus-visible {
+    outline: none !important;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    ::before,
+    ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* ============================================================================
+   CUSTOM UTILITIES
+
+   ONLY utilities that are actually used in components
+   ============================================================================ */
+
+@layer utilities {
+  /* Keep the moving light brighter than the base in both themes. */
+  .oaiz-shimmer-text {
+    background-color: color-mix(
+      in oklch,
+      currentColor 15%,
+      var(--color-text-shimmer-base)
+    );
+    background-image: linear-gradient(
+      90deg,
+      transparent 40%,
+      var(--color-text-shimmer-highlight) 50%,
+      transparent 60%
+    );
+    background-repeat: no-repeat;
+    background-position: 100% 0;
+    background-size: 200% 100%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .oaiz-shimmer-text--activity {
+    background-color: var(--color-text-shimmer-base);
+  }
+
+  /* Token-heavy labels keep the caller's semantic foreground as their
+     contrast-bearing base while a palette-backed rainbow light crosses it. */
+  .oaiz-shimmer-text--rainbow {
+    background-color: currentColor;
+    background-image: linear-gradient(
+      110deg,
+      transparent 20%,
+      color-mix(in oklch, currentColor 40%, var(--palette-blue-3)) 35%,
+      color-mix(in oklch, currentColor 40%, var(--palette-purple-3)) 42%,
+      color-mix(in oklch, currentColor 40%, var(--palette-red-3)) 50%,
+      color-mix(in oklch, currentColor 40%, var(--palette-orange-3)) 58%,
+      color-mix(in oklch, currentColor 40%, var(--palette-green-3)) 65%,
+      transparent 80%
+    );
+  }
+
+  .oaiz-shimmer-text:where([dir='rtl'], [dir='rtl'] *) {
+    animation-direction: reverse;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .oaiz-shimmer-text {
+      animation: none !important;
+      background-image: none;
+      background-color: transparent;
+      -webkit-text-fill-color: currentColor;
+    }
+  }
+
+  /* Each revealed unit is already laid out, so only its opacity and blur
+     animate and the surrounding text never reflows. Callers stagger units
+     with animation-delay. */
+  .oaiz-text-reveal {
+    animation: oaiz-text-reveal var(--duration-500) var(--ease-enter) both;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .oaiz-text-reveal {
+      animation: none !important;
+    }
+  }
+
+  /* Keep overflow scroll/auto behavior without painting a scrollbar. */
+  .scrollbar-none {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+
+  /* Container — responsive page container. The gutter is `--spacing-page`,
+     which steps 16 -> 24 -> 32px with the viewport. */
+  .container {
+    padding-inline: var(--spacing-page);
+    margin-inline: auto;
+    max-width: var(--layout-container-max);
+  }
+
+  /* From `ultrawide` the container has hit its cap and is centred, so the
+     viewport already supplies the outer margin and the inner gutter relaxes
+     back to the base step. This is what the container did before the gutter
+     became a token; dropping it moved every legal page 16px per side. */
+  @media (min-width: 96rem) {
+    .container {
+      padding-inline: 1rem;
+    }
+  }
+}

@@ -1,0 +1,1847 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "oaiz",
+  "homepage": "https://oaiz.io",
+  "items": [
+    {
+      "name": "utils",
+      "type": "registry:lib",
+      "title": "cn helper",
+      "description": "The cn() helper, which joins class names and merges conflicting Tailwind classes",
+      "dependencies": [
+        "clsx@^2.1.1",
+        "tailwind-merge@^3.7.0"
+      ],
+      "files": [
+        {
+          "path": "src/lib/utils.ts",
+          "type": "registry:lib"
+        }
+      ]
+    },
+    {
+      "name": "theme",
+      "type": "registry:theme",
+      "title": "OAIZ theme",
+      "description": "The OAIZ design tokens: semantic colours in light and dark, spacing and type",
+      "dependencies": [
+        "tw-animate-css@^1.4.0"
+      ],
+      "devDependencies": [
+        "tailwindcss@^4.3.4"
+      ],
+      "files": [
+        {
+          "path": "src/styles/oaiz/tokens.css",
+          "type": "registry:style"
+        },
+        {
+          "path": "src/styles/oaiz/app.css",
+          "type": "registry:style"
+        },
+        {
+          "path": "src/styles/oaiz/scrollbars.css",
+          "type": "registry:style"
+        },
+        {
+          "path": "src/styles/oaiz/voice-orb.css",
+          "type": "registry:style"
+        }
+      ],
+      "docs": "Use semantic classes (bg-background, text-muted-foreground, border-input). Apps may set any palette through --role-* values in app-theme.css; pair surfaces and foregrounds in both themes. Dark mode follows a `dark` class on <html>. Import app.css after tokens.css: it loads the enter and exit animations of dialogs, menus and sheets."
+    },
+    {
+      "name": "text",
+      "type": "registry:ui",
+      "title": "Text",
+      "description": "Body text in the OAIZ type scale",
+      "dependencies": [
+        "@radix-ui/react-slot@^1.3.3",
+        "class-variance-authority@^0.7.1"
+      ],
+      "registryDependencies": [
+        "utils"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/text.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "heading",
+      "type": "registry:ui",
+      "title": "Heading",
+      "description": "Headings h1 to h6 in the OAIZ type scale",
+      "dependencies": [
+        "@radix-ui/react-slot@^1.3.3",
+        "class-variance-authority@^0.7.1"
+      ],
+      "registryDependencies": [
+        "utils"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/heading.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "skeleton",
+      "type": "registry:ui",
+      "title": "Skeleton",
+      "description": "A placeholder block while content loads",
+      "registryDependencies": [
+        "utils"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/skeleton.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "button",
+      "type": "registry:ui",
+      "title": "Button",
+      "description": "A button in the OAIZ variants and sizes",
+      "dependencies": [
+        "@radix-ui/react-slot@^1.3.3",
+        "class-variance-authority@^0.7.1"
+      ],
+      "registryDependencies": [
+        "utils"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/button.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "input",
+      "type": "registry:ui",
+      "title": "Input",
+      "description": "A text input",
+      "dependencies": [
+        "class-variance-authority@^0.7.1"
+      ],
+      "registryDependencies": [
+        "utils"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/input.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "label",
+      "type": "registry:ui",
+      "title": "Label",
+      "description": "A form label",
+      "dependencies": [
+        "@radix-ui/react-label@^2.1.15",
+        "class-variance-authority@^0.7.1"
+      ],
+      "registryDependencies": [
+        "utils",
+        "text"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/label.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "table",
+      "type": "registry:ui",
+      "title": "Table",
+      "description": "Table, header, body, row, head and cell parts",
+      "registryDependencies": [
+        "utils",
+        "text"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/table.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "alert",
+      "type": "registry:ui",
+      "title": "Alert",
+      "description": "A message box with a title and a description",
+      "dependencies": [
+        "class-variance-authority@^0.7.1"
+      ],
+      "registryDependencies": [
+        "utils",
+        "heading",
+        "text"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/alert.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "badge",
+      "type": "registry:ui",
+      "title": "Badge",
+      "description": "A small status or count label",
+      "dependencies": [
+        "class-variance-authority@^0.7.1"
+      ],
+      "registryDependencies": [
+        "utils"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/badge.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "separator",
+      "type": "registry:ui",
+      "title": "Separator",
+      "description": "A horizontal or vertical divider",
+      "dependencies": [
+        "@radix-ui/react-separator@^1.1.15"
+      ],
+      "registryDependencies": [
+        "utils"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/separator.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "textarea",
+      "type": "registry:ui",
+      "title": "Textarea",
+      "description": "A multi-line text input",
+      "dependencies": [
+        "class-variance-authority@^0.7.1"
+      ],
+      "registryDependencies": [
+        "utils"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/textarea.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "checkbox",
+      "type": "registry:ui",
+      "title": "Checkbox",
+      "description": "A checkbox with a checked and an indeterminate state",
+      "dependencies": [
+        "@radix-ui/react-checkbox@^1.3.11",
+        "lucide-react@^1.51.0"
+      ],
+      "registryDependencies": [
+        "utils"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/checkbox.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "avatar",
+      "type": "registry:ui",
+      "title": "Avatar",
+      "description": "A person image with initials while it loads or when it is missing",
+      "dependencies": [
+        "@radix-ui/react-avatar@^1.2.6"
+      ],
+      "registryDependencies": [
+        "utils",
+        "text"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/avatar.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "tabs",
+      "type": "registry:ui",
+      "title": "Tabs",
+      "description": "Tabs that switch between panels",
+      "dependencies": [
+        "@radix-ui/react-tabs@^1.1.21"
+      ],
+      "registryDependencies": [
+        "utils"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/tabs.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "tooltip",
+      "type": "registry:ui",
+      "title": "Tooltip",
+      "description": "A short label on hover or focus",
+      "dependencies": [
+        "@radix-ui/react-tooltip@^1.2.16"
+      ],
+      "registryDependencies": [
+        "utils",
+        "text"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/tooltip.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "popover",
+      "type": "registry:ui",
+      "title": "Popover",
+      "description": "Floating content anchored to a trigger",
+      "dependencies": [
+        "@radix-ui/react-popover@^1.1.23"
+      ],
+      "registryDependencies": [
+        "utils"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/popover.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "dialog",
+      "type": "registry:ui",
+      "title": "Dialog",
+      "description": "A modal dialog with a title, description and footer",
+      "dependencies": [
+        "@radix-ui/react-dialog@^1.1.23",
+        "lucide-react@^1.51.0"
+      ],
+      "registryDependencies": [
+        "utils",
+        "heading",
+        "text"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/dialog.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sheet",
+      "type": "registry:ui",
+      "title": "Sheet",
+      "description": "A panel that slides in from one edge of the screen",
+      "dependencies": [
+        "@radix-ui/react-dialog@^1.1.23",
+        "class-variance-authority@^0.7.1",
+        "lucide-react@^1.51.0"
+      ],
+      "registryDependencies": [
+        "utils",
+        "heading",
+        "text"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/sheet.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "dropdown-menu",
+      "type": "registry:ui",
+      "title": "Dropdown menu",
+      "description": "A menu of actions, checkboxes and radio items",
+      "dependencies": [
+        "@radix-ui/react-dropdown-menu@^2.1.24",
+        "lucide-react@^1.51.0"
+      ],
+      "registryDependencies": [
+        "utils",
+        "text"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/dropdown-menu.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "select",
+      "type": "registry:ui",
+      "title": "Select",
+      "description": "A select with OAIZ styling",
+      "dependencies": [
+        "@radix-ui/react-select@^2.3.7",
+        "class-variance-authority@^0.7.1",
+        "lucide-react@^1.51.0"
+      ],
+      "registryDependencies": [
+        "utils",
+        "text"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/select.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/lib/csp-nonce.ts",
+          "type": "registry:lib"
+        }
+      ]
+    },
+    {
+      "name": "toast",
+      "type": "registry:ui",
+      "title": "Toast",
+      "description": "Toaster, toast() and useToast, which show short notices",
+      "dependencies": [
+        "@radix-ui/react-toast@^1.2.23",
+        "class-variance-authority@^0.7.1",
+        "lucide-react@^1.51.0"
+      ],
+      "registryDependencies": [
+        "utils",
+        "text"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/toast.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/components/ui/toaster.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/components/ui/use-toast.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "docs": "Render <Toaster /> once near the root of the app, then call toast({ title, description })."
+    },
+    {
+      "name": "context-menu",
+      "type": "registry:ui",
+      "title": "Context menu",
+      "description": "A menu that opens on right-click, long-press or the Menu key, with the dropdown menu's items",
+      "dependencies": [
+        "@radix-ui/react-slot@^1.3.3"
+      ],
+      "registryDependencies": [
+        "utils",
+        "dropdown-menu"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/context-menu.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "shortcut",
+      "type": "registry:ui",
+      "title": "Shortcut",
+      "description": "Keyboard keys, such as \u2318 K, shown beside an action",
+      "registryDependencies": [
+        "utils",
+        "text"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/shortcut.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "switch",
+      "type": "registry:ui",
+      "title": "Switch",
+      "description": "An on and off toggle",
+      "dependencies": [
+        "@radix-ui/react-switch@^1.3.7",
+        "class-variance-authority@^0.7.1"
+      ],
+      "registryDependencies": [
+        "utils"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/switch.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "card",
+      "type": "registry:ui",
+      "title": "Card",
+      "description": "A bordered surface with a header, content and footer",
+      "registryDependencies": [
+        "utils",
+        "heading",
+        "text"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/card.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "docs": "Use one surface per group of content; never a card inside a card."
+    },
+    {
+      "name": "segmented-control",
+      "type": "registry:ui",
+      "title": "Segmented control",
+      "description": "Two to five options shown side by side, one chosen",
+      "registryDependencies": [
+        "utils",
+        "text"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/segmented-control.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "progress",
+      "type": "registry:ui",
+      "title": "Progress",
+      "description": "A bar for a value from 0 to 100",
+      "dependencies": [
+        "@radix-ui/react-progress@^1.1.16"
+      ],
+      "registryDependencies": [
+        "utils"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/progress.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "avatar-group",
+      "type": "registry:ui",
+      "title": "Avatar group",
+      "description": "Several people as overlapping avatars with a +N count",
+      "dependencies": [
+        "@radix-ui/react-avatar@^1.2.6",
+        "class-variance-authority@^0.7.1"
+      ],
+      "registryDependencies": [
+        "utils",
+        "avatar",
+        "text"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/avatar-group.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "docs": "Use it for assignees, approvers or who a record is shared with; pass label, such as \"Assignees\"."
+    },
+    {
+      "name": "progress-ring",
+      "type": "registry:ui",
+      "title": "Progress ring",
+      "description": "Progress towards a goal as a ring with the value in the middle",
+      "dependencies": [
+        "class-variance-authority@^0.7.1"
+      ],
+      "registryDependencies": [
+        "utils",
+        "text"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/progress-ring.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "docs": "Use it for a target, a quota or a checklist; a bar (Progress) suits a long row."
+    },
+    {
+      "name": "scroll-fade",
+      "type": "registry:ui",
+      "title": "Scroll fade",
+      "description": "A scrolling area whose edges fade where more content waits",
+      "registryDependencies": [
+        "utils"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/scroll-fade.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "tree-view",
+      "type": "registry:ui",
+      "title": "Tree view",
+      "description": "Nested items in the ARIA tree pattern, with arrow keys and type-ahead",
+      "dependencies": [
+        "lucide-react@^1.51.0"
+      ],
+      "registryDependencies": [
+        "utils",
+        "text"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/tree-view.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "docs": "Use it for folders, categories or org units; read the rows with a parent column and build the nodes from them."
+    },
+    {
+      "name": "slider",
+      "type": "registry:ui",
+      "title": "Slider",
+      "description": "A value or range picked by dragging",
+      "dependencies": [
+        "@radix-ui/react-slider@^1.4.7"
+      ],
+      "registryDependencies": [
+        "utils"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/slider.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "breadcrumb",
+      "type": "registry:ui",
+      "title": "Breadcrumb",
+      "description": "Where the page sits, as links up to it",
+      "dependencies": [
+        "@radix-ui/react-slot@^1.3.3",
+        "lucide-react@^1.51.0"
+      ],
+      "registryDependencies": [
+        "utils",
+        "heading"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/breadcrumb.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "accordion",
+      "type": "registry:ui",
+      "title": "Accordion",
+      "description": "Sections that open one or several at a time",
+      "dependencies": [
+        "@radix-ui/react-accordion@^1.2.20",
+        "lucide-react@^1.51.0"
+      ],
+      "registryDependencies": [
+        "utils",
+        "heading",
+        "text"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/accordion.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "collapsible",
+      "type": "registry:ui",
+      "title": "Collapsible",
+      "description": "One section that opens and closes",
+      "dependencies": [
+        "@radix-ui/react-collapsible@^1.1.20"
+      ],
+      "registryDependencies": [
+        "utils"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/collapsible.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "hover-card",
+      "type": "registry:ui",
+      "title": "Hover card",
+      "description": "A preview shown while a link is hovered or focused",
+      "dependencies": [
+        "@radix-ui/react-hover-card@^1.1.23"
+      ],
+      "registryDependencies": [
+        "utils"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/hover-card.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "docs": "Keep what it shows reachable another way: a touch screen has no hover."
+    },
+    {
+      "name": "count-up",
+      "type": "registry:ui",
+      "title": "Count up",
+      "description": "A number that counts to its new value, or shows it at once under reduced motion",
+      "registryDependencies": [
+        "utils",
+        "use-breakpoint"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/count-up.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "bottom-navigation",
+      "type": "registry:ui",
+      "title": "Bottom navigation",
+      "description": "A phone's tab bar of two to five destinations",
+      "dependencies": [
+        "@radix-ui/react-slot@^1.3.3"
+      ],
+      "registryDependencies": [
+        "utils",
+        "text"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/bottom-navigation.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "oaiz-data",
+      "type": "registry:hook",
+      "title": "OAIZ data hooks",
+      "description": "OaizDataProvider, useRows, usePagedRows, useRow, useInsertRow, useUpdateRow, useDeleteRow, useUndoableDeleteRow and OaizRequestError, which read and write rows over @oaiz/sdk and TanStack Query",
+      "dependencies": [
+        "@tanstack/react-query@^5.105.3"
+      ],
+      "files": [
+        {
+          "path": "src/hooks/oaiz-data.tsx",
+          "type": "registry:hook"
+        }
+      ],
+      "docs": "Create the @oaiz/sdk client once, at module scope. Wrap the signed-in app in QueryClientProvider with newOaizQueryClient() and OaizDataProvider with the client, the database id and the member's id, which keys the cache. Filter, sort and page in the hooks, not in the browser. Grant the app edit on the database when it writes. useUndoableDeleteRow hides a row at once and sends its delete when the undo window ends; offer its undo() in a toast with a ToastAction."
+    },
+    {
+      "name": "breakpoints",
+      "type": "registry:lib",
+      "title": "Breakpoints",
+      "description": "The breakpoint widths and media queries of the design tokens",
+      "files": [
+        {
+          "path": "src/lib/breakpoints.ts",
+          "type": "registry:lib"
+        }
+      ]
+    },
+    {
+      "name": "use-breakpoint",
+      "type": "registry:hook",
+      "title": "Breakpoint hooks",
+      "description": "useBreakpoint, useBreakpointBelow, useIsMobile and useMediaQuery, the JS twins of the mobile:, half:, normal: and ultrawide: variants",
+      "registryDependencies": [
+        "breakpoints"
+      ],
+      "files": [
+        {
+          "path": "src/hooks/use-breakpoint.ts",
+          "type": "registry:hook"
+        },
+        {
+          "path": "src/hooks/use-media-query.ts",
+          "type": "registry:hook"
+        }
+      ],
+      "docs": "Use a CSS variant when only the look changes; use these when the markup differs, such as a sheet on a phone and a popover elsewhere."
+    },
+    {
+      "name": "use-url-state",
+      "type": "registry:hook",
+      "title": "URL state",
+      "description": "useUrlState, which keeps one value in the page address so that a reload and Back keep it",
+      "files": [
+        {
+          "path": "src/hooks/use-url-state.ts",
+          "type": "registry:hook"
+        }
+      ],
+      "docs": "Keep the screen and the open record with { history: 'push' }; keep search, filters, sort and page with the default."
+    },
+    {
+      "name": "use-arrivals",
+      "type": "registry:hook",
+      "title": "Arrivals",
+      "description": "useArrivals and ARRIVAL_CLASS, which ease items into a live list without animating what was already there",
+      "files": [
+        {
+          "path": "src/hooks/use-arrivals.ts",
+          "type": "registry:hook"
+        }
+      ],
+      "docs": "Pass the list's keys; give an item ARRIVAL_CLASS when arrived(key) is true."
+    },
+    {
+      "name": "use-theme",
+      "type": "registry:hook",
+      "title": "Theme",
+      "description": "useTheme and applyStoredTheme, which keep the user's light, dark or system theme in this browser",
+      "files": [
+        {
+          "path": "src/hooks/use-theme.ts",
+          "type": "registry:hook"
+        }
+      ],
+      "docs": "Call applyStoredTheme() in main.tsx before rendering. AppShell's user menu already offers the choice."
+    },
+    {
+      "name": "format",
+      "type": "registry:lib",
+      "title": "Format",
+      "description": "formatNumber, formatCompact, formatCurrency, formatPercent, formatDate, formatDateTime, formatTime, formatWeekday, formatMonth, formatDay, formatDayRange, formatRelative, localDay and parseLocalDay, which write numbers, money and dates one way",
+      "files": [
+        {
+          "path": "src/lib/format.ts",
+          "type": "registry:lib"
+        }
+      ],
+      "docs": "Write every amount, date and time on screen with these, in the member's locale. Compare a date column with localDay(), never with toISOString()."
+    },
+    {
+      "name": "oaiz-session",
+      "type": "registry:hook",
+      "title": "OAIZ session hook",
+      "description": "useOaizSession, which gives the user signed in to the app, with signIn and signOut, over @oaiz/sdk auth",
+      "files": [
+        {
+          "path": "src/hooks/oaiz-session.tsx",
+          "type": "registry:hook"
+        }
+      ],
+      "docs": "Pass client.auth of the app's @oaiz/sdk client, created once at module scope."
+    },
+    {
+      "name": "oaiz-chat",
+      "type": "registry:hook",
+      "title": "OAIZ chat hook",
+      "description": "useOaizChat and applyChatEvent, which hold one chat with the app's agent over @oaiz/sdk chat as rows with reasoning and tool input and output, with send, stop, retry, openSession and newChat, and voice with its own tools",
+      "files": [
+        {
+          "path": "src/hooks/oaiz-chat.tsx",
+          "type": "registry:hook"
+        }
+      ],
+      "docs": "Pass client.chat of the app's @oaiz/sdk client, created once at module scope, with systemPrompt and the tools each message may call. client.chat.tools() lists them. The turn runs them without approval. To offer voice, pass voice with the tools a spoken turn may call; the chat's tools do not carry over. Voice hears the room and a named write tool runs at once on what it heard, so name read tools. A message typed during a call uses the chat's tools. A browser refuses the microphone in a frame, so voice runs when the app opens in its own tab."
+    },
+    {
+      "name": "sign-in",
+      "type": "registry:component",
+      "title": "Sign-in screen",
+      "description": "SignInScreen and SessionGate, which show a sign-in card until a user is signed in, then the app",
+      "registryDependencies": [
+        "utils",
+        "alert",
+        "button",
+        "heading",
+        "skeleton",
+        "text",
+        "oaiz-session"
+      ],
+      "files": [
+        {
+          "path": "src/components/sign-in.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "docs": "Wrap the app in <SessionGate auth={client.auth}>{({ user, signOut }) => <App />}</SessionGate>."
+    },
+    {
+      "name": "app-shell",
+      "type": "registry:component",
+      "title": "App shell",
+      "description": "A sidebar with a search button and sections of navigation, left out with fewer than two nav items, a header with the title, actions and the user menu, the command palette on \u2318K, an inset page panel, and a sheet on narrow screens",
+      "dependencies": [
+        "lucide-react@^1.51.0"
+      ],
+      "registryDependencies": [
+        "utils",
+        "command-palette",
+        "avatar",
+        "button",
+        "dropdown-menu",
+        "heading",
+        "sheet",
+        "text",
+        "bottom-navigation",
+        "use-theme"
+      ],
+      "files": [
+        {
+          "path": "src/components/app-shell.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "docs": "Prefer sidebarAppearance=\"inverted\" for contrasting navigation; customise --role-sidebar-primary and --role-sidebar-primary-foreground independently of the page primary pair. Mark the current page with active: true on its nav item; pass user and onSignOut from SessionGate; pass the app's actions and records as commands, and read matching records in onCommandSearch."
+    },
+    {
+      "name": "page-header",
+      "type": "registry:component",
+      "title": "Page header",
+      "description": "One page title, a muted summary and one primary action",
+      "registryDependencies": [
+        "utils",
+        "heading",
+        "text"
+      ],
+      "files": [
+        {
+          "path": "src/components/page-header.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "docs": "Use it when AppShell has no title; pass an sm Button as the action."
+    },
+    {
+      "name": "status-dot",
+      "type": "registry:component",
+      "title": "Status dot",
+      "description": "A status as plain text with a small coloured dot",
+      "registryDependencies": [
+        "utils"
+      ],
+      "files": [
+        {
+          "path": "src/components/status-dot.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "docs": "Use it for status in tables and on cards; keep a tone other than neutral for state that needs attention."
+    },
+    {
+      "name": "metrics",
+      "type": "registry:component",
+      "title": "Metrics",
+      "description": "The figures that head a screen, as one compact row",
+      "registryDependencies": [
+        "skeleton",
+        "text",
+        "count-up"
+      ],
+      "files": [
+        {
+          "path": "src/components/metrics.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "docs": "Compute each figure in SQL, and keep to the few that tell the state of the screen."
+    },
+    {
+      "name": "bar-list",
+      "type": "registry:component",
+      "title": "Bar list",
+      "description": "Amounts to compare, one bar to a row, that reflow on a phone",
+      "registryDependencies": [
+        "utils",
+        "status-dot"
+      ],
+      "files": [
+        {
+          "path": "src/components/bar-list.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "docs": "Compute the amounts in SQL. Give a status its StatusDot tone."
+    },
+    {
+      "name": "charts",
+      "type": "registry:component",
+      "title": "Charts",
+      "description": "LineChart, StackedBarChart and Sparkline, which show values over time, totals made of parts and a small trend in the theme's chart colours",
+      "registryDependencies": [
+        "utils",
+        "text",
+        "button",
+        "table",
+        "collapsible"
+      ],
+      "files": [
+        {
+          "path": "src/components/charts.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "docs": "Compute the series in SQL, one row per point. Pass formatValue, such as (v) => formatCompact(v), and keep to five series or fewer."
+    },
+    {
+      "name": "record-name",
+      "type": "registry:component",
+      "title": "Record name",
+      "description": "The name of a record after a small mark of its initials",
+      "registryDependencies": [
+        "utils",
+        "avatar"
+      ],
+      "files": [
+        {
+          "path": "src/components/record-name.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "docs": "Use it in the first column of a list of people or customers; round for a person."
+    },
+    {
+      "name": "empty-state",
+      "type": "registry:component",
+      "title": "Empty state",
+      "description": "What belongs in an empty place, with the action that adds it",
+      "registryDependencies": [
+        "utils",
+        "text"
+      ],
+      "files": [
+        {
+          "path": "src/components/empty-state.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "docs": "Pass it as DataTable's empty, or in place of an empty list."
+    },
+    {
+      "name": "data-table",
+      "type": "registry:component",
+      "title": "Data table",
+      "description": "Rows in columns with sortable headers, row selection, row click, a pager and a footer, and a grid variant with cell borders and a sticky first column",
+      "registryDependencies": [
+        "utils",
+        "table",
+        "skeleton",
+        "alert",
+        "button",
+        "checkbox",
+        "text",
+        "error-state",
+        "collection-controls",
+        "popover",
+        "dropdown-menu",
+        "label"
+      ],
+      "files": [
+        {
+          "path": "src/components/data-table.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "docs": "Pass usePagedRows(table, { page, pageSize, orderBy, ascending, filters }).data to rows and page, and keep sort, page and selection in state.",
+      "dependencies": [
+        "lucide-react@^1.51.0"
+      ]
+    },
+    {
+      "name": "record-form",
+      "type": "registry:component",
+      "title": "Record form",
+      "description": "One control per field, with text, number, email, date, textarea and select fields and an error beside each wrong field",
+      "registryDependencies": [
+        "utils",
+        "button",
+        "input",
+        "label",
+        "alert",
+        "select",
+        "text",
+        "textarea",
+        "form-field"
+      ],
+      "files": [
+        {
+          "path": "src/components/record-form.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "docs": "Pass useInsertRow(table).mutateAsync, isPending and error to RecordForm. It clears when the insert resolves and keeps the values when it fails."
+    },
+    {
+      "name": "stepper",
+      "type": "registry:component",
+      "title": "Stepper",
+      "description": "The steps of a form in several parts as done, current and upcoming, with done steps to go back to, and a step count and a progress bar on a phone",
+      "dependencies": [
+        "lucide-react@^1.51.0"
+      ],
+      "registryDependencies": [
+        "utils",
+        "progress",
+        "text",
+        "button"
+      ],
+      "files": [
+        {
+          "path": "src/components/stepper.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "docs": "Keep the step in useUrlState and pass it as current; pass onStepSelect to let a member go back to a done step."
+    },
+    {
+      "name": "line-items",
+      "type": "registry:component",
+      "title": "Line items",
+      "description": "Editable lines of an order, quote or invoice with quantity, unit price, tax and each line's amount, a subtotal, tax and total footer and cards on a phone, and lineItemTotals, which adds lines up in whole minor units",
+      "registryDependencies": [
+        "utils",
+        "button",
+        "input",
+        "label",
+        "skeleton",
+        "text",
+        "format",
+        "use-breakpoint",
+        "table"
+      ],
+      "files": [
+        {
+          "path": "src/components/line-items.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "docs": "Map line rows to LineItem, keep edits in state with onChange and write them when the member saves (check lineItemsValid first); read an order total for a list with lineItemTotals(lines, currency).",
+      "dependencies": [
+        "lucide-react@^1.51.0"
+      ]
+    },
+    {
+      "name": "date-input",
+      "type": "registry:component",
+      "title": "Date input",
+      "description": "DateInput and DateRangeInput, which pick a day or a span of days with the browser's own date picker",
+      "registryDependencies": [
+        "utils",
+        "input",
+        "label",
+        "text",
+        "form-field",
+        "select"
+      ],
+      "files": [
+        {
+          "path": "src/components/date-input.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "docs": "The value is the member's day as YYYY-MM-DD, as a date column holds it; format it on screen with formatDate().",
+      "dependencies": [
+        "temporal-polyfill@1.0.8"
+      ]
+    },
+    {
+      "name": "calendar-view",
+      "type": "registry:component",
+      "title": "Calendar view",
+      "description": "CalendarView and CalendarLegend, which show a month grid from Monday and a week by the hour, with events coloured by chart colour, \"+N more\", arrow-key days and an agenda list on a phone, and the local-day maths they use",
+      "dependencies": [
+        "lucide-react@^1.51.0",
+        "temporal-polyfill@1.0.8"
+      ],
+      "registryDependencies": [
+        "utils",
+        "alert",
+        "button",
+        "heading",
+        "popover",
+        "skeleton",
+        "text",
+        "empty-state",
+        "format",
+        "use-breakpoint",
+        "error-state",
+        "date-input",
+        "label",
+        "select"
+      ],
+      "files": [
+        {
+          "path": "src/components/calendar-view.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "docs": "Read the rows that overlap visibleRange(view, date) (starts_at lt to, ends_at gt from), map each to { id, title, start, end, allDay, color }, and keep view and date in useUrlState; findOverlaps() checks a new booking against a resource's rows."
+    },
+    {
+      "name": "filter-bar",
+      "type": "registry:component",
+      "title": "Filter bar",
+      "description": "FilterBar and toRowFilters, which turn a search box and a Filter menu (or the F key) that adds a filter chip per field into query filters",
+      "dependencies": [
+        "cmdk@^1.1.1",
+        "lucide-react@^1.51.0"
+      ],
+      "registryDependencies": [
+        "utils",
+        "button",
+        "command-palette",
+        "input",
+        "popover",
+        "text",
+        "sheet",
+        "use-breakpoint"
+      ],
+      "files": [
+        {
+          "path": "src/components/filter-bar.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "docs": "Keep FilterValues in state and pass toRowFilters(value, { searchColumn }) to useRows or usePagedRows as filters."
+    },
+    {
+      "name": "record-detail",
+      "type": "registry:component",
+      "title": "Record detail",
+      "description": "RecordDetail and RecordDetailDialog, which show one record's fields with inline editing, and related records below",
+      "registryDependencies": [
+        "utils",
+        "alert",
+        "heading",
+        "input",
+        "select",
+        "skeleton",
+        "text",
+        "textarea",
+        "dialog",
+        "button",
+        "label"
+      ],
+      "files": [
+        {
+          "path": "src/components/record-detail.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "docs": "Pass useRow(table, id).data as row and save with useUpdateRow: onSave={(column, value) => update.mutateAsync({ id, values: { [column]: value } })}."
+    },
+    {
+      "name": "activity-timeline",
+      "type": "registry:component",
+      "title": "Activity timeline",
+      "description": "A record's comments and changes, oldest first, with an optional comment box",
+      "registryDependencies": [
+        "utils",
+        "button",
+        "text",
+        "textarea",
+        "record-name",
+        "format",
+        "use-arrivals"
+      ],
+      "files": [
+        {
+          "path": "src/components/activity-timeline.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "docs": "Read the record's comments and changes from a table of their own; pass onComment={(body) => insert.mutateAsync({ ... })}."
+    },
+    {
+      "name": "board",
+      "type": "registry:component",
+      "title": "Board",
+      "description": "Board and positionBetween, which show cards in columns with a toned dot, a count, a summary and a header action, moved by drag or with Alt and the arrow keys",
+      "dependencies": [
+        "@dnd-kit/core@^6.3.1"
+      ],
+      "registryDependencies": [
+        "utils",
+        "alert",
+        "skeleton",
+        "text",
+        "status-dot",
+        "breakpoints",
+        "scroll-fade",
+        "error-state",
+        "dropdown-menu",
+        "button"
+      ],
+      "files": [
+        {
+          "path": "src/components/board.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "docs": "Give the table a stage column and a numeric position column. Save each move with useUpdateRow: { [stage]: move.toColumn, position: move.position }."
+    },
+    {
+      "name": "command-palette",
+      "type": "registry:component",
+      "title": "Command palette",
+      "description": "CommandPalette and useHotkey, which give a searchable list of actions and records in a dialog, with nested pages, a context chip, a preview pane and page-wide keyboard shortcuts",
+      "dependencies": [
+        "cmdk@^1.1.1",
+        "lucide-react@^1.51.0"
+      ],
+      "registryDependencies": [
+        "utils",
+        "dialog",
+        "text"
+      ],
+      "files": [
+        {
+          "path": "src/components/command-palette.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "docs": "Hold open in state, open it with useHotkey('k', () => setOpen(true), { mod: true }), and pass actions and records as groups. Give an item `items` to open a page, such as Change status \u203a Todo; pass `context` for the record the actions act on."
+    },
+    {
+      "name": "property-picker",
+      "type": "registry:component",
+      "title": "Property picker",
+      "description": "One property of a record, such as status, priority or owner, set from a searchable menu with a chip, row or icon trigger",
+      "dependencies": [
+        "cmdk@^1.1.1",
+        "lucide-react@^1.51.0"
+      ],
+      "registryDependencies": [
+        "utils",
+        "popover",
+        "sheet",
+        "use-breakpoint",
+        "error-state",
+        "button"
+      ],
+      "files": [
+        {
+          "path": "src/components/property-picker.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "docs": "Save the chosen value with useUpdateRow. Pass open and onOpenChange to open it with a hotkey, such as S for status."
+    },
+    {
+      "name": "list-view",
+      "type": "registry:component",
+      "title": "List view",
+      "description": "A dense list of rows in collapsible groups, with J/K focus, X selection, Enter to open, a + per group and a right-click menu",
+      "dependencies": [
+        "lucide-react@^1.51.0"
+      ],
+      "registryDependencies": [
+        "utils",
+        "alert",
+        "checkbox",
+        "context-menu",
+        "skeleton",
+        "text",
+        "use-arrivals",
+        "error-state",
+        "button",
+        "collapsible"
+      ],
+      "files": [
+        {
+          "path": "src/components/list-view.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "docs": "Group the rows from useRows by a column such as status. Use onFocusedChange to point hotkeys at the focused row."
+    },
+    {
+      "name": "card-grid",
+      "type": "registry:component",
+      "title": "Card grid",
+      "description": "Records as cards in a responsive grid, each one button or link with a picture or tinted fallback, a two-line title, a meta line, a status and a figure, with loading, empty, error and open states",
+      "registryDependencies": [
+        "utils",
+        "alert",
+        "skeleton",
+        "text",
+        "error-state",
+        "button",
+        "checkbox"
+      ],
+      "files": [
+        {
+          "path": "src/components/card-grid.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "docs": "Pass useRows or usePagedRows rows with title, meta, image and figure per row, keep the open record in useUrlState and pass its id to selected."
+    },
+    {
+      "name": "split-view",
+      "type": "registry:component",
+      "title": "Split view",
+      "description": "A list and the record opened from it side by side, each pane scrolling on its own, with the record in place of the list and a Back button on a phone",
+      "dependencies": [
+        "lucide-react@^1.51.0"
+      ],
+      "registryDependencies": [
+        "utils",
+        "button",
+        "use-breakpoint"
+      ],
+      "files": [
+        {
+          "path": "src/components/split-view.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "docs": "Keep the open record id in useUrlState, pass the list as list and the open record as detail, and clear the id in onBack."
+    },
+    {
+      "name": "orb-spinner",
+      "type": "registry:ui",
+      "title": "Orb spinner",
+      "description": "The OAIZ four-petal spinner that shows the agent is working",
+      "registryDependencies": [
+        "utils"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/orb-spinner.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "voice-orb",
+      "type": "registry:ui",
+      "title": "Voice orb",
+      "description": "The OAIZ voice orb, a drifting mesh that swells with the voice model's loudness",
+      "registryDependencies": [
+        "utils",
+        "theme"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/voice-orb.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/lib/speech-level.ts",
+          "type": "registry:lib"
+        }
+      ]
+    },
+    {
+      "name": "shimmer-text",
+      "type": "registry:ui",
+      "title": "Shimmer text",
+      "description": "Text with a moving shimmer, for work in progress",
+      "dependencies": [
+        "@radix-ui/react-slot@^1.3.3",
+        "class-variance-authority@^0.7.1"
+      ],
+      "registryDependencies": [
+        "utils"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/shimmer-text.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "chat-panel",
+      "type": "registry:component",
+      "title": "Chat panel",
+      "description": "A conversation as in OAIZ chat, with Markdown answers, one collapsing activity row per run of tools, a composer card with a stop button, a scroll-to-latest button, and voice with an orb, mute and the spoken line",
+      "dependencies": [
+        "lucide-react@^1.51.0",
+        "react-markdown@^10.1.0",
+        "remark-breaks@^4.0.0",
+        "remark-gfm@^4.0.1"
+      ],
+      "registryDependencies": [
+        "utils",
+        "oaiz-chat",
+        "avatar",
+        "button",
+        "heading",
+        "orb-spinner",
+        "shimmer-text",
+        "skeleton",
+        "text",
+        "voice-orb",
+        "scroll-fade",
+        "table",
+        "textarea",
+        "separator"
+      ],
+      "files": [
+        {
+          "path": "src/components/chat-panel.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/chat-markdown.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "docs": "Pass the rows and status of useOaizChat to ChatPanel, with send, stop and retry as onSend, onStop and onRetry. Give its parent a height. Pass empty for the greeting above the centred composer and emptyFooter for suggested questions below it. Pass voice of useOaizChat to offer voice."
+    },
+    {
+      "name": "form-field",
+      "type": "registry:ui",
+      "title": "Form fields and errors",
+      "description": "FormField, FieldGroup and ErrorSummary, which compose labels, required state, hints and linked validation feedback",
+      "registryDependencies": [
+        "label",
+        "text",
+        "utils"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/form-field.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "radio-group",
+      "type": "registry:ui",
+      "title": "Radio group and choice cards",
+      "description": "Native single-choice options with descriptions, required state and card presentation",
+      "registryDependencies": [
+        "form-field",
+        "text",
+        "utils"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/radio-group.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "alert-dialog",
+      "type": "registry:ui",
+      "title": "Alert dialog",
+      "description": "An explicit confirmation dialog with least-destructive initial focus and focus return",
+      "registryDependencies": [
+        "dialog"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/alert-dialog.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "file-upload",
+      "type": "registry:component",
+      "title": "File upload and attachments",
+      "description": "FileUpload and AttachmentList, which give picking, dropping, validation, controlled progress, previews, cancellation and removal, with the upload itself left to the app",
+      "registryDependencies": [
+        "utils",
+        "button",
+        "text",
+        "dialog",
+        "input",
+        "progress",
+        "skeleton"
+      ],
+      "files": [
+        {
+          "path": "src/components/file-upload.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "dependencies": [
+        "lucide-react@^1.51.0"
+      ]
+    },
+    {
+      "name": "confirm-action",
+      "type": "registry:component",
+      "title": "Confirm action",
+      "description": "A reusable explicit action confirmation with asynchronous pending and failure states",
+      "registryDependencies": [
+        "alert",
+        "alert-dialog",
+        "button"
+      ],
+      "files": [
+        {
+          "path": "src/components/confirm-action.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "save-bar",
+      "type": "registry:component",
+      "title": "Save bar and unsaved changes",
+      "description": "SaveBar and UnsavedChanges, which compose dirty, saving, saved and error states with explicit save, discard and navigation decisions",
+      "registryDependencies": [
+        "utils",
+        "confirm-action",
+        "button",
+        "text"
+      ],
+      "files": [
+        {
+          "path": "src/components/save-bar.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "collection-controls",
+      "type": "registry:component",
+      "title": "Collection controls",
+      "description": "Pager, sorting and BulkActionBar controls for caller-owned paging, sorting and page-versus-all selection",
+      "registryDependencies": [
+        "button",
+        "text",
+        "label",
+        "select",
+        "switch"
+      ],
+      "files": [
+        {
+          "path": "src/components/collection-controls.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "error-state",
+      "type": "registry:component",
+      "title": "Error state",
+      "description": "A consistent collection error panel with an optional explicit retry, which the app runs",
+      "registryDependencies": [
+        "alert",
+        "button"
+      ],
+      "files": [
+        {
+          "path": "src/components/error-state.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "resizable",
+      "type": "registry:ui",
+      "title": "Resizable panels",
+      "description": "Keyboard and pointer resizing between named panels",
+      "files": [
+        {
+          "path": "src/components/ui/resizable.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "registryDependencies": [
+        "utils"
+      ],
+      "dependencies": [
+        "react-resizable-panels@^4.14.2"
+      ]
+    },
+    {
+      "name": "detail-disclosure-section",
+      "type": "registry:ui",
+      "title": "Detail disclosure section",
+      "description": "Collapsible detail sections with caller-localised action labels",
+      "files": [
+        {
+          "path": "src/components/ui/detail-disclosure-section.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "docs": "Supply getToggleLabel for localised accessible action names.",
+      "registryDependencies": [
+        "button",
+        "collapsible",
+        "heading",
+        "text",
+        "utils"
+      ],
+      "dependencies": [
+        "lucide-react@^1.51.0"
+      ]
+    },
+    {
+      "name": "top-banner",
+      "type": "registry:ui",
+      "title": "Top banner",
+      "description": "Wrapping notices with independent actions and dismissal",
+      "files": [
+        {
+          "path": "src/components/ui/top-banner.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "registryDependencies": [
+        "button",
+        "separator",
+        "text",
+        "utils"
+      ],
+      "dependencies": [
+        "class-variance-authority@^0.7.1",
+        "lucide-react@^1.51.0"
+      ]
+    },
+    {
+      "name": "grouped-picker",
+      "type": "registry:component",
+      "title": "Grouped picker",
+      "description": "Category navigation and controlled multiselection with phone detail navigation",
+      "files": [
+        {
+          "path": "src/components/grouped-picker.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "registryDependencies": [
+        "button",
+        "checkbox",
+        "heading",
+        "input",
+        "label",
+        "property-picker",
+        "split-view",
+        "text",
+        "utils"
+      ],
+      "dependencies": [
+        "lucide-react@^1.51.0"
+      ]
+    },
+    {
+      "name": "time-zone-picker",
+      "type": "registry:component",
+      "title": "Time zone picker",
+      "description": "Searchable IANA time zone selection with offsets",
+      "files": [
+        {
+          "path": "src/components/time-zone-picker.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "registryDependencies": [
+        "property-picker"
+      ]
+    },
+    {
+      "name": "text-diff",
+      "type": "registry:component",
+      "title": "Text diff",
+      "description": "Bounded line comparison with addition and deletion labels",
+      "files": [
+        {
+          "path": "src/components/text-diff.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/text-diff-model.ts",
+          "type": "registry:component"
+        }
+      ],
+      "registryDependencies": [
+        "alert",
+        "text",
+        "utils"
+      ]
+    },
+    {
+      "name": "code-editor",
+      "type": "registry:component",
+      "title": "Code editor",
+      "description": "Controlled Python and SQL editing with schema completion and theme tokens",
+      "files": [
+        {
+          "path": "src/components/code-editor.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "docs": "Pass labels and SQL schema from the caller. Tab leaves the editor; Mod+Enter invokes onSubmit.",
+      "registryDependencies": [
+        "select",
+        "utils"
+      ],
+      "dependencies": [
+        "@codemirror/autocomplete@^6.20.3",
+        "@codemirror/commands@^6.11.1",
+        "@codemirror/lang-python@^6.2.1",
+        "@codemirror/lang-sql@6.10.0",
+        "@codemirror/language@6.13.1",
+        "@codemirror/state@^6.7.6",
+        "@codemirror/view@^6.43.13",
+        "@lezer/highlight@1.2.5"
+      ]
+    }
+  ]
+}

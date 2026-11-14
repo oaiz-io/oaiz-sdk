@@ -1,0 +1,21 @@
+/* ============================================================================
+   OAIZ APP STYLES
+
+   What apps built on the OAIZ app kit add to tokens.css. Import this file
+   after tokens.css. Apps keep their own typeface: `font-sans` in
+   tokens.css, the system font stack.
+
+   - The enter and exit animations (`animate-in`, `fade-in-0`,
+     `slide-in-from-*`) that dialogs, popovers, sheets, menus and toasts use.
+     Reduced motion stops them with every other animation in tokens.css.
+   - The timing of the cross-fade between screens (`useUrlState` with
+     `history: 'push'`), which the hook skips under reduced motion.
+   ============================================================================ */
+
+@import 'tw-animate-css';
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: var(--duration-200);
+  animation-timing-function: var(--ease-move);
+}
