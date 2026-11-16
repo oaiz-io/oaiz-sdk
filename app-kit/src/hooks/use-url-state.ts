@@ -25,23 +25,28 @@ export type UrlStateOptions = {
 
 /**
  * One value in the page address, read and set like `useState`, so that a reload and Back keep it
- * and a link shares it. The address leaves out a value equal to `initial`.
+ * and a link shares it. The address leaves out a value equal to `initial`. The setter's optional
+ * second argument updates related keys in the same navigation; `null` removes a key.
  */
 export function useUrlState(
   key: string,
   initial = '',
   options: UrlStateOptions = {},
-): [string, (next: string) => void] {
+): [string, (next: string, related?: Record<string, string | null>) => void] {
   const history = options.history ?? 'replace';
   const value = useSyncExternalStore(
     subscribe,
     () => new URLSearchParams(window.location.search).get(key) ?? initial,
   );
   const set = useCallback(
-    (next: string) => {
+    (next: string, related: Record<string, string | null> = {}) => {
       // Values set while a push waits for its transition join that push, so one click that sets
       // two values makes one history entry holding both.
       const url = new URL((pending ?? window.location).href);
+      for (const [relatedKey, relatedValue] of Object.entries(related)) {
+        if (relatedValue === null) url.searchParams.delete(relatedKey);
+        else url.searchParams.set(relatedKey, relatedValue);
+      }
       if (next === initial) url.searchParams.delete(key);
       else url.searchParams.set(key, next);
       if (pending) {
