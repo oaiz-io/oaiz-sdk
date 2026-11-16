@@ -243,7 +243,7 @@ import { oaiz } from "./oaiz.js";
 
 export async function weeklyReport(week: number) {
   const run = oaiz.runs.start("<job id>", {
-    event: { eventType: { provider: "custom", name: "report-requested" }, properties: { week } },
+    event: { eventType: { provider: "reports", name: "report-requested" }, properties: { week } },
   });
   let reason = "";
   for await (const { data: progress, error } of run) {
@@ -266,9 +266,11 @@ example the ones an event started, with `triggeringEventUuid`.
 
 ## Publish an event
 
-An event's type is a `provider` and a `name`, each made of letters, digits and hyphens. Use the
-provider `custom` for your own events; `storage`, `schedule` and the names of integration providers
-such as `gmail` are reserved. Workflows that listen for the type start on it.
+An event's type is a `provider` and a `name`, each made of letters, digits and hyphens. Name the
+provider after your app and the name after what happened, both lowercase with hyphens, for example
+`orders/order-created`. Whoever publishes a type first claims it; a later publisher needs Edit on
+it. `storage`, `schedule`, `oaiz-internal`, integration providers such as `gmail` and providers
+that start with `custom-` are reserved. Workflows that listen for the type start on it.
 
 ```ts
 // server/events.ts
@@ -276,7 +278,7 @@ import { oaiz } from "./oaiz.js";
 
 export async function orderCreated(orderId: string, total: number) {
   const { data, error } = await oaiz.events.publish({
-    eventType: { provider: "custom", name: "order-created" },
+    eventType: { provider: "orders", name: "order-created" },
     properties: { orderId, total },
   });
   if (error) throw new Error(error.message);
