@@ -16,7 +16,7 @@ const badgeVariants = cva(
         default:
           'border-transparent bg-primary text-primary-foreground hover:bg-primary/80',
         secondary:
-          'border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80',
+          'border-transparent bg-muted text-foreground hover:bg-muted/80',
         destructive:
           'border-transparent bg-destructive text-destructive-foreground',
         // Status fills pair with their own foreground token and carry no hover

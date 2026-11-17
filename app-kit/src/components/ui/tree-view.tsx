@@ -165,7 +165,7 @@ function TreeView({
             }}
             className={cn(
               'flex cursor-pointer select-none items-center gap-1.5 rounded-sm py-1.5 pr-inline outline-none transition-colors duration-fast ease-move hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring max-mobile:py-inset [&_svg]:size-4 [&_svg]:shrink-0',
-              isSelected && 'bg-accent text-accent-foreground',
+              isSelected && 'bg-accent text-foreground',
             )}
           >
             <span

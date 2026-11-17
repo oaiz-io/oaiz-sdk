@@ -14,13 +14,12 @@ const buttonVariants = cva(
         destructive:
           'bg-destructive text-destructive-foreground hover:bg-destructive/90',
         outline:
-          'border border-input bg-background hover:bg-accent text-card-foreground hover:text-accent-foreground',
-        secondary:
-          'bg-secondary text-secondary-foreground hover:bg-secondary/80',
-        info: 'bg-info-solid text-info-solid-foreground hover:bg-info-solid/90',
+          'border border-input bg-background hover:bg-accent text-foreground hover:text-foreground',
+        secondary: 'bg-muted text-foreground hover:bg-muted/80',
+        info: 'bg-info-solid text-info-solid-foreground hover:bg-info-solid-hover',
         brand: 'bg-logo-yellow text-brand-foreground hover:bg-logo-yellow/90',
-        success: 'bg-success text-success-foreground hover:bg-success/90',
-        ghost: 'hover:bg-accent hover:text-accent-foreground',
+        success: 'bg-success text-success-foreground hover:bg-success-hover',
+        ghost: 'hover:bg-accent hover:text-foreground',
         plain: 'bg-transparent',
         filled:
           'border border-transparent bg-input-fill text-muted-foreground font-normal hover:bg-input-fill-hover focus-visible:not-data-[pointer-close-focus]:border-input focus-visible:not-data-[pointer-close-focus]:bg-background disabled:border-transparent disabled:bg-input-fill disabled:hover:bg-input-fill aria-invalid:border-destructive-text aria-invalid:focus-visible:border-destructive-text',

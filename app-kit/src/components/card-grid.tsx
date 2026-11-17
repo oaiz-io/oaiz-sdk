@@ -380,7 +380,7 @@ export function CardGrid<Row>({
               </>
             );
             const cardClass = cn(
-              'group/card relative flex h-full w-full justify-start gap-inset whitespace-normal p-0 text-left text-card-foreground max-mobile:p-inset mobile:flex-col mobile:gap-0',
+              'group/card relative flex h-full w-full justify-start gap-inset whitespace-normal p-0 text-left text-foreground max-mobile:p-inset mobile:flex-col mobile:gap-0',
               interactive &&
                 'cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring hover:bg-muted/50',
             );
@@ -396,7 +396,7 @@ export function CardGrid<Row>({
               <li
                 key={key}
                 className={cn(
-                  'flex min-w-0 flex-col overflow-hidden rounded-lg border bg-card text-card-foreground',
+                  'flex min-w-0 flex-col overflow-hidden rounded-lg border bg-card text-foreground',
                   (isSelected || checked) &&
                     'border-primary ring-2 ring-primary/30',
                 )}

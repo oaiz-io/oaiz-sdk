@@ -312,7 +312,7 @@ function Details<Row>({
   return (
     <div
       role="status"
-      className="absolute right-0 top-0 z-10 flex max-w-full flex-col gap-1 rounded-md border bg-popover p-inline text-sm text-popover-foreground shadow-md"
+      className="absolute right-0 top-0 z-10 flex max-w-full flex-col gap-1 rounded-md border bg-popover p-inline text-sm text-foreground shadow-md"
     >
       <strong>{x(row)}</strong>
       {series.map((s) => (

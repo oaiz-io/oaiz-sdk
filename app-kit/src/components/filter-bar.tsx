@@ -64,7 +64,7 @@ export type FilterBarProps = {
 };
 
 const ITEM =
-  'flex h-8 max-mobile:h-11 cursor-pointer items-center gap-inline rounded-sm px-inline text-sm text-foreground data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground';
+  'flex h-8 max-mobile:h-11 cursor-pointer items-center gap-inline rounded-sm px-inline text-sm text-foreground data-[selected=true]:bg-accent data-[selected=true]:text-foreground';
 const SEARCH_DELAY_MS = 250;
 
 /** One condition of `toRowFilters`; `useRows` and `usePagedRows` accept it as a `RowFilter`. */

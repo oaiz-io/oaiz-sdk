@@ -305,7 +305,7 @@ const SEARCH_CLASS =
   'h-9 border-b bg-transparent px-inset text-base outline-none placeholder:text-muted-foreground max-mobile:h-11 mobile:text-sm';
 const LIST_CLASS = 'max-h-64 overflow-y-auto p-1 max-mobile:max-h-none';
 const ITEM_CLASS =
-  'flex h-8 cursor-pointer items-center gap-inline rounded-sm px-inline text-sm text-foreground data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground max-mobile:h-11 [&_svg]:size-3.5';
+  'flex h-8 cursor-pointer items-center gap-inline rounded-sm px-inline text-sm text-foreground data-[selected=true]:bg-accent data-[selected=true]:text-foreground max-mobile:h-11 [&_svg]:size-3.5';
 const TRIGGER_STATES =
   'transition-colors duration-fast focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:size-3.5 [&_svg]:shrink-0';
 

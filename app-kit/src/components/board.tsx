@@ -147,7 +147,7 @@ function Card<Item>({
       aria-describedby={instructions}
       data-testid="board-card"
       className={cn(
-        'touch-manipulation rounded-md border bg-card p-inset text-left text-sm text-card-foreground outline-none transition-shadow duration-fast ease-move hover:shadow-sm focus-visible:ring-2 focus-visible:ring-ring',
+        'touch-manipulation rounded-md border bg-card p-inset text-left text-sm text-foreground outline-none transition-shadow duration-fast ease-move hover:shadow-sm focus-visible:ring-2 focus-visible:ring-ring',
         onOpen && 'cursor-pointer',
         drag.isDragging && 'opacity-40',
         drop.isOver && !drag.isDragging && 'ring-2 ring-primary/40',
@@ -690,7 +690,7 @@ export function Board<Item>({
       {/* No drop animation: it flies to where the card was before the move, not where it lands. */}
       <DragOverlay dropAnimation={null}>
         {activeItem ? (
-          <div className="rotate-1 rounded-md border bg-card p-inset text-sm text-card-foreground shadow-lg">
+          <div className="rotate-1 rounded-md border bg-card p-inset text-sm text-foreground shadow-lg">
             {renderCard(activeItem)}
           </div>
         ) : null}

@@ -453,7 +453,7 @@ export function ListView<Row>({
                                 …
                               </Button>
                             </CollapsibleTrigger>
-                            <CollapsibleContent className="absolute right-0 z-20 w-72 max-w-[80vw] whitespace-normal break-words rounded-md border bg-popover p-inset text-popover-foreground shadow-md">
+                            <CollapsibleContent className="absolute right-0 z-20 w-72 max-w-[80vw] whitespace-normal break-words rounded-md border bg-popover p-inset text-foreground shadow-md">
                               {fullRow(row)}
                             </CollapsibleContent>
                           </Collapsible>

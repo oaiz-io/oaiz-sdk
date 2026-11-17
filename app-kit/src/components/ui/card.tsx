@@ -13,7 +13,7 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
     <div
       ref={ref}
       className={cn(
-        'rounded-lg border bg-card text-card-foreground shadow-sm',
+        'rounded-lg border bg-card text-foreground shadow-sm',
         interactive &&
           'transition-shadow duration-normal ease-move hover:shadow-lg focus-within:shadow-lg motion-reduce:transition-none',
         className,
@@ -45,10 +45,7 @@ const CardTitle = React.forwardRef<
     as="div"
     size="2xl"
     weight="semibold"
-    className={cn(
-      'leading-none tracking-tight text-card-foreground',
-      className,
-    )}
+    className={cn('leading-none tracking-tight text-foreground', className)}
   >
     <div ref={ref} {...props} />
   </Heading>

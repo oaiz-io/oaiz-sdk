@@ -372,7 +372,7 @@ function Item({
       value={valueOf(item)}
       keywords={searched ? [...(item.keywords ?? []), SEARCHED] : item.keywords}
       onSelect={() => onRun(item)}
-      className="flex h-9 cursor-pointer items-center gap-inline rounded-sm px-inline text-sm text-foreground max-mobile:h-11 data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground"
+      className="flex h-9 cursor-pointer items-center gap-inline rounded-sm px-inline text-sm text-foreground max-mobile:h-11 data-[selected=true]:bg-accent data-[selected=true]:text-foreground"
     >
       {item.icon && (
         <span className="flex size-4 shrink-0 items-center justify-center text-muted-foreground [&_svg]:size-4">

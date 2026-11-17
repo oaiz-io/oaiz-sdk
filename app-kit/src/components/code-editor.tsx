@@ -62,8 +62,8 @@ const theme = EditorView.theme({
   '&': {
     height: '100%',
     maxWidth: '100%',
-    color: 'var(--color-code-foreground)',
-    backgroundColor: 'var(--color-code-background)',
+    color: 'var(--color-foreground)',
+    backgroundColor: 'var(--color-background)',
   },
   '&.cm-focused': {
     outline: '2px solid var(--color-ring)',
@@ -91,7 +91,7 @@ const theme = EditorView.theme({
   },
   '.cm-tooltip': {
     backgroundColor: 'var(--color-popover)',
-    color: 'var(--color-popover-foreground)',
+    color: 'var(--color-foreground)',
     border: '1px solid var(--color-border)',
   },
   '.cm-tooltip-autocomplete ul li[aria-selected]': {

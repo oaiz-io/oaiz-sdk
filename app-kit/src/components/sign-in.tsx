@@ -53,7 +53,7 @@ export function SignInScreen({
       aria-busy={loading}
       className="flex min-h-svh flex-col items-center justify-center gap-stack bg-muted p-page"
     >
-      <section className="flex w-full max-w-sm flex-col gap-section rounded-lg border bg-card p-section text-card-foreground shadow-sm">
+      <section className="flex w-full max-w-sm flex-col gap-section rounded-lg border bg-card p-section text-foreground shadow-sm">
         {loading ? (
           <div className="flex flex-col items-center gap-stack">
             <Skeleton className="size-12 rounded-full" />
