@@ -269,8 +269,8 @@ example the ones an event started, with `triggeringEventUuid`.
 An event's type is a `provider` and a `name`, each made of letters, digits and hyphens. Name the
 provider after your app and the name after what happened, both lowercase with hyphens, for example
 `orders/order-created`. Whoever publishes a type first claims it; a later publisher needs Edit on
-it. `storage`, `schedule`, `oaiz-internal`, integration providers such as `gmail` and providers
-that start with `custom-` are reserved. Workflows that listen for the type start on it.
+it. `storage`, `schedule`, `oaiz-internal` and integration providers such as `gmail` are reserved.
+Workflows that listen for the type start on it.
 
 ```ts
 // server/events.ts
