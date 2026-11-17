@@ -125,6 +125,7 @@ export type {
   DtoExpectedValueType,
   DtoFileReference,
   DtoFileReferenceInput,
+  DtoFolderReferenceDTO,
   DtoGeneratedKnowledgeArtifact,
   DtoGeneratorOutput,
   DtoGetNativeToolsOutput,

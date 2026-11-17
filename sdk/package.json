@@ -25,7 +25,7 @@
     "build": "cd publish && tsdown --log-level warn",
     "check": "tsc -p publish/tsconfig.json --noEmit && tsc -p publish/tsconfig.testmode.json --noEmit",
     "test": "vitest run --config publish/vitest.config.mjs && node --test publish/smoke.test.mjs publish/readme.test.mjs",
-    "pack": "node publish/pack.mjs oaiz-sdk-0.1.4164.tgz package/package.json=publish.json package/README.md=README.md package/LICENSE=LICENSE package/dist=publish/dist"
+    "pack": "node publish/pack.mjs oaiz-sdk-0.1.4172.tgz package/package.json=publish.json package/README.md=README.md package/LICENSE=LICENSE package/dist=publish/dist"
   },
   "devDependencies": {
     "@electric-sql/pglite": "0.5.15",

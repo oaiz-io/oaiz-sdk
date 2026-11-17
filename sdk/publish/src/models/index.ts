@@ -76,6 +76,7 @@ export * from "./dto-execution-status";
 export * from "./dto-expected-value-type";
 export * from "./dto-file-reference";
 export * from "./dto-file-reference-input";
+export * from "./dto-folder-reference-dto";
 export * from "./dto-generated-knowledge-artifact";
 export * from "./dto-generator-output";
 export * from "./dto-get-native-tools-output";
