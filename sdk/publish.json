@@ -1,6 +1,6 @@
 {
   "name": "@oaiz/sdk",
-  "version": "0.1.4182",
+  "version": "0.1.4191",
   "license": "MIT",
   "sideEffects": false,
   "peerDependencies": {

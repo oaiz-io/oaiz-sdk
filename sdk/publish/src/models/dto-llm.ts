@@ -47,6 +47,8 @@ export const DtoLLM = {
   OpenaiGpt6Sol: "openai/gpt-6-sol",
   OpenaiGpt61Sol: "openai/gpt-6.1-sol",
   OpenaiGpt61Terra: "openai/gpt-6.1-terra",
+  OpenaiGpt62Astra: "openai/gpt-6.2-astra",
+  OpenaiGpt62Sol: "openai/gpt-6.2-sol",
   OpenrouterDeepseekV32: "openrouter/deepseek-v3.2",
   OpenrouterDeepseekV4Flash: "openrouter/deepseek-v4-flash",
   OpenrouterDeepseekV4Pro: "openrouter/deepseek-v4-pro",
