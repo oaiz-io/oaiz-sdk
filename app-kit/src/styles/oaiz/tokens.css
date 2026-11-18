@@ -131,6 +131,21 @@
   --palette-amber-4: oklch(0.78 0.158 92);
   --palette-amber-5: oklch(0.41 0.083 85);
 
+  /* Chart series hues. Each has one shade per theme and no other use: the status
+     families above keep their meaning. Light shades stay just above the 3:1
+     graphic contrast floor; dark shades are softened. Lightness varies a little
+     between series so neighbours still differ for colour-blind readers. */
+  --palette-chart-violet-light: oklch(0.64 0.17 285);
+  --palette-chart-violet-dark: oklch(0.7 0.13 285);
+  --palette-chart-orange-light: oklch(0.64 0.14 60);
+  --palette-chart-orange-dark: oklch(0.7 0.12 60);
+  --palette-chart-sky-light: oklch(0.64 0.108 225);
+  --palette-chart-sky-dark: oklch(0.7 0.1 225);
+  --palette-chart-pink-light: oklch(0.68 0.17 335);
+  --palette-chart-pink-dark: oklch(0.74 0.14 335);
+  --palette-chart-neutral-light: oklch(0.64 0.01 260);
+  --palette-chart-neutral-dark: oklch(0.7 0.007 260);
+
   /* Semantic role mappings (light theme) */
   /* Neutral roles share anchors; interaction surfaces derive from the scale. */
   --role-background: var(--palette-white);
@@ -184,11 +199,11 @@
   --role-warning-text: var(--palette-amber-5);
   --role-knowledge-bg: var(--palette-amber-1);
   --role-recording: var(--palette-red-5);
-  --role-chart-1: var(--palette-blue-4);
-  --role-chart-2: var(--palette-green-4);
-  --role-chart-3: var(--palette-zinc-4);
-  --role-chart-4: var(--palette-amber-5);
-  --role-chart-5: var(--palette-red-4);
+  --role-chart-1: var(--palette-chart-violet-light);
+  --role-chart-2: var(--palette-chart-orange-light);
+  --role-chart-3: var(--palette-chart-sky-light);
+  --role-chart-4: var(--palette-chart-pink-light);
+  --role-chart-5: var(--palette-chart-neutral-light);
 
   /* Parser roles share four inks, independent of feedback semantics. */
   --role-code-key-text: var(--palette-red-4);
@@ -522,6 +537,16 @@
   --color-amber-3: var(--palette-amber-3);
   --color-amber-4: var(--palette-amber-4);
   --color-amber-5: var(--palette-amber-5);
+  --color-chart-violet-light: var(--palette-chart-violet-light);
+  --color-chart-violet-dark: var(--palette-chart-violet-dark);
+  --color-chart-orange-light: var(--palette-chart-orange-light);
+  --color-chart-orange-dark: var(--palette-chart-orange-dark);
+  --color-chart-sky-light: var(--palette-chart-sky-light);
+  --color-chart-sky-dark: var(--palette-chart-sky-dark);
+  --color-chart-pink-light: var(--palette-chart-pink-light);
+  --color-chart-pink-dark: var(--palette-chart-pink-dark);
+  --color-chart-neutral-light: var(--palette-chart-neutral-light);
+  --color-chart-neutral-dark: var(--palette-chart-neutral-dark);
 }
 
 /* Radix measures each panel and exposes its exact block size through this
@@ -666,11 +691,11 @@
   --role-warning-text: var(--palette-amber-1);
   --role-knowledge-bg: var(--palette-amber-5);
   --role-recording: var(--palette-red-1);
-  --role-chart-1: var(--palette-blue-3);
-  --role-chart-2: var(--palette-green-3);
-  --role-chart-3: var(--palette-zinc-3);
-  --role-chart-4: var(--palette-amber-3);
-  --role-chart-5: var(--palette-red-3);
+  --role-chart-1: var(--palette-chart-violet-dark);
+  --role-chart-2: var(--palette-chart-orange-dark);
+  --role-chart-3: var(--palette-chart-sky-dark);
+  --role-chart-4: var(--palette-chart-pink-dark);
+  --role-chart-5: var(--palette-chart-neutral-dark);
   --role-code-key-text: var(--palette-red-2);
   --role-code-string-text: var(--palette-green-2);
   --role-code-null-text: var(--role-muted-foreground);
