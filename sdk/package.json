@@ -1,7 +1,7 @@
 {
   "name": "oaiz-sdk-build",
   "private": true,
-  "packageManager": "pnpm@12.18.0",
+  "packageManager": "pnpm@12.19.0",
   "license": "MIT",
   "type": "module",
   "sideEffects": false,
@@ -25,7 +25,7 @@
     "build": "cd publish && tsdown --log-level warn",
     "check": "tsc -p publish/tsconfig.json --noEmit && tsc -p publish/tsconfig.testmode.json --noEmit",
     "test": "vitest run --config publish/vitest.config.mjs && node --test publish/smoke.test.mjs publish/readme.test.mjs",
-    "pack": "node publish/pack.mjs oaiz-sdk-0.1.4191.tgz package/package.json=publish.json package/README.md=README.md package/LICENSE=LICENSE package/dist=publish/dist"
+    "pack": "node publish/pack.mjs oaiz-sdk-0.1.4199.tgz package/package.json=publish.json package/README.md=README.md package/LICENSE=LICENSE package/dist=publish/dist"
   },
   "devDependencies": {
     "@electric-sql/pglite": "0.5.15",
@@ -33,7 +33,7 @@
     "@types/node": "^26.0.0",
     "tsdown": "0.23.7",
     "typescript": "7.0.2",
-    "vite": "8.3.6",
+    "vite": "8.3.8",
     "vitest": "5.0.5"
   }
 }

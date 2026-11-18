@@ -6,6 +6,7 @@ export const DtoActionType = {
   BatchScrape: "batch-scrape",
   Callback: "callback",
   Code: "code",
+  ConversationAgent: "conversation-agent",
   Crawl: "crawl",
   CreateKnowledgeDocument: "create-knowledge-document",
   Crisp: "crisp",
