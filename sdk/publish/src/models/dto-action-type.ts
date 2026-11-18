@@ -4,6 +4,7 @@ export const DtoActionType = {
   Attio: "attio",
   AwaitEvent: "await-event",
   BatchScrape: "batch-scrape",
+  Bokio: "bokio",
   Callback: "callback",
   Code: "code",
   ConversationAgent: "conversation-agent",
