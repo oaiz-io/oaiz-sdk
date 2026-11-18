@@ -8,7 +8,32 @@ import { cspNonce } from '../../lib/csp-nonce';
 import { cn, usePointerCloseFocus } from '../../lib/utils';
 import { Text } from './text';
 
-const Select = SelectPrimitive.Root;
+const SelectInputContext = React.createContext<{
+  pointerInput: boolean;
+  setPointerInput: (pointer: boolean) => void;
+} | null>(null);
+
+function useSelectInput() {
+  const input = React.useContext(SelectInputContext);
+  if (!input) throw new Error('Select parts must be rendered inside <Select>');
+  return input;
+}
+
+function Select(props: React.ComponentProps<typeof SelectPrimitive.Root>) {
+  const [pointerInput, setPointerInput] = React.useState(false);
+  const input = React.useMemo(
+    () => ({ pointerInput, setPointerInput }),
+    [pointerInput],
+  );
+
+  return (
+    <SelectInputContext.Provider value={input}>
+      <SelectPrimitive.Root {...props} />
+    </SelectInputContext.Provider>
+  );
+}
+
+Select.displayName = 'Select';
 
 const SelectGroup = SelectPrimitive.Group;
 
@@ -44,18 +69,35 @@ export interface SelectTriggerProps
 const SelectTrigger = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Trigger>,
   SelectTriggerProps
->(({ className, variant, size, children, ...props }, ref) => (
-  <SelectPrimitive.Trigger
-    ref={ref}
-    className={cn(selectTriggerVariants({ variant, size, className }))}
-    {...props}
-  >
-    {children}
-    <SelectPrimitive.Icon asChild>
-      <ChevronDown className="h-4 w-4 opacity-50" />
-    </SelectPrimitive.Icon>
-  </SelectPrimitive.Trigger>
-));
+>(
+  (
+    { className, variant, size, children, onPointerDown, onKeyDown, ...props },
+    ref,
+  ) => {
+    const input = useSelectInput();
+    return (
+      <SelectPrimitive.Trigger
+        ref={ref}
+        className={cn(selectTriggerVariants({ variant, size, className }))}
+        {...props}
+        onPointerDown={(event) => {
+          onPointerDown?.(event);
+          if (!event.defaultPrevented && event.button === 0 && !event.ctrlKey)
+            input.setPointerInput(true);
+        }}
+        onKeyDown={(event) => {
+          onKeyDown?.(event);
+          input.setPointerInput(false);
+        }}
+      >
+        {children}
+        <SelectPrimitive.Icon asChild>
+          <ChevronDown className="h-4 w-4 opacity-50" />
+        </SelectPrimitive.Icon>
+      </SelectPrimitive.Trigger>
+    );
+  },
+);
 SelectTrigger.displayName = SelectPrimitive.Trigger.displayName;
 
 const SelectScrollUpButton = React.forwardRef<
@@ -102,7 +144,9 @@ const SelectContent = React.forwardRef<
       className,
       children,
       position = 'popper',
+      onPointerMove,
       onPointerDownCapture,
+      onPointerUpCapture,
       onClickCapture,
       onKeyDownCapture,
       onEscapeKeyDown,
@@ -112,13 +156,18 @@ const SelectContent = React.forwardRef<
     },
     ref,
   ) => {
+    const input = useSelectInput();
     const pointerCloseFocus = usePointerCloseFocus({
       onPointerDownCapture,
+      onPointerUpCapture,
       onClickCapture,
       onKeyDownCapture,
       onEscapeKeyDown,
       onPointerDownOutside,
-      onCloseAutoFocus,
+      onCloseAutoFocus: (event) => {
+        input.setPointerInput(false);
+        onCloseAutoFocus?.(event);
+      },
     });
 
     return (
@@ -132,8 +181,16 @@ const SelectContent = React.forwardRef<
             className,
           )}
           position={position}
+          onPointerMove={(event) => {
+            input.setPointerInput(true);
+            onPointerMove?.(event);
+          }}
           {...pointerCloseFocus}
           {...props}
+          onKeyDownCapture={(event) => {
+            input.setPointerInput(false);
+            pointerCloseFocus.onKeyDownCapture(event);
+          }}
         >
           <SelectScrollUpButton />
           <SelectPrimitive.Viewport
@@ -178,29 +235,37 @@ export interface SelectItemProps extends React.ComponentPropsWithoutRef<
 const SelectItem = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Item>,
   SelectItemProps
->(({ className, children, selectionIndicator = 'check', ...props }, ref) => (
-  <SelectPrimitive.Item
-    ref={ref}
-    className={cn(
-      'relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 text-sm outline-none focus:bg-accent focus:text-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
-      selectionIndicator === 'check'
-        ? 'pl-section pr-inline'
-        : 'px-inset data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground focus:ring-2 focus:ring-inset focus:ring-ring data-[state=checked]:focus:ring-primary-foreground',
-      className,
-    )}
-    {...props}
-  >
-    {selectionIndicator === 'check' && (
-      <span className="absolute left-inline flex h-3.5 w-3.5 items-center justify-center">
-        <SelectPrimitive.ItemIndicator>
-          <Check className="h-4 w-4" />
-        </SelectPrimitive.ItemIndicator>
-      </span>
-    )}
+>(({ className, children, selectionIndicator = 'check', ...props }, ref) => {
+  const input = useSelectInput();
+  return (
+    <SelectPrimitive.Item
+      ref={ref}
+      className={cn(
+        'relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 text-sm outline-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
+        selectionIndicator === 'check'
+          ? 'pl-section pr-inline focus:bg-accent focus:text-foreground'
+          : [
+              'px-inset data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground',
+              input.pointerInput
+                ? 'data-[state=unchecked]:hover:bg-accent data-[state=unchecked]:hover:text-foreground forced-colors:hover:outline-solid forced-colors:hover:outline-2 forced-colors:hover:-outline-offset-2 forced-colors:hover:outline-[Highlight]'
+                : 'data-[state=unchecked]:focus:bg-accent data-[state=unchecked]:focus:text-foreground forced-colors:focus:outline-solid forced-colors:focus:outline-2 forced-colors:focus:-outline-offset-2 forced-colors:focus:outline-[Highlight] focus:ring-2 focus:ring-inset focus:ring-ring data-[state=checked]:focus:ring-primary-foreground',
+            ],
+        className,
+      )}
+      {...props}
+    >
+      {selectionIndicator === 'check' && (
+        <span className="absolute left-inline flex h-3.5 w-3.5 items-center justify-center">
+          <SelectPrimitive.ItemIndicator>
+            <Check className="h-4 w-4" />
+          </SelectPrimitive.ItemIndicator>
+        </span>
+      )}
 
-    <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
-  </SelectPrimitive.Item>
-));
+      <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
+    </SelectPrimitive.Item>
+  );
+});
 SelectItem.displayName = SelectPrimitive.Item.displayName;
 
 const SelectSeparator = React.forwardRef<

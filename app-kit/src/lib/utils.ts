@@ -13,11 +13,12 @@ export function cn(...inputs: ClassValue[]) {
  * and scoped shortcuts; the marker clears on the next keydown or blur.
  */
 export function suppressPointerAutoFocusRing(): void {
-  const previousActive =
-    typeof document !== 'undefined' ? document.activeElement : null;
-  queueMicrotask(() => {
-    const active =
-      typeof document !== 'undefined' ? document.activeElement : null;
+  if (typeof document === 'undefined') return;
+  const previousActive = document.activeElement;
+  // React dispatches `onFocus` from the root's bubbling `focusin`, so this
+  // capture listener on the document marks the element first.
+  const markRestoredFocus = (event: FocusEvent) => {
+    const active = event.target;
     if (
       !(active instanceof HTMLElement) ||
       active === document.body ||
@@ -33,8 +34,19 @@ export function suppressPointerAutoFocusRing(): void {
     };
     active.addEventListener('blur', clear, { once: true });
     window.addEventListener('keydown', clear, { capture: true, once: true });
-  });
+  };
+  // Radix restores focus synchronously after `onCloseAutoFocus`, so every
+  // element focused before the microtask runs is marked; each marker clears on
+  // that element's blur.
+  document.addEventListener('focusin', markRestoredFocus, true);
+  // Outside dismissal can finish without moving focus.
+  queueMicrotask(() =>
+    document.removeEventListener('focusin', markRestoredFocus, true),
+  );
 }
+
+const SELECTABLE_ITEM_SELECTOR =
+  '[role="option"], [role="menuitem"], [role="menuitemcheckbox"], [role="menuitemradio"]';
 
 interface PointerCloseFocusHandlers<
   TEscape extends Event,
@@ -42,6 +54,7 @@ interface PointerCloseFocusHandlers<
   TCloseAutoFocus extends Event,
 > {
   onPointerDownCapture?: React.PointerEventHandler | undefined;
+  onPointerUpCapture?: React.PointerEventHandler | undefined;
   onClickCapture?: React.MouseEventHandler | undefined;
   onKeyDownCapture?: React.KeyboardEventHandler | undefined;
   onEscapeKeyDown?: ((event: TEscape) => void) | undefined;
@@ -68,6 +81,7 @@ export function usePointerCloseFocus<
 ) {
   const {
     onPointerDownCapture,
+    onPointerUpCapture,
     onClickCapture,
     onKeyDownCapture,
     onEscapeKeyDown,
@@ -80,6 +94,16 @@ export function usePointerCloseFocus<
     onPointerDownCapture: (event: React.PointerEvent) => {
       closedByPointerRef.current = true;
       onPointerDownCapture?.(event);
+    },
+    onPointerUpCapture: (event: React.PointerEvent) => {
+      // Releasing a drag over an item selects it without a click.
+      if (
+        event.target instanceof Element &&
+        event.target.closest(SELECTABLE_ITEM_SELECTOR)
+      ) {
+        closedByPointerRef.current = true;
+      }
+      onPointerUpCapture?.(event);
     },
     onClickCapture: (event: React.MouseEvent) => {
       if (event.detail > 0) closedByPointerRef.current = true;

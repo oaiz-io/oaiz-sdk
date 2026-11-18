@@ -105,6 +105,7 @@ const DropdownMenuContent = React.forwardRef<
       sideOffset = 4,
       onOpenAutoFocus,
       onPointerDownCapture,
+      onPointerUpCapture,
       onClickCapture,
       onKeyDownCapture,
       onEscapeKeyDown,
@@ -116,6 +117,7 @@ const DropdownMenuContent = React.forwardRef<
   ) => {
     const pointerCloseFocus = usePointerCloseFocus({
       onPointerDownCapture,
+      onPointerUpCapture,
       onClickCapture,
       onKeyDownCapture,
       onEscapeKeyDown,

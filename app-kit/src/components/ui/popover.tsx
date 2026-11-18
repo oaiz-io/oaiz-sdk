@@ -19,6 +19,7 @@ const PopoverContent = React.forwardRef<
       align = 'center',
       sideOffset = 4,
       onPointerDownCapture,
+      onPointerUpCapture,
       onClickCapture,
       onKeyDownCapture,
       onEscapeKeyDown,
@@ -30,6 +31,7 @@ const PopoverContent = React.forwardRef<
   ) => {
     const pointerCloseFocus = usePointerCloseFocus({
       onPointerDownCapture,
+      onPointerUpCapture,
       onClickCapture,
       onKeyDownCapture,
       onEscapeKeyDown,

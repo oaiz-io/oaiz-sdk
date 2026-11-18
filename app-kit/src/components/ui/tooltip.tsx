@@ -8,7 +8,23 @@ const TooltipProvider = TooltipPrimitive.Provider;
 
 const Tooltip = TooltipPrimitive.Root;
 
-const TooltipTrigger = TooltipPrimitive.Trigger;
+const TooltipTrigger = React.forwardRef<
+  React.ElementRef<typeof TooltipPrimitive.Trigger>,
+  React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Trigger>
+>(({ onFocus, ...props }, ref) => (
+  <TooltipPrimitive.Trigger
+    {...props}
+    ref={ref}
+    onFocus={(event) => {
+      onFocus?.(event);
+      // Radix skips its open handler when the composed handler prevents the event.
+      if (event.currentTarget.hasAttribute('data-pointer-close-focus')) {
+        event.preventDefault();
+      }
+    }}
+  />
+));
+TooltipTrigger.displayName = TooltipPrimitive.Trigger.displayName;
 
 interface TooltipContentProps extends React.ComponentPropsWithoutRef<
   typeof TooltipPrimitive.Content
