@@ -137,6 +137,9 @@ The package holds no font files. The theme's `font-sans` is the device's system 
 accordion uses `font-inter`, which names the Inter typeface first; install and load Inter yourself
 if you want it, otherwise the browser falls back to the system fonts.
 
+To give `Heading` and `AppShell` titles a different family, set `--role-heading-font` in your
+app theme's `:root`. Headings use `font-sans` by default, and body text keeps its own font.
+
 ## Source and provenance
 
 The source is in the `app-kit/` folder of [oaiz-io/oaiz-sdk](https://github.com/oaiz-io/oaiz-sdk).

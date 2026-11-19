@@ -1,4 +1,11 @@
-import { useId, useRef, useState, type CSSProperties, type ReactNode } from 'react';
+import {
+  useId,
+  useRef,
+  useState,
+  type CSSProperties,
+  type MouseEvent,
+  type ReactNode,
+} from 'react';
 import { Menu, Search } from 'lucide-react';
 
 import { useTheme, type ThemeChoice } from '../hooks/use-theme';
@@ -231,18 +238,37 @@ function NavList({
   );
 }
 
-/** With `iconOnPhone`, a phone shows the search icon alone, so a narrow header keeps room for its title. */
+/**
+ * With `iconOnPhone`, a phone shows the search icon alone, so a narrow header keeps room for its
+ * title. `compact` is an icon-only button with a full touch target, for a header beside bottom tabs.
+ */
 function SearchButton({
   onSearch,
   iconOnPhone = false,
+  compact = false,
   label,
   className,
 }: {
-  onSearch: () => void;
+  onSearch: (event: MouseEvent<HTMLButtonElement>) => void;
   iconOnPhone?: boolean;
+  compact?: boolean;
   label: string;
   className?: string;
 }) {
+  if (compact) {
+    return (
+      <Button
+        variant="ghost"
+        size={null}
+        type="button"
+        aria-label={label}
+        onClick={onSearch}
+        className={cn('size-[var(--touch-target-min)] shrink-0', className)}
+      >
+        <Search aria-hidden="true" />
+      </Button>
+    );
+  }
   return (
     <Button variant="plain" size={null}
       type="button"
@@ -358,6 +384,8 @@ export function AppShell({
   const contentId = mainId ?? generatedMainId;
   const mainRef = useRef<HTMLElement>(null);
   const menuRef = useRef<HTMLButtonElement>(null);
+  // The header search beside bottom tabs, while it has the palette open; the palette has no trigger.
+  const searchOpenerRef = useRef<HTMLButtonElement | null>(null);
   const [navOpen, setNavOpen] = useState(false);
   const [paletteOpen, setPaletteOpen] = useState(false);
   const theme = useTheme();
@@ -365,10 +393,16 @@ export function AppShell({
   const hasSidebar = navItems.length > 1;
   const tabs = phoneNav === 'tabs' && hasSidebar && navItems.length <= 5;
   const search = commands ? () => setPaletteOpen(true) : onSearch;
-  useHotkey('k', () => setPaletteOpen((open) => !open), {
-    mod: true,
-    enabled: commands !== undefined,
-  });
+  const phoneSearch = tabs && search;
+  useHotkey(
+    'k',
+    () => {
+      // Reopening can happen before the previous close autofocus runs.
+      if (!paletteOpen) searchOpenerRef.current = null;
+      setPaletteOpen((open) => !open);
+    },
+    { mod: true, enabled: commands !== undefined },
+  );
 
   return (
     <div
@@ -392,6 +426,16 @@ export function AppShell({
           onOpenChange={setPaletteOpen}
           groups={[...commands, navCommands(nav, messages.goTo)]}
           onSearchChange={onCommandSearch}
+          onCloseAutoFocus={(event) => {
+            const opener = searchOpenerRef.current;
+            searchOpenerRef.current = null;
+            // Preserve focus set by the command.
+            const active = document.activeElement;
+            if (active !== null && active !== document.body) return;
+            if (!opener || opener.getClientRects().length === 0) return;
+            event.preventDefault();
+            opener.focus();
+          }}
         />
       )}
       {hasSidebar && (
@@ -460,6 +504,7 @@ export function AppShell({
         <header
           className={cn(
             'flex h-11 shrink-0 items-center gap-inline border-b',
+            phoneSearch && 'max-half:h-auto max-half:py-1',
             width === 'narrow'
               ? 'px-[max(var(--spacing-page),calc((100%-48rem)/2))]'
               : 'px-page',
@@ -523,6 +568,17 @@ export function AppShell({
               label={messages.search}
               iconOnPhone
               className="w-40"
+            />
+          )}
+          {phoneSearch && (
+            <SearchButton
+              compact
+              onSearch={(event) => {
+                if (commands) searchOpenerRef.current = event.currentTarget;
+                phoneSearch();
+              }}
+              label={messages.search}
+              className="half:hidden"
             />
           )}
           {actions && (

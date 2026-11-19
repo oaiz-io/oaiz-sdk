@@ -77,6 +77,17 @@
   --radius-4xl: initial;
 }
 
+/* Heading's family. An app theme sets --role-heading-font; without it, headings
+   use --font-sans. `inline` resolves the role where the heading sits, so a
+   scoped override applies; `static` keeps --font-heading readable on :root. */
+:root {
+  --role-heading-font: initial;
+}
+
+@theme static inline {
+  --font-heading: var(--role-heading-font, var(--font-sans));
+}
+
 /* ============================================================================
    PRIMITIVE COLOR SCALE
 

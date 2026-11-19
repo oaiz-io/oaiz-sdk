@@ -25,7 +25,7 @@ const LEVEL_DEFAULT_TAG: Record<HeadingLevel, HeadingTag> = {
   6: 'h6',
 };
 
-const headingVariants = cva('font-sans text-foreground', {
+const headingVariants = cva('font-heading text-foreground', {
   variants: {
     size: {
       '5xl': 'text-4xl tracking-tight half:text-5xl',

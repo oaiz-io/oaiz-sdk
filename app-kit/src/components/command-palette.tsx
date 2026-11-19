@@ -52,6 +52,8 @@ export type CommandPaletteProps = {
   context?: ReactNode;
   /** Reports the search text, so the caller can read matching records from OAIZ. */
   onSearchChange?: (search: string) => void;
+  /** Runs as the palette closes; prevent its default and focus the control that opened it. */
+  onCloseAutoFocus?: (event: Event) => void;
   labels?: Partial<{
     title: string;
     description: string;
@@ -149,6 +151,7 @@ export function CommandPalette({
   empty = 'No results.',
   context,
   onSearchChange,
+  onCloseAutoFocus,
   labels,
 }: CommandPaletteProps) {
   const [pages, setPages] = useState<CommandPaletteItem[]>([]);
@@ -206,6 +209,7 @@ export function CommandPalette({
       <DialogContent
         showCloseButton={false}
         overlayClassName="bg-black/20"
+        onCloseAutoFocus={onCloseAutoFocus}
         className={cn(
           // A phone docks it at the top, so the keyboard opens below the results.
           'top-[15%] translate-y-0 gap-0 overflow-hidden p-0 max-mobile:top-0',
