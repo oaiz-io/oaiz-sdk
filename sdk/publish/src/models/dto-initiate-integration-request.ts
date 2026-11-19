@@ -1,6 +1,7 @@
 import type * as models from "./index";
 
 export interface DtoInitiateIntegrationRequest {
+  customSetup?: models.DtoCustomIntegrationSetup;
   failureReason?: string;
   integrationUuid?: string;
   isAppInstall: boolean;

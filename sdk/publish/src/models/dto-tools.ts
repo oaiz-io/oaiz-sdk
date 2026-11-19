@@ -3,6 +3,7 @@ export const DtoTools = {
   AppCreate: "app_create",
   CodeExecute: "code_execute",
   CompareWorkflowVersions: "compare_workflow_versions",
+  CreateCustomIntegration: "create_custom_integration",
   CreatePlan: "create_plan",
   Decide: "decide",
   DemoEvent: "demo_event",
