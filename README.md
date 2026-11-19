@@ -190,10 +190,22 @@ for await (const { data: progress, error } of run) {
 
 ### Publish an event
 
-<!-- example: with browser, server -->
+An app publishes as itself. On your server, a publish names a custom integration, or it is refused
+([publish an event](sdk/README.md#publish-an-event)).
+
+<!-- example: with browser -->
 ```ts
 await oaiz.events.publish({
   eventType: { provider: "custom", name: "order-created" },
+  properties: { orderId: "A-1042", total: 129 },
+});
+```
+
+<!-- example: with server -->
+```ts
+await oaiz.events.publish({
+  eventType: { provider: "custom", name: "order-created" },
+  integrationUuid: "<integration id>",
   properties: { orderId: "A-1042", total: 129 },
 });
 ```

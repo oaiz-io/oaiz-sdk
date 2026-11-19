@@ -268,9 +268,15 @@ example the ones an event started, with `triggeringEventUuid`.
 
 An event's type is a `provider` and a `name`, each made of letters, digits and hyphens. Name the
 provider after your app and the name after what happened, both lowercase with hyphens, for example
-`orders/order-created`. Whoever publishes a type first claims it; a later publisher needs Edit on
-it. `storage`, `schedule`, `oaiz-internal` and integration providers such as `gmail` are reserved.
-Workflows that listen for the type start on it.
+`orders/order-created`. `storage`, `schedule`, `oaiz-internal` and integration providers such as
+`gmail` are reserved. Workflows that listen for the type start on it.
+
+A publish names its owner. An app publishes as itself. On your server, set `integrationUuid` to a
+custom integration whose Edit the key's person or service account holds, or use a key the
+integration created, which names it without the field. Any other publish is refused with
+`event-owner-required`, and OAIZ never picks an integration from the type's name. The first
+integration or app to publish a type owns it. An integration's publish into a type another owner
+holds is refused with a 409, and an app needs Edit on such a type.
 
 ```ts
 // server/events.ts
@@ -279,6 +285,7 @@ import { oaiz } from "./oaiz.js";
 export async function orderCreated(orderId: string, total: number) {
   const { data, error } = await oaiz.events.publish({
     eventType: { provider: "orders", name: "order-created" },
+    integrationUuid: "<integration id>",
     properties: { orderId, total },
   });
   if (error) throw new Error(error.message);
