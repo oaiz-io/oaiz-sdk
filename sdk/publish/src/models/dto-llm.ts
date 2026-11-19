@@ -26,6 +26,8 @@ export const DtoLLM = {
   GoogleGemini38Flash: "google/gemini-3.8-flash",
   GoogleGemini4Argon: "google/gemini-4-argon",
   GoogleGemini4Carbon: "google/gemini-4-carbon",
+  GoogleGemini4Hydrogen: "google/gemini-4-hydrogen",
+  GoogleGemini4Neon: "google/gemini-4-neon",
   GroqGptOss120b: "groq/gpt-oss-120b",
   GroqGptOss20b: "groq/gpt-oss-20b",
   MistralMistralLarge4: "mistral/mistral-large-4",
