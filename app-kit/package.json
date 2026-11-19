@@ -4,6 +4,6 @@
   "packageManager": "pnpm@12.19.0",
   "license": "MIT",
   "scripts": {
-    "pack": "node pack.mjs oaiz-app-kit-0.1.4201.tgz package/package.json=publish.json package/README.md=README.md package/LICENSE=LICENSE package/THIRD_PARTY_NOTICES.md=THIRD_PARTY_NOTICES.md package/registry.json=registry.json package/src=src"
+    "pack": "node pack.mjs oaiz-app-kit-0.1.4233.tgz package/package.json=publish.json package/README.md=README.md package/LICENSE=LICENSE package/THIRD_PARTY_NOTICES.md=THIRD_PARTY_NOTICES.md package/registry.json=registry.json package/src=src"
   }
 }

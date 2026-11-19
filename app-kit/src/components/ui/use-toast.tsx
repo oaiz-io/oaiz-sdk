@@ -11,6 +11,13 @@ type ToasterToast = ToastProps & {
   title?: React.ReactNode;
   description?: React.ReactNode;
   action?: ToastActionElement;
+  /**
+   * `stacked` puts the actions in a row under the title, for toasts with more
+   * than one action.
+   */
+  layout?: 'inline' | 'stacked';
+  /** Runs when the person presses Cmd+Z or Ctrl+Z while the toast is open. */
+  onUndo?: () => void;
   testId?: string;
 };
 
