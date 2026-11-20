@@ -24,6 +24,11 @@ export interface TreeViewProps {
   onSelect?: (node: TreeNode) => void;
   /** The ids of nodes open at first. */
   defaultExpanded?: string[];
+  /** The ids of open nodes, when the caller owns them, such as to reveal a node. */
+  expanded?: string[];
+  onExpandedChange?: (expanded: string[]) => void;
+  /** Nodes with children open and close instead of being chosen, as in a file tree. */
+  selectLeavesOnly?: boolean;
   className?: string;
 }
 
@@ -63,11 +68,17 @@ function TreeView({
   selected = null,
   onSelect,
   defaultExpanded = [],
+  expanded: controlledExpanded,
+  onExpandedChange,
+  selectLeavesOnly = false,
   className,
 }: TreeViewProps) {
-  const [expanded, setExpanded] = React.useState(
+  const [ownExpanded, setOwnExpanded] = React.useState(
     () => new Set(defaultExpanded),
   );
+  const expanded = controlledExpanded
+    ? new Set(controlledExpanded)
+    : ownExpanded;
   const [focused, setFocused] = React.useState<string | null>(null);
   const refs = React.useRef(new Map<string, HTMLDivElement>());
   const rows = visibleRows(nodes, expanded);
@@ -78,13 +89,20 @@ function TreeView({
     setFocused(id);
     refs.current.get(id)?.focus();
   };
-  const toggle = (id: string, open: boolean) =>
-    setExpanded((now) => {
-      const next = new Set(now);
-      if (open) next.add(id);
-      else next.delete(id);
-      return next;
-    });
+  const toggle = (id: string, open: boolean) => {
+    const next = new Set(expanded);
+    if (open) next.add(id);
+    else next.delete(id);
+    if (!controlledExpanded) setOwnExpanded(next);
+    onExpandedChange?.([...next]);
+  };
+
+  const choosable = (node: TreeNode) =>
+    onSelect !== undefined && !(selectLeavesOnly && node.children?.length);
+  const activate = (row: Row) => {
+    if (choosable(row.node)) onSelect?.(row.node);
+    else if (row.node.children?.length) toggle(row.node.id, !row.open);
+  };
 
   function onKeyDown(event: React.KeyboardEvent, row: Row, index: number) {
     const hasChildren = Boolean(row.node.children?.length);
@@ -111,8 +129,7 @@ function TreeView({
         break;
       case 'Enter':
       case ' ':
-        onSelect?.(row.node);
-        if (hasChildren && !onSelect) toggle(row.node.id, !row.open);
+        activate(row);
         break;
       default:
         if (event.key.length === 1 && /\S/.test(event.key)) {
@@ -149,15 +166,14 @@ function TreeView({
             role="treeitem"
             aria-level={row.level}
             aria-expanded={hasChildren ? row.open : undefined}
-            aria-selected={onSelect ? isSelected : undefined}
+            aria-selected={choosable(row.node) ? isSelected : undefined}
             aria-label={textOf(row.node)}
             tabIndex={row.node.id === current ? 0 : -1}
             onFocus={() => setFocused(row.node.id)}
             onKeyDown={(event) => onKeyDown(event, row, index)}
             onClick={() => {
               setFocused(row.node.id);
-              if (onSelect) onSelect(row.node);
-              else if (hasChildren) toggle(row.node.id, !row.open);
+              activate(row);
             }}
             // Each level indents by one stack step from the inline gutter.
             style={{
