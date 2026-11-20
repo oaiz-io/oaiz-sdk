@@ -13,6 +13,11 @@ import {
 const LONG_PRESS_MS = 500;
 /** A touch that drifts further than this is a scroll or a drag, not a press. */
 const LONG_PRESS_SLOP_PX = 10;
+/**
+ * Windows and Linux browsers follow a Shift+F10 keydown with their own
+ * contextmenu event; one arriving this soon after belongs to that keypress.
+ */
+const KEYBOARD_CONTEXTMENU_WINDOW_MS = 1000;
 
 interface ContextMenuContextValue {
   openAt: (x: number, y: number) => void;
@@ -128,6 +133,7 @@ const ContextMenuTrigger = React.forwardRef<
       onPointerUp,
       onPointerCancel,
       onClickCapture,
+      onKeyDown,
       ...props
     },
     ref,
@@ -139,6 +145,7 @@ const ContextMenuTrigger = React.forwardRef<
       timer: ReturnType<typeof setTimeout>;
     } | null>(null);
     const openedByPress = React.useRef(false);
+    const openedByKeyAt = React.useRef<number | null>(null);
 
     const cancelPress = () => {
       if (press.current) clearTimeout(press.current.timer);
@@ -156,6 +163,13 @@ const ContextMenuTrigger = React.forwardRef<
           if (disabled || event.defaultPrevented || !isInside(event)) return;
           event.preventDefault();
           cancelPress();
+          const keyOpenedAt = openedByKeyAt.current;
+          openedByKeyAt.current = null;
+          if (
+            keyOpenedAt !== null &&
+            event.timeStamp - keyOpenedAt < KEYBOARD_CONTEXTMENU_WINDOW_MS
+          )
+            return;
           // The Menu key and Shift+F10 report no pointer position.
           if (event.clientX === 0 && event.clientY === 0) {
             const rect = event.currentTarget.getBoundingClientRect();
@@ -163,6 +177,28 @@ const ContextMenuTrigger = React.forwardRef<
           } else {
             openAt(event.clientX, event.clientY);
           }
+        }}
+        // macOS browsers send no contextmenu event for Shift+F10, so the
+        // standard keyboard shortcut opens the menu here on every platform.
+        onKeyDown={(event: React.KeyboardEvent<HTMLElement>) => {
+          onKeyDown?.(event);
+          if (
+            disabled ||
+            event.defaultPrevented ||
+            event.key !== 'F10' ||
+            !event.shiftKey ||
+            !isInside(event)
+          )
+            return;
+          event.preventDefault();
+          cancelPress();
+          const target =
+            event.target instanceof HTMLElement
+              ? event.target
+              : event.currentTarget;
+          const rect = target.getBoundingClientRect();
+          openedByKeyAt.current = event.timeStamp;
+          openAt(rect.left + 8, rect.top + 8);
         }}
         onPointerDown={(event: React.PointerEvent<HTMLElement>) => {
           onPointerDown?.(event);

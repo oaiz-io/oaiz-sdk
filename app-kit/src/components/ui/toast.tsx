@@ -80,9 +80,9 @@ const ToastClose = React.forwardRef<
       className,
     )}
     toast-close=""
-    // The icon is decorative, so the button needs its own name.
-    aria-label="Dismiss"
     {...props}
+    // The icon is decorative, so the button needs its own name.
+    aria-label={props['aria-label'] ?? 'Dismiss'}
   >
     <X className="h-4 w-4" />
   </ToastPrimitives.Close>

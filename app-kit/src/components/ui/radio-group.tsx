@@ -72,6 +72,7 @@ export function RadioGroup({
               disabled={disabled === true || option.disabled === true}
               required={required}
               aria-labelledby={`${id}-${index}-label`}
+              // oxlint-disable-next-line jsx-a11y/role-supports-aria-props -- ARIA 1.2 makes aria-invalid global, and screen readers announce it on native radios.
               aria-invalid={error ? true : undefined}
               aria-describedby={
                 [

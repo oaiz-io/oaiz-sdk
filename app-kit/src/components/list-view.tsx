@@ -63,7 +63,7 @@ export type ListViewProps<Row> = {
   onFocusedChange?: (row: Row | null) => void;
   /** Adds a row to a group; each group header shows a + button. */
   onAddToGroup?: (groupKey: string) => void;
-  /** Menu items for a right-click on a row, such as `DropdownMenuItem`s. */
+  /** Menu items for a right-click or Shift+F10 on a row, such as `DropdownMenuItem`s. */
   rowMenu?: (row: Row) => ReactNode;
   /** Shown when no group has rows. */
   empty: ReactNode;
@@ -88,7 +88,7 @@ function typingOrOverlay(target: EventTarget | null): boolean {
 
 /**
  * A dense, grouped list in the style of Linear. J and K (or the arrow keys) move the focus, X
- * selects the focused row, Enter opens it, and a right-click opens `rowMenu`. Group headers
+ * selects the focused row, Enter opens it, and a right-click or Shift+F10 opens `rowMenu`. Group headers
  * collapse and show their count.
  */
 export function ListView<Row>({

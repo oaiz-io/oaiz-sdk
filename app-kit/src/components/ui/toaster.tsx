@@ -34,8 +34,19 @@ function ToastText({
   );
 }
 
-export function Toaster() {
+export interface ToasterLabels {
+  /** Name of each toast's close button. */
+  close: string;
+  /** Announced with each toast, such as "Notification". */
+  toast: string;
+  /** Name of the toast region; `{hotkey}` is replaced with its shortcut (F8). */
+  viewport: string;
+}
+
+/** Pass translated `labels`; without them the labels are English. */
+export function Toaster({ labels }: { labels?: ToasterLabels } = {}) {
   const { toasts, dismiss } = useToast();
+  const closeLabel = labels?.close;
 
   // Cmd+Z or Ctrl+Z undoes the newest open toast that offers Undo. Text
   // fields keep their own undo.
@@ -62,7 +73,7 @@ export function Toaster() {
   }, [dismiss, undoable]);
 
   return (
-    <ToastProvider>
+    <ToastProvider label={labels?.toast}>
       {toasts.map(function ({
         id,
         title,
@@ -94,7 +105,10 @@ export function Toaster() {
                   </div>
                 ) : null}
               </div>
-              <ToastClose className="top-1/2 -translate-y-1/2" />
+              <ToastClose
+                className="top-1/2 -translate-y-1/2"
+                aria-label={closeLabel}
+              />
             </Toast>
           );
         }
@@ -108,11 +122,11 @@ export function Toaster() {
           >
             <ToastText title={title} description={description} />
             {action}
-            <ToastClose />
+            <ToastClose aria-label={closeLabel} />
           </Toast>
         );
       })}
-      <ToastViewport />
+      <ToastViewport label={labels?.viewport} />
     </ToastProvider>
   );
 }
