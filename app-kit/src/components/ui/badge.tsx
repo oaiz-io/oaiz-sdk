@@ -27,7 +27,7 @@ const badgeVariants = cva(
         'success-subtle':
           'border-transparent bg-badge-success text-badge-success-foreground font-medium',
         'warning-subtle':
-          'border-transparent bg-badge-warning text-badge-warning-foreground font-medium',
+          'border-transparent bg-warning-bg-subtle text-warning-text font-medium',
         'destructive-subtle':
           'border-transparent bg-destructive-bg-subtle text-destructive-text font-medium',
         neutral:
