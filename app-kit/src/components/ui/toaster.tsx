@@ -94,21 +94,18 @@ export function Toaster({ labels }: { labels?: ToasterLabels } = {}) {
               aria-keyshortcuts={keyshortcuts}
               {...props}
             >
-              <div className="flex min-w-0 flex-col gap-2">
+              <div className="flex min-w-0 flex-1 flex-col gap-stack">
                 <ToastText title={title} description={description} />
                 {action ? (
                   <div
-                    className="flex flex-wrap items-center gap-inline"
+                    className="flex flex-wrap items-center justify-end gap-inline"
                     data-testid="toast-actions"
                   >
                     {action}
                   </div>
                 ) : null}
               </div>
-              <ToastClose
-                className="top-1/2 -translate-y-1/2"
-                aria-label={closeLabel}
-              />
+              <ToastClose aria-label={closeLabel} />
             </Toast>
           );
         }

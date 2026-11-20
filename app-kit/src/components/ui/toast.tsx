@@ -115,7 +115,7 @@ const ToastDescription = React.forwardRef<
     asChild
     size="sm"
     className={cn(
-      'opacity-90 group-[.destructive]:text-destructive-foreground group-[.destructive]:opacity-100',
+      'whitespace-pre-line opacity-90 group-[.destructive]:text-destructive-foreground group-[.destructive]:opacity-100',
       className,
     )}
   >
