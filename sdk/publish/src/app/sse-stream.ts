@@ -60,6 +60,7 @@ export async function* readSseStream<T>(
 ): AsyncGenerator<OaizResponse<SseFrame<T>>> {
   let reader: ReadableStreamDefaultReader<Uint8Array> | undefined;
   try {
+    signal?.throwIfAborted();
     const response = await open(request, body, signal);
     if (!response.ok || response.body === null) {
       const refusal = await response.json().catch(() => ({}));
@@ -83,6 +84,9 @@ export async function* readSseStream<T>(
   } catch (error) {
     yield failureFrom(error);
   } finally {
-    await reader?.cancel().catch(() => {});
+    if (reader) {
+      await reader.cancel().catch(() => {});
+      reader.releaseLock();
+    }
   }
 }

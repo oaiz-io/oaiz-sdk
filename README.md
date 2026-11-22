@@ -174,19 +174,24 @@ const { data: places } = await oaiz.tools.run("google_maps_search", {
 
 ### Run a workflow
 
-A run starts from an event you describe; its `properties` are the workflow's input. A workflow is a
-set of jobs; `runs.start` takes the ID of one of its jobs (`oaiz workflow job list <workflow id>`).
+Start a run with a workflow ID and an event. The event's `properties` are the workflow's input.
 
 <!-- example: with browser, server -->
 ```ts
-const run = oaiz.runs.start("<job id>", {
+const run = oaiz.runs.start({
+  workflow: "<workflow id>",
   event: { eventType: { provider: "custom", name: "report-requested" }, properties: { week: 46 } },
 });
 for await (const { data: progress, error } of run) {
   if (error) throw new Error(error.message);
   console.log(progress.event.type, progress.event.status);
 }
+const { data, error } = await run.result();
+if (error) throw new Error(error.message);
+console.log(data.status, data.events);
 ```
+
+Skip the loop and call `result()` directly if you do not need progress.
 
 ### Publish an event
 

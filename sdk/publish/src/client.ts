@@ -559,10 +559,6 @@ export class Client {
     return new EventApi(this);
   }
 
-  get jobs(): JobsApi {
-    return new JobsApi(this);
-  }
-
   get llm(): LlmApi {
     return new LlmApi(this);
   }
@@ -574,6 +570,10 @@ export class Client {
   get tools(): ToolsApi {
     return new ToolsApi(this);
   }
+
+  get workflow(): WorkflowApi {
+    return new WorkflowApi(this);
+  }
 }
 
 export class ActionApi {
@@ -583,12 +583,6 @@ export class ActionApi {
     ...args: Parameters<Client["listActionExecutionLogs"]>
   ): ReturnType<Client["listActionExecutionLogs"]> {
     return this.client.listActionExecutionLogs(...args);
-  }
-
-  getActionExecutionLogByUuid(
-    ...args: Parameters<Client["getActionExecutionLogByUuid"]>
-  ): ReturnType<Client["getActionExecutionLogByUuid"]> {
-    return this.client.getActionExecutionLogByUuid(...args);
   }
 
   streamActionExecutionEvents(
@@ -651,16 +645,6 @@ export class EventApi {
     ...args: Parameters<Client["publishEvent"]>
   ): ReturnType<Client["publishEvent"]> {
     return this.client.publishEvent(...args);
-  }
-}
-
-export class JobsApi {
-  constructor(private readonly client: Client) {}
-
-  executeJobStream(
-    ...args: Parameters<Client["executeJobStream"]>
-  ): ReturnType<Client["executeJobStream"]> {
-    return this.client.executeJobStream(...args);
   }
 }
 
@@ -742,6 +726,22 @@ export class ToolsApi {
   }
 }
 
+export class WorkflowApi {
+  constructor(private readonly client: Client) {}
+
+  getWorkflowRun(
+    ...args: Parameters<Client["getWorkflowRun"]>
+  ): ReturnType<Client["getWorkflowRun"]> {
+    return this.client.getWorkflowRun(...args);
+  }
+
+  createWorkflowRunStream(
+    ...args: Parameters<Client["createWorkflowRunStream"]>
+  ): ReturnType<Client["createWorkflowRunStream"]> {
+    return this.client.createWorkflowRunStream(...args);
+  }
+}
+
 export type ListActionExecutionLogsParams = {
   cursor?: string;
   endTime?: string;
@@ -774,6 +774,10 @@ export type PublishEventBody =
       value: { event: string; files?: Array<Blob | ArrayBuffer | Uint8Array> };
     };
 
+export type GetWorkflowRunParams = {
+  publishEvents?: boolean;
+};
+
 export type ListToolsParams = {
   integrationUuid?: string;
   job?: "agent" | "code";
@@ -792,8 +796,7 @@ export type ListAppChatSessionsParams = {
 import { listActionExecutionLogs as operation0_0 } from "./apis/api_action";
 import { listActionExecutionLogsPages as operation0_1 } from "./apis/api_action";
 import { iterateListActionExecutionLogs as operation0_2 } from "./apis/api_action";
-import { getActionExecutionLogByUuid as operation0_3 } from "./apis/api_action";
-import { streamActionExecutionEvents as operation0_4 } from "./apis/api_action";
+import { streamActionExecutionEvents as operation0_3 } from "./apis/api_action";
 import { createAppChatMessage as operation1_0 } from "./apis/api_app_chat";
 import { listAppChatSessions as operation1_1 } from "./apis/api_app_chat";
 import { getAppChatSession as operation1_2 } from "./apis/api_app_chat";
@@ -802,25 +805,25 @@ import { createAppVoiceLine as operation1_4 } from "./apis/api_app_chat";
 import { createAppLiveVoiceSession as operation1_5 } from "./apis/api_app_chat";
 import { deleteAppLiveVoiceSession as operation1_6 } from "./apis/api_app_chat";
 import { publishEvent as operation2_0 } from "./apis/api_event";
-import { executeJobStream as operation3_0 } from "./apis/api_jobs";
-import { createEmbeddings as operation4_0 } from "./apis/api_llm";
-import { createLlmCall as operation4_1 } from "./apis/api_llm";
-import { callStorageDatabaseFunction as operation5_0 } from "./apis/api_storage";
-import { deleteStorageDatabaseRows as operation5_1 } from "./apis/api_storage";
-import { insertStorageDatabaseRows as operation5_2 } from "./apis/api_storage";
-import { selectStorageDatabaseRows as operation5_3 } from "./apis/api_storage";
-import { updateStorageDatabaseRows as operation5_4 } from "./apis/api_storage";
-import { upsertStorageDatabaseRows as operation5_5 } from "./apis/api_storage";
-import { listTools as operation6_0 } from "./apis/api_tools";
-import { getNativeTools as operation6_1 } from "./apis/api_tools";
-import { runTool as operation6_2 } from "./apis/api_tools";
+import { createEmbeddings as operation3_0 } from "./apis/api_llm";
+import { createLlmCall as operation3_1 } from "./apis/api_llm";
+import { callStorageDatabaseFunction as operation4_0 } from "./apis/api_storage";
+import { deleteStorageDatabaseRows as operation4_1 } from "./apis/api_storage";
+import { insertStorageDatabaseRows as operation4_2 } from "./apis/api_storage";
+import { selectStorageDatabaseRows as operation4_3 } from "./apis/api_storage";
+import { updateStorageDatabaseRows as operation4_4 } from "./apis/api_storage";
+import { upsertStorageDatabaseRows as operation4_5 } from "./apis/api_storage";
+import { listTools as operation5_0 } from "./apis/api_tools";
+import { getNativeTools as operation5_1 } from "./apis/api_tools";
+import { runTool as operation5_2 } from "./apis/api_tools";
+import { getWorkflowRun as operation6_0 } from "./apis/api_workflow";
+import { createWorkflowRunStream as operation6_1 } from "./apis/api_workflow";
 
 export interface Client {
   listActionExecutionLogs: typeof operation0_0;
   listActionExecutionLogsPages: typeof operation0_1;
   iterateListActionExecutionLogs: typeof operation0_2;
-  getActionExecutionLogByUuid: typeof operation0_3;
-  streamActionExecutionEvents: typeof operation0_4;
+  streamActionExecutionEvents: typeof operation0_3;
   createAppChatMessage: typeof operation1_0;
   listAppChatSessions: typeof operation1_1;
   getAppChatSession: typeof operation1_2;
@@ -829,25 +832,25 @@ export interface Client {
   createAppLiveVoiceSession: typeof operation1_5;
   deleteAppLiveVoiceSession: typeof operation1_6;
   publishEvent: typeof operation2_0;
-  executeJobStream: typeof operation3_0;
-  createEmbeddings: typeof operation4_0;
-  createLlmCall: typeof operation4_1;
-  callStorageDatabaseFunction: typeof operation5_0;
-  deleteStorageDatabaseRows: typeof operation5_1;
-  insertStorageDatabaseRows: typeof operation5_2;
-  selectStorageDatabaseRows: typeof operation5_3;
-  updateStorageDatabaseRows: typeof operation5_4;
-  upsertStorageDatabaseRows: typeof operation5_5;
-  listTools: typeof operation6_0;
-  getNativeTools: typeof operation6_1;
-  runTool: typeof operation6_2;
+  createEmbeddings: typeof operation3_0;
+  createLlmCall: typeof operation3_1;
+  callStorageDatabaseFunction: typeof operation4_0;
+  deleteStorageDatabaseRows: typeof operation4_1;
+  insertStorageDatabaseRows: typeof operation4_2;
+  selectStorageDatabaseRows: typeof operation4_3;
+  updateStorageDatabaseRows: typeof operation4_4;
+  upsertStorageDatabaseRows: typeof operation4_5;
+  listTools: typeof operation5_0;
+  getNativeTools: typeof operation5_1;
+  runTool: typeof operation5_2;
+  getWorkflowRun: typeof operation6_0;
+  createWorkflowRunStream: typeof operation6_1;
 }
 
 Client.prototype.listActionExecutionLogs = operation0_0;
 Client.prototype.listActionExecutionLogsPages = operation0_1;
 Client.prototype.iterateListActionExecutionLogs = operation0_2;
-Client.prototype.getActionExecutionLogByUuid = operation0_3;
-Client.prototype.streamActionExecutionEvents = operation0_4;
+Client.prototype.streamActionExecutionEvents = operation0_3;
 Client.prototype.createAppChatMessage = operation1_0;
 Client.prototype.listAppChatSessions = operation1_1;
 Client.prototype.getAppChatSession = operation1_2;
@@ -856,15 +859,16 @@ Client.prototype.createAppVoiceLine = operation1_4;
 Client.prototype.createAppLiveVoiceSession = operation1_5;
 Client.prototype.deleteAppLiveVoiceSession = operation1_6;
 Client.prototype.publishEvent = operation2_0;
-Client.prototype.executeJobStream = operation3_0;
-Client.prototype.createEmbeddings = operation4_0;
-Client.prototype.createLlmCall = operation4_1;
-Client.prototype.callStorageDatabaseFunction = operation5_0;
-Client.prototype.deleteStorageDatabaseRows = operation5_1;
-Client.prototype.insertStorageDatabaseRows = operation5_2;
-Client.prototype.selectStorageDatabaseRows = operation5_3;
-Client.prototype.updateStorageDatabaseRows = operation5_4;
-Client.prototype.upsertStorageDatabaseRows = operation5_5;
-Client.prototype.listTools = operation6_0;
-Client.prototype.getNativeTools = operation6_1;
-Client.prototype.runTool = operation6_2;
+Client.prototype.createEmbeddings = operation3_0;
+Client.prototype.createLlmCall = operation3_1;
+Client.prototype.callStorageDatabaseFunction = operation4_0;
+Client.prototype.deleteStorageDatabaseRows = operation4_1;
+Client.prototype.insertStorageDatabaseRows = operation4_2;
+Client.prototype.selectStorageDatabaseRows = operation4_3;
+Client.prototype.updateStorageDatabaseRows = operation4_4;
+Client.prototype.upsertStorageDatabaseRows = operation4_5;
+Client.prototype.listTools = operation5_0;
+Client.prototype.getNativeTools = operation5_1;
+Client.prototype.runTool = operation5_2;
+Client.prototype.getWorkflowRun = operation6_0;
+Client.prototype.createWorkflowRunStream = operation6_1;

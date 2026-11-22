@@ -262,101 +262,10 @@ export const iterateListActionExecutionLogs = async function* (
   }
 };
 /**
- * Get an action execution log.
- *
- * Get an action execution log by its UUID
- */
-export const getActionExecutionLogByUuid = async function (
-  this: Client,
-  uuid: string,
-  options?: RequestOptions,
-): Promise<models.DtoActionExecutionLog> {
-  let path = `/ingest/action/log/${wireEscape(String(uuid))}`;
-  const selectedAuth = this._selectAuthAlternative("getActionExecutionLogByUUID", [
-    [
-      { schemeId: "BearerAuth", kind: "bearer" },
-    ],
-    [
-      { schemeId: "ApiKeyAuth", kind: "apiKey", name: "authorization" },
-    ],
-  ]);
-  const headers: Record<string, string> = {};
-  if (selectedAuth.has("ApiKeyAuth")) {
-    const apiKey0 = this._apiKey("ApiKeyAuth", "authorization");
-    if (apiKey0 !== undefined) {
-      headers["authorization"] = apiKey0;
-    }
-  }
-  if (selectedAuth.has("BearerAuth")) {
-    const bearerAuth = this._bearerAuth();
-    if (bearerAuth !== undefined) {
-      headers["Authorization"] = bearerAuth;
-    }
-  }
-  const res = await this._request(
-    "GET",
-    path,
-    headers,
-    undefined,
-    {
-      operationId: "getActionExecutionLogByUUID",
-      pathTemplate: "/ingest/action/log/{uuid}",
-      idempotent: false,
-      idempotencyKeyHeader: "Idempotency-Key",
-      successStatuses: [200],
-    },
-    options,
-  );
-  if (res.status < 200 || res.status >= 300) {
-    const { rawBody, jsonBody } = await this._readErrorBody(res);
-    let errorBody: unknown = jsonBody;
-    if (res.status === 400) {
-      errorBody = jsonBody as models.DtoHttpError;
-    }
-    if (res.status === 401) {
-      errorBody = jsonBody as models.DtoHttpError;
-    }
-    if (res.status === 402) {
-      errorBody = jsonBody as models.DtoHttpError;
-    }
-    if (res.status === 403) {
-      errorBody = jsonBody as models.DtoHttpError;
-    }
-    if (res.status === 404) {
-      errorBody = jsonBody as models.DtoHttpError;
-    }
-    if (res.status === 409) {
-      errorBody = jsonBody as models.DtoHttpError;
-    }
-    if (res.status === 413) {
-      errorBody = jsonBody as models.DtoHttpError;
-    }
-    if (res.status === 429) {
-      errorBody = jsonBody as models.DtoHttpError;
-    }
-    if (res.status === 500) {
-      errorBody = jsonBody as models.DtoHttpError;
-    }
-    if (res.status === 503) {
-      errorBody = jsonBody as models.DtoHttpError;
-    }
-    throw new ApiError(res.status, {
-      headers: res.headers,
-      requestId: res.headers.get("x-request-id") ?? undefined,
-      rawBody,
-      jsonBody,
-      body: errorBody,
-    });
-  }
-  if (res.status === 200) {
-    return await this._decodeJson<models.DtoActionExecutionLog>(res);
-  }
-  throw new ApiError(res.status);
-};
-/**
  * Follow an action execution's trace (SSE).
  *
  * Streams the workflow trace that an action execution starts as Server-Sent Events, read from the execution logs while the trace runs and after it ends. The frames are the execute_progress frames of POST /ingest/jobs/{jobUuid}/execute/stream: root_start, then an execution_snapshot frame whenever an execution of the trace changes and an action_log frame for each of its log rows, then one terminal frame, or a waiting frame when the trace waits for an approval or a delay. An execution that failed before it ran ends with its error log and a failure terminal frame. The jobs the trace can still start come from the workflow version the execution ran. The client that started the run states publishEvents as it sent it to the start: with true, the default, the stream waits for the jobs the run's published events can start; with false, it waits for none. A publishEvents value that is not a boolean is 400 invalid-input. An execution of a test run is followed with publishEvents false. Every frame has an SSE id: a reader that sends it back as the Last-Event-ID header or the after query parameter reads the frames after that frame, with no gap and no repeat. An invalid cursor is 400 invalid-input. A resumed stream keeps the publishEvents of its cursor; a publishEvents query value that differs from it is 400 invalid-input. The stream ends after its terminal or waiting frame. A terminal frame with a slug reports a failed read, not the end of the trace: a reader that resumes after it follows the trace again. The server writes a ping comment frame every 15 seconds while idle so intermediary proxies keep the connection open.
+ * The last terminal or waiting frame carries the run snapshot. The stream holds that frame until the events the run names are stored, for at most 10 seconds; after that, the snapshot marks those events pending. The stream budget can end the stream before this frame.
  */
 export const streamActionExecutionEvents = async function (
   this: Client,

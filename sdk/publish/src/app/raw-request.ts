@@ -3,7 +3,7 @@
  * body the generated client buffers, and a keepalive request, which it cannot send.
  */
 export const rawOperations = {
-  executeJobStream: { method: "POST", path: "/ingest/jobs/{jobUuid}/execute/stream" },
+  createWorkflowRunStream: { method: "POST", path: "/ingest/workflows/{workflowUuid}/runs/stream" },
   streamActionExecutionEvents: { method: "GET", path: "/ingest/action/log/{uuid}/events" },
   createAppChatMessage: { method: "POST", path: "/internalagents/chat/apps/{appUuid}/messages" },
   createAppChatApproval: {

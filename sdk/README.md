@@ -229,40 +229,34 @@ export async function coffeeNearby() {
 
 ## Run a workflow
 
-`runs.start` starts a workflow's job from an event you describe; the event's `properties` are the
-workflow's input. It yields the run's progress until the run ends or waits, for example for an
-approval. The first frame is `root_start` with the run's ID in `actionExecutionLogUuid`. The last
-is `terminal`, or `waiting` when the run waits, and its `terminalReason` says why: `success`,
-`failure`, `awaiting-approval` and so on. In the browser, the app starts only the workflows shared
-with it. A workflow is a set of jobs; `runs.start` takes the ID of one of its jobs
-(`oaiz workflow job list <workflow id>`).
+`runs.start` takes a workflow ID and an event. The event's `properties` are the workflow's input.
+Pass `job` to select a job explicitly. In the browser, the app starts only workflows shared with it.
+Call `result()` for the last snapshot, or iterate the run handle first to read progress.
 
 ```ts
 // server/runs.ts
 import { oaiz } from "./oaiz.js";
 
 export async function weeklyReport(week: number) {
-  const run = oaiz.runs.start("<job id>", {
+  const run = oaiz.runs.start({
+    workflow: "<workflow id>",
     event: { eventType: { provider: "reports", name: "report-requested" }, properties: { week } },
   });
-  let reason = "";
-  for await (const { data: progress, error } of run) {
-    if (error) throw new Error(error.message);
-    reason = progress.event.terminalReason ?? reason;
-  }
-  return reason;
+  const { data, error } = await run.result();
+  if (error) throw new Error(error.message);
+  return { status: data.status, events: data.events };
 }
 
-// Reads a run again later, with its logs and results.
-export async function readRun(runId: string) {
-  const { data, error } = await oaiz.runs.get(runId);
+export async function readRun(runId: string, publishEvents = true) {
+  const { data, error } = await oaiz.runs.get(runId, { publishEvents });
   return error ? null : data.status;
 }
 ```
 
-Every frame carries an `after`. When the stream breaks, `runs.follow(<run id>, { after })` reads
-on from the last frame you kept; following never starts the run again. `runs.list` lists runs, for
-example the ones an event started, with `triggeringEventUuid`.
+The `root_start` frame carries the run ID as `actionExecutionLogUuid`. Save it and the latest
+`after` cursor. `runs.follow(runId, { after })` reads on from that cursor without starting another
+run. When reading by ID, pass the same `publishEvents` you used at start. It defaults to `true`.
+`runs.list({ triggeringEventUuid })` lists the runs a published event started.
 
 ## Publish an event
 

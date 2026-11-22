@@ -10,6 +10,7 @@ export interface DtoExecuteProgressEvent {
   pendingChildJobUuids?: string[];
   publishedEvents?: models.DtoEventMinimalMetadata[];
   rootJobUuid: string;
+  run?: models.DtoWorkflowRun;
   sequence?: number;
   slug?: string;
   status?: models.DtoExecutionStatus;

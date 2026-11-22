@@ -18,7 +18,7 @@ export { OaizEvents } from "./events";
 export { OaizLLM } from "./llm";
 export type { OaizLLMCallResult } from "./llm";
 export { OaizRuns } from "./runs";
-export type { OaizRunFollowOptions, OaizRunProgress, OaizRunStreamOptions } from "./runs";
+export type { OaizRun, OaizRunFollowOptions, OaizRunGetOptions, OaizRunProgress, OaizRunStart, OaizRunStreamOptions } from "./runs";
 export { OaizTools } from "./tools";
 export type { OaizAppClientOptions, OaizClientOptions, OaizKeyClientOptions } from "./client";
 export { OaizFilterBuilder, OaizQueryBuilder } from "./query";
@@ -117,6 +117,9 @@ export type {
   DtoEmbeddingDTO,
   DtoEmbeddingModel,
   DtoEmbeddingsUsageDTO,
+  DtoDroppedFile,
+  DtoDroppedFileReason,
+  DtoEvent,
   DtoEventInputInput,
   DtoEventInputOutput,
   DtoEventMinimalMetadata,
@@ -162,7 +165,6 @@ export type {
   DtoJobAccountAccessNeedReason,
   DtoJobBaseOutput,
   DtoJobDraft,
-  DtoJobExecuteRequest,
   DtoJobToolAccessEventSource,
   DtoJobToolAccessEventSourceKind,
   DtoJobToolAccessEventsOutput,
@@ -247,6 +249,11 @@ export type {
   DtoWorkflowEdge,
   DtoWorkflowEditChange,
   DtoWorkflowMinimalMetadata,
+  DtoWorkflowRun,
+  DtoWorkflowRunEvent,
+  DtoWorkflowRunJob,
+  DtoWorkflowRunRequest,
+  DtoWorkflowRunStatus,
   DtoWorkflowToolConfigSnippet,
   DtoWorkflowToolDiagnostic,
   DtoWorkflowToolDiagnosticKind,
