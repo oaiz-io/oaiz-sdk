@@ -151,6 +151,7 @@ export type {
   DtoInitiateIntegrationRequest,
   DtoInitiateIntegrationStatus,
   DtoInsertStorageDatabaseRowsInput,
+  DtoIntegrationEventScope,
   DtoIntegrationGrantNamespace,
   DtoIntegrationNamespaceLevel,
   DtoIntegrationNamespaceScope,

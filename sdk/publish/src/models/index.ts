@@ -103,6 +103,7 @@ export * from "./dto-initiate-integration-provider-metadata";
 export * from "./dto-initiate-integration-request";
 export * from "./dto-initiate-integration-status";
 export * from "./dto-insert-storage-database-rows-input";
+export * from "./dto-integration-event-scope";
 export * from "./dto-integration-grant-namespace";
 export * from "./dto-integration-namespace-level";
 export * from "./dto-integration-namespace-scope";
