@@ -176,11 +176,11 @@ importers:
   .:
     devDependencies:
       '@electric-sql/pglite':
-        specifier: 0.5.15
-        version: 0.5.15
+        specifier: 0.5.16
+        version: 0.5.16
       '@electric-sql/pglite-pgvector':
-        specifier: 0.0.16
-        version: 0.0.16(@electric-sql/pglite@0.5.15)
+        specifier: 0.0.17
+        version: 0.0.17(@electric-sql/pglite@0.5.16)
       '@types/node':
         specifier: ^26.0.0
         version: 26.6.6
@@ -223,13 +223,13 @@ packages:
   '@blazediff/core@1.10.0':
     resolution: {integrity: sha512-AOQff0zgR7cGsZL+4E7hVkmujoPUpm0J9xzWGWZj5wCjd3gmxESXAPfKyuzs93VdpQNFhHlBhfOjrcZ+XTERtQ==}
 
-  '@electric-sql/pglite-pgvector@0.0.16':
-    resolution: {integrity: sha512-3usbMM/Zkn0h7wpSft1rsa8lcXz77Q+rGdTpm7UORwtISg4CSGprinmu5qnF23GE0FHLH0LxEyKoPPteHuZPIg==}
+  '@electric-sql/pglite-pgvector@0.0.17':
+    resolution: {integrity: sha512-tOFBigmwl+6qqZ5y2wOUeDngKeO22lLslSQjmaZri5WAh7V3bDUQaxxlT9MJLSPmdwPjR0NRHqk2V5yFtgLUYQ==}
     peerDependencies:
-      '@electric-sql/pglite': 0.5.15
+      '@electric-sql/pglite': 0.5.16
 
-  '@electric-sql/pglite@0.5.15':
-    resolution: {integrity: sha512-ERZWgaRTxueGV4cvL1tfpAOzFCWTXoUtbCBqnf2FhHDVs/so9eAKaanvrwWF9Dntx7BYsmFQujVQ0/B4S8Mmiw==}
+  '@electric-sql/pglite@0.5.16':
+    resolution: {integrity: sha512-Nj8KcIsJL748W408U2N8q4+9IlONdpRIU8MJypIAAINMJ5nqKyqpX7Mgg/5XKkXiAib3AoZGR6hnJFlrlLBrcg==}
 
   '@emnapi/core@1.11.0':
     resolution: {integrity: sha512-l9Oo58x0HOP5znGzVhYW9U3e5wVuA4LAZU2AGezTmkhO1CgQRFDhDg4nneHsu/t3WniXg9QrG2nIXL/ZS8ln8Q==}
@@ -1813,11 +1813,11 @@ snapshots:
 
   '@blazediff/core@1.10.0': {}
 
-  '@electric-sql/pglite-pgvector@0.0.16(@electric-sql/pglite@0.5.15)':
+  '@electric-sql/pglite-pgvector@0.0.17(@electric-sql/pglite@0.5.16)':
     dependencies:
-      '@electric-sql/pglite': 0.5.15
+      '@electric-sql/pglite': 0.5.16
 
-  '@electric-sql/pglite@0.5.15': {}
+  '@electric-sql/pglite@0.5.16': {}
 
   '@emnapi/core@1.11.0':
     dependencies:
