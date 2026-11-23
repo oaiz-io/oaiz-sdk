@@ -209,6 +209,7 @@
   --role-warning-bg-subtle: var(--palette-amber-2);
   --role-warning-text: var(--palette-amber-5);
   --role-knowledge-bg: var(--palette-amber-1);
+  --role-favourite: var(--palette-amber-5);
   --role-recording: var(--palette-red-5);
   --role-chart-1: var(--palette-chart-violet-light);
   --role-chart-2: var(--palette-chart-orange-light);
@@ -451,6 +452,7 @@
   --color-recording: var(--role-recording);
   --color-brand-foreground: var(--palette-zinc-5);
   --color-logo-yellow: var(--role-logo-yellow);
+  --color-favourite: var(--role-favourite);
   --color-logo-petal: var(--role-logo-petal);
   --color-orb-blue: var(--role-orb-blue);
   --color-orb-lime: var(--role-orb-lime);
@@ -700,6 +702,7 @@
   --role-destructive-text: var(--palette-red-2);
   --role-warning-bg-subtle: var(--palette-amber-5);
   --role-warning-text: var(--palette-amber-1);
+  --role-favourite: var(--role-logo-yellow);
   --role-knowledge-bg: var(--palette-amber-5);
   --role-recording: var(--palette-red-1);
   --role-chart-1: var(--palette-chart-violet-dark);

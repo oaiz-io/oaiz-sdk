@@ -11,13 +11,18 @@ const PopoverAnchor = PopoverPrimitive.Anchor;
 
 const PopoverContent = React.forwardRef<
   React.ElementRef<typeof PopoverPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Content>
+  React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Content> & {
+    container?: React.ComponentPropsWithoutRef<
+      typeof PopoverPrimitive.Portal
+    >['container'];
+  }
 >(
   (
     {
       className,
       align = 'center',
       sideOffset = 4,
+      container,
       onPointerDownCapture,
       onPointerUpCapture,
       onClickCapture,
@@ -40,7 +45,7 @@ const PopoverContent = React.forwardRef<
     });
 
     return (
-      <PopoverPrimitive.Portal>
+      <PopoverPrimitive.Portal container={container}>
         <PopoverPrimitive.Content
           ref={ref}
           align={align}
