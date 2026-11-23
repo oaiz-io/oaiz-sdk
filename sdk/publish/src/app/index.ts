@@ -82,6 +82,8 @@ export type {
   DtoChatMessageContextRefs,
   DtoChatSessionListOutput,
   DtoChatSessionMetadata,
+  DtoChatSubmissionStatus,
+  DtoChatSubmissionUpdate,
   DtoChatTimelineArtifact,
   DtoChatTimelineContextCompaction,
   DtoChatTimelineErrorPayload,

@@ -33,6 +33,8 @@ export * from "./dto-chat-message-context-branch";
 export * from "./dto-chat-message-context-refs";
 export * from "./dto-chat-session-list-output";
 export * from "./dto-chat-session-metadata";
+export * from "./dto-chat-submission-status";
+export * from "./dto-chat-submission-update";
 export * from "./dto-chat-timeline-artifact";
 export * from "./dto-chat-timeline-context-compaction";
 export * from "./dto-chat-timeline-error-payload";

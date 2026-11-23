@@ -17,6 +17,7 @@ export const DtoMessageType = {
   ToolStarted: "tool_started",
   UserAction: "user_action",
   UserInput: "user_input",
+  UserSteer: "user_steer",
   VoiceAssistant: "voice_assistant",
   VoiceUser: "voice_user",
 } as const;
