@@ -16,6 +16,7 @@ export interface DtoChatTimelineMessage {
   savedJobWorkflowUuid?: string;
   subAgentId?: string;
   threadUuid?: string;
+  turnTarget?: models.DtoChatTurnTarget;
   uiSnapshot?: models.DtoChatViewSnapshot;
   workflowBranchId?: string;
   workflowBranchTitle?: string;
