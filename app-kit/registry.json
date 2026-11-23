@@ -903,6 +903,20 @@
       "docs": "Pass client.chat of the app's @oaiz/sdk client, created once at module scope, with systemPrompt and the tools each message may call. client.chat.tools() lists them. The turn runs them without approval. To offer voice, pass voice with the tools a spoken turn may call; the chat's tools do not carry over. Voice hears the room and a named write tool runs at once on what it heard, so name read tools. A message typed during a call uses the chat's tools. A browser refuses the microphone in a frame, so voice runs when the app opens in its own tab."
     },
     {
+      "name": "oaiz-run",
+      "type": "registry:hook",
+      "title": "OAIZ run hook",
+      "description": "Start a workflow and read its progress, job logs and event references.",
+      "dependencies": ["@oaiz/sdk@^0.1.4283"],
+      "files": [
+        {
+          "path": "src/hooks/oaiz-run.tsx",
+          "type": "registry:hook"
+        }
+      ],
+      "docs": "Pass client.runs to useOaizRun, then call start({ workflow: workflowId, event }). Stop closes the progress stream. The run continues."
+    },
+    {
       "name": "sign-in",
       "type": "registry:component",
       "title": "Sign-in screen",
@@ -1509,6 +1523,20 @@
           "type": "registry:ui"
         }
       ]
+    },
+    {
+      "name": "run-panel",
+      "type": "registry:component",
+      "title": "Run panel",
+      "description": "Start a workflow with RunButton and show its jobs and events with RunProgress.",
+      "registryDependencies": ["oaiz-run", "utils", "button", "status-dot"],
+      "files": [
+        {
+          "path": "src/components/run-panel.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "docs": "Create run = useOaizRun(client.runs). Pass run and input={{ workflow: workflowId, event }} to RunButton, and state={run.state} to RunProgress. Share the workflow with the app. See oaiz docs get runs."
     },
     {
       "name": "chat-panel",

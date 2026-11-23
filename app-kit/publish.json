@@ -1,6 +1,6 @@
 {
   "name": "@oaiz/app-kit",
-  "version": "0.1.4256",
+  "version": "0.1.4302",
   "description": "Source components, hooks and theme for apps built on OAIZ, to copy and change",
   "keywords": [
     "oaiz",
@@ -24,7 +24,7 @@
     "access": "public"
   },
   "peerDependencies": {
-    "@oaiz/sdk": "^0.1.0",
+    "@oaiz/sdk": "^0.1.4283",
     "react": ">=19",
     "react-dom": ">=19"
   },
@@ -63,6 +63,7 @@
     "src/components/record-detail.tsx",
     "src/components/record-form.tsx",
     "src/components/record-name.tsx",
+    "src/components/run-panel.tsx",
     "src/components/save-bar.tsx",
     "src/components/sign-in.tsx",
     "src/components/split-view.tsx",
@@ -122,6 +123,7 @@
     "src/components/ui/voice-orb.tsx",
     "src/hooks/oaiz-chat.tsx",
     "src/hooks/oaiz-data.tsx",
+    "src/hooks/oaiz-run.tsx",
     "src/hooks/oaiz-session.tsx",
     "src/hooks/use-arrivals.ts",
     "src/hooks/use-breakpoint.ts",
