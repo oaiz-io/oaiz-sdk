@@ -1,4 +1,5 @@
-import { Client } from "../client";
+import { Client, type ListAppUsersParams } from "../client";
+import type { DtoAppUserPage } from "../models";
 import { AppAuth, type OaizAuth } from "./auth";
 import { OaizChat } from "./chat";
 import { OaizEmbeddings } from "./embeddings";
@@ -106,13 +107,24 @@ export class OaizAppClient<Database extends GenericDatabase = any> extends OaizC
     readonly auth: OaizAuth,
     /** Chats with an OAIZ agent as the signed-in member. */
     readonly chat: OaizChat,
+    private readonly appId: string,
   ) {
     super(client, databaseId, open);
   }
 
+  /** Lists one page of the people who can use this app. Pass `userId` to look up a saved selection. */
+  async listUsers(params?: ListAppUsersParams, options?: { signal?: AbortSignal }): Promise<OaizResponse<DtoAppUserPage>> {
+    try {
+      const data = await this.client.listAppUsers(this.appId, params, { signal: options?.signal });
+      return { data, error: null, count: null, status: 200 };
+    } catch (error) {
+      return failureFrom(error);
+    }
+  }
+
   /** The same client on another database, with the same session. */
   database(id: string): OaizAppClient<Database> {
-    return new OaizAppClient<Database>(this.client, id, this.open, this.auth, this.chat);
+    return new OaizAppClient<Database>(this.client, id, this.open, this.auth, this.chat, this.appId);
   }
 }
 
@@ -152,7 +164,7 @@ export function createClient<Database extends GenericDatabase = any>(
       },
     });
     const open = streamOpener(options.url, () => auth.accessToken());
-    return new OaizAppClient<Database>(client, options.database, open, auth, new OaizChat(client, open, app, auth, options.url));
+    return new OaizAppClient<Database>(client, options.database, open, auth, new OaizChat(client, open, app, auth, options.url), app);
   }
   throw new TypeError("createClient needs exactly one of key and app.");
 }

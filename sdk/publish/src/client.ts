@@ -571,6 +571,10 @@ export class Client {
     return new ToolsApi(this);
   }
 
+  get user(): UserApi {
+    return new UserApi(this);
+  }
+
   get workflow(): WorkflowApi {
     return new WorkflowApi(this);
   }
@@ -726,6 +730,16 @@ export class ToolsApi {
   }
 }
 
+export class UserApi {
+  constructor(private readonly client: Client) {}
+
+  listAppUsers(
+    ...args: Parameters<Client["listAppUsers"]>
+  ): ReturnType<Client["listAppUsers"]> {
+    return this.client.listAppUsers(...args);
+  }
+}
+
 export class WorkflowApi {
   constructor(private readonly client: Client) {}
 
@@ -793,6 +807,13 @@ export type ListAppChatSessionsParams = {
   cursor?: string;
   pageSize?: number;
 };
+
+export type ListAppUsersParams = {
+  cursor?: string;
+  pageSize?: number;
+  query?: string;
+  userId?: string;
+};
 import { listActionExecutionLogs as operation0_0 } from "./apis/api_action";
 import { listActionExecutionLogsPages as operation0_1 } from "./apis/api_action";
 import { iterateListActionExecutionLogs as operation0_2 } from "./apis/api_action";
@@ -816,8 +837,11 @@ import { upsertStorageDatabaseRows as operation4_5 } from "./apis/api_storage";
 import { listTools as operation5_0 } from "./apis/api_tools";
 import { getNativeTools as operation5_1 } from "./apis/api_tools";
 import { runTool as operation5_2 } from "./apis/api_tools";
-import { getWorkflowRun as operation6_0 } from "./apis/api_workflow";
-import { createWorkflowRunStream as operation6_1 } from "./apis/api_workflow";
+import { listAppUsers as operation6_0 } from "./apis/api_user";
+import { listAppUsersPages as operation6_1 } from "./apis/api_user";
+import { iterateListAppUsers as operation6_2 } from "./apis/api_user";
+import { getWorkflowRun as operation7_0 } from "./apis/api_workflow";
+import { createWorkflowRunStream as operation7_1 } from "./apis/api_workflow";
 
 export interface Client {
   listActionExecutionLogs: typeof operation0_0;
@@ -843,8 +867,11 @@ export interface Client {
   listTools: typeof operation5_0;
   getNativeTools: typeof operation5_1;
   runTool: typeof operation5_2;
-  getWorkflowRun: typeof operation6_0;
-  createWorkflowRunStream: typeof operation6_1;
+  listAppUsers: typeof operation6_0;
+  listAppUsersPages: typeof operation6_1;
+  iterateListAppUsers: typeof operation6_2;
+  getWorkflowRun: typeof operation7_0;
+  createWorkflowRunStream: typeof operation7_1;
 }
 
 Client.prototype.listActionExecutionLogs = operation0_0;
@@ -870,5 +897,8 @@ Client.prototype.upsertStorageDatabaseRows = operation4_5;
 Client.prototype.listTools = operation5_0;
 Client.prototype.getNativeTools = operation5_1;
 Client.prototype.runTool = operation5_2;
-Client.prototype.getWorkflowRun = operation6_0;
-Client.prototype.createWorkflowRunStream = operation6_1;
+Client.prototype.listAppUsers = operation6_0;
+Client.prototype.listAppUsersPages = operation6_1;
+Client.prototype.iterateListAppUsers = operation6_2;
+Client.prototype.getWorkflowRun = operation7_0;
+Client.prototype.createWorkflowRunStream = operation7_1;

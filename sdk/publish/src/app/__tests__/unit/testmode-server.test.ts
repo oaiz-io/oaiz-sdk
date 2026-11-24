@@ -28,6 +28,8 @@ const ADA = "7e570000-0000-4000-8000-0000000000b1";
 const APP = "7e570000-0000-4000-8000-0000000000a1";
 const DB = "7e570000-0000-4000-8000-0000000000d1";
 const OTHER = "7e570000-0000-4000-8000-0000000000d2";
+const GRACE = "7e570000-0000-4000-8000-0000000000b3";
+const ALAN = "7e570000-0000-4000-8000-0000000000b2";
 
 const members = JSON.stringify({
   members: [{ id: ADA, name: "Ada Lovelace", email: "ada@example.test" }],
@@ -181,8 +183,54 @@ describe("test server", () => {
     expect(await response.json()).toEqual({
       slug: "test-mode-unsupported",
       message:
-        "OAIZ test mode runs sign-in, row requests and function calls only. Tools, events, workflow runs, model calls, embeddings and chat need OAIZ.",
+        "OAIZ test mode runs sign-in, the app's user list, row requests and function calls only. Tools, events, workflow runs, model calls, embeddings and chat need OAIZ.",
     });
+  });
+
+  it("lists the members as the app's users, by descending id, with search, pages and one user id", async () => {
+    const usersFolder = await testFolder({
+      "members.json": JSON.stringify({
+        members: [
+          { id: ADA, name: "Ada Lovelace", email: "ada@example.test" },
+          { id: GRACE, name: "Grace Hopper", email: "grace@example.test" },
+          { id: ALAN, name: "Alan Turing", email: "alan@example.test" },
+        ],
+      }),
+    });
+    const usersServer = await createTestServer({ directory: usersFolder.directory });
+    try {
+      const list = (query: string, token = usersServer.issueToken(ADA, APP), app = APP) =>
+        usersServer.handle(
+          new Request(`http://app.example.test:4381/__oaiz-test/user/apps/${app}/users${query}`, {
+            headers: { authorization: `Bearer ${token}` },
+          }),
+        );
+      const first = await list("?pageSize=2");
+      expect(first.status).toBe(200);
+      expect(await first.json()).toEqual({
+        items: [
+          { id: GRACE, name: "Grace Hopper" },
+          { id: ALAN, name: "Alan Turing" },
+        ],
+        nextCursor: ALAN,
+        hasMore: true,
+      });
+      expect(await (await list(`?pageSize=2&cursor=${ALAN}`)).json()).toEqual({
+        items: [{ id: ADA, name: "Ada Lovelace" }],
+        nextCursor: null,
+        hasMore: false,
+      });
+      expect((await (await list("?query=hOPP")).json()).items).toEqual([{ id: GRACE, name: "Grace Hopper" }]);
+      expect((await (await list(`?userId=${ADA}`)).json()).items).toEqual([{ id: ADA, name: "Ada Lovelace" }]);
+      const otherApp = await list("", usersServer.issueToken(ADA, APP), OTHER);
+      expect(otherApp.status).toBe(404);
+      expect(await otherApp.json()).toEqual({ message: "app not found", slug: "app-not-found" });
+      expect((await list("?pageSize=101")).status).toBe(400);
+      expect((await list("", "not-a-token")).status).toBe(401);
+    } finally {
+      await usersServer.close();
+      await usersFolder.dispose();
+    }
   });
 
   it.each(["rows/select", "functions/call"])(

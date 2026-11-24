@@ -24,6 +24,8 @@ export * from "./dto-app-draft-target";
 export * from "./dto-app-edit-artifact";
 export * from "./dto-app-live-voice-session-input";
 export * from "./dto-app-live-voice-session-output";
+export * from "./dto-app-user";
+export * from "./dto-app-user-page";
 export * from "./dto-app-voice-line-input";
 export * from "./dto-await-event-deadline-behavior";
 export * from "./dto-await-event-details";

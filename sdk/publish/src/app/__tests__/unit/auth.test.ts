@@ -293,6 +293,66 @@ describe("requests", () => {
     expect((tools[2]?.[1] as RequestInit).headers).not.toHaveProperty("Authorization");
     expect(sentTo("/token")).toHaveLength(0);
   });
+
+  it("lists users of the originating app from both the app and a derived database client", async () => {
+    storeSession(Date.now() + 300_000);
+    const person = { id: "7e570000-0000-4000-8000-000000000002", name: "Åsa Berg" };
+    const page = { items: [person], hasMore: true, nextCursor: person.id };
+    const finalPage = { items: [], hasMore: false, nextCursor: null };
+    fetchMock
+      .mockResolvedValueOnce(respond({ status: 200, body: page }))
+      .mockResolvedValueOnce(respond({ status: 200, body: finalPage }));
+
+    const client = app();
+    expect(await client.listUsers()).toEqual({ data: page, error: null, count: null, status: 200 });
+    const filters = { query: "Åsa & Berg", cursor: person.id, pageSize: 3, userId: person.id };
+    expect(await client.database("db-2").listUsers(filters)).toEqual({
+      data: finalPage, error: null, count: null, status: 200,
+    });
+
+    expect(fetchMock.mock.calls).toHaveLength(2);
+    for (const [url, init] of fetchMock.mock.calls) {
+      const path = new URL(url as string);
+      expect(`${path.origin}${path.pathname}`).toBe(`${API}/user/apps/${APP}/users`);
+      expect((init as RequestInit).method).toBe("GET");
+      expect((init as RequestInit).headers).toMatchObject({ Authorization: "Bearer access-1" });
+    }
+    expect(new URL(fetchMock.mock.calls[0]![0] as string).search).toBe("");
+    const parameters = new URL(fetchMock.mock.calls[1]![0] as string).searchParams;
+    expect(Object.fromEntries(parameters)).toEqual({ ...filters, pageSize: "3" });
+  });
+
+  it("returns a normal refusal for an unavailable app audience", async () => {
+    storeSession(Date.now() + 300_000);
+    fetchMock.mockResolvedValueOnce(respond({
+      status: 404,
+      body: { message: "App unavailable", slug: "app-not-found" },
+    }));
+
+    expect(await app().listUsers()).toEqual({
+      data: null,
+      error: { message: "App unavailable", code: "app-not-found", hints: [] },
+      count: null,
+      status: 404,
+    });
+  });
+
+  it("forwards cancellation to the app audience request", async () => {
+    storeSession(Date.now() + 300_000);
+    const controller = new AbortController();
+    const reason = "Search replaced";
+    fetchMock.mockImplementationOnce((_url: string, init: RequestInit) => {
+      controller.abort(new Error(reason));
+      expect(init.signal?.aborted).toBe(true);
+      return Promise.reject(init.signal?.reason);
+    });
+
+    const result = await app().listUsers({ query: "Ann" }, { signal: controller.signal });
+
+    expect(result.data).toBeNull();
+    expect(result.status).toBe(0);
+    expect(result.error?.message).toBe(reason);
+  });
 });
 
 describe("renewal", () => {

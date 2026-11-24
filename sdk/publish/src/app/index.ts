@@ -73,6 +73,8 @@ export type {
   DtoAppEditArtifact,
   DtoAppLiveVoiceSessionInput,
   DtoAppLiveVoiceSessionOutput,
+  DtoAppUser,
+  DtoAppUserPage,
   DtoAppVoiceLineInput,
   DtoAwaitEventDeadlineBehavior,
   DtoAwaitEventDetails,

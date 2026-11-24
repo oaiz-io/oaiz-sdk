@@ -40,10 +40,20 @@ const rowsRoute =
 
 const functionCallRoute = /^\/__oaiz-test\/storage\/databases\/([^/]+)\/functions\/call$/;
 
+const appUsersRoute = /^\/__oaiz-test\/user\/apps\/([^/]+)\/users$/;
+
+/** The page sizes the OAIZ server accepts for a collection. */
+const defaultPageSize = 20;
+const maxPageSize = 100;
+const maxSearchLength = 256;
+
+/** The OAIZ server's answer for an app the caller cannot read. */
+const appNotFound = { message: "app not found", slug: "app-not-found" };
+
 const unsupported = {
   slug: "test-mode-unsupported",
   message:
-    "OAIZ test mode runs sign-in, row requests and function calls only. Tools, events, workflow runs, model calls, embeddings and chat need OAIZ.",
+    "OAIZ test mode runs sign-in, the app's user list, row requests and function calls only. Tools, events, workflow runs, model calls, embeddings and chat need OAIZ.",
 };
 
 /** The OAIZ server's answer for a database the app holds no grant on. */
@@ -151,6 +161,44 @@ export async function createTestServer(options: OaizTestServerOptions): Promise<
         ),
     );
 
+  /**
+   * Lists the members who can sign in, as the OAIZ server lists an app's audience: by descending
+   * id, filtered by a case-insensitive name search or one user id, one page per cursor.
+   */
+  function listAppUsers(request: Request, appId: string): Response {
+    const signedIn = auth.authenticate(request);
+    if (signedIn instanceof Response) return signedIn;
+    if (signedIn.clientId.toLowerCase() !== appId.toLowerCase()) return json(404, appNotFound);
+    const params = new URL(request.url).searchParams;
+    const unknown = [...params.keys()].find((key) => !["cursor", "pageSize", "query", "userId"].includes(key));
+    if (unknown !== undefined) {
+      return json(400, { message: `unsupported query parameter: ${unknown}`, slug: "unsupported-query-parameter" });
+    }
+    const rawSize = params.get("pageSize");
+    const pageSize = rawSize === null || rawSize === "" ? defaultPageSize : Number(rawSize);
+    if (!Number.isInteger(pageSize)) return json(400, { message: "pageSize must be a whole number", slug: "invalid-page-size" });
+    if (pageSize < 1 || pageSize > maxPageSize) {
+      return json(400, { message: `pageSize must be between 1 and ${maxPageSize}`, slug: "invalid-page-size" });
+    }
+    const search = (params.get("query") ?? "").toLowerCase();
+    if (new TextEncoder().encode(search).length > maxSearchLength) {
+      return json(400, { message: `search query must be at most ${maxSearchLength} bytes`, slug: "search-query-too-long" });
+    }
+    const cursor = params.get("cursor")?.toLowerCase() || undefined;
+    const userId = params.get("userId")?.toLowerCase() || undefined;
+    const audience = files.members.members
+      .filter((member) => cursor === undefined || member.id.toLowerCase() < cursor)
+      .filter((member) => userId === undefined || member.id.toLowerCase() === userId)
+      .filter((member) => member.name.toLowerCase().includes(search))
+      .sort((a, b) => (a.id.toLowerCase() < b.id.toLowerCase() ? 1 : -1));
+    const items = audience.slice(0, pageSize).map(({ id, name }) => ({ id, name }));
+    const hasMore = audience.length > pageSize;
+    return new Response(
+      JSON.stringify({ items, nextCursor: hasMore ? items[items.length - 1].id : null, hasMore }),
+      { status: 200, headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" } },
+    );
+  }
+
   const callFunction = (request: Request, id: string) =>
     storageRequest(request, id, decodeFunctionCall, async (database, caller, call) =>
       functionCallBody(await runFunctionCall(database, caller, call)),
@@ -200,6 +248,16 @@ export async function createTestServer(options: OaizTestServerOptions): Promise<
           return rows(request, databaseId(route[1]), route[2] as RowsOperation);
         }
         return callFunction(request, databaseId(functionRoute![1]));
+      }
+      const usersRoute = appUsersRoute.exec(path);
+      if (usersRoute) {
+        if (request.method !== "GET") {
+          return new Response("404 page not found", {
+            status: 404,
+            headers: { "content-type": "text/plain" },
+          });
+        }
+        return listAppUsers(request, decodeURIComponent(usersRoute[1]));
       }
       if (path.startsWith(oauthPrefix)) {
         const answer = await auth.handle(request, path.slice(oauthPrefix.length));
