@@ -1,6 +1,6 @@
 {
   "name": "@oaiz/app-kit",
-  "version": "0.1.4307",
+  "version": "0.1.4333",
   "description": "Source components, hooks and theme for apps built on OAIZ, to copy and change",
   "keywords": [
     "oaiz",
@@ -59,6 +59,7 @@
     "src/components/list-view.tsx",
     "src/components/metrics.tsx",
     "src/components/page-header.tsx",
+    "src/components/people-picker.tsx",
     "src/components/property-picker.tsx",
     "src/components/record-detail.tsx",
     "src/components/record-form.tsx",

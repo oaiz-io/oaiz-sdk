@@ -1400,6 +1400,23 @@
       "docs": "Save the chosen value with useUpdateRow. Pass open and onOpenChange to open it with a hotkey, such as S for status."
     },
     {
+      "name": "people-picker",
+      "type": "registry:component",
+      "title": "People picker",
+      "description": "Search and choose a person who can use the app",
+      "files": [
+        {
+          "path": "src/components/people-picker.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "registryDependencies": [
+        "property-picker",
+        "record-name"
+      ],
+      "docs": "Pass your signed-in app client with listUsers as client. Set value to the record's user ID and save the user ID or null from onChange."
+    },
+    {
       "name": "list-view",
       "type": "registry:component",
       "title": "List view",
