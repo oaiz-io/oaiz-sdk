@@ -12,6 +12,7 @@ export interface DtoChatTimelineMessage {
   latencyMs?: number;
   messageType?: models.DtoMessageType;
   parentSubAgentId?: string;
+  pendingApproval?: models.DtoAppChatPendingApproval;
   role: models.DtoMessageRole;
   savedJobWorkflowUuid?: string;
   subAgentId?: string;

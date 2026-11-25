@@ -5,6 +5,9 @@ export interface DtoToolApprovalRequest {
   approvalMode?: models.DtoToolApprovalMode | null;
   args?: Record<string, unknown> | null;
   displayName?: string | null;
+  expired?: boolean | null;
+  expiresAt?: string | null;
+  persisted?: boolean | null;
   preview?: models.DtoToolApprovalPreview | null;
   timeoutMs?: number | null;
   toolCallId?: string | null;
