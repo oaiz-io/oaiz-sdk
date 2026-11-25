@@ -7,6 +7,7 @@ export interface DtoChatTimelineEvent {
   delta?: models.DtoChatTimelineMessageDelta | null;
   error?: models.DtoChatTimelineErrorPayload | null;
   message?: models.DtoChatTimelineMessage | null;
+  queue?: models.DtoChatQueueSnapshot | null;
   queuePaused?: boolean | null;
   sessionId?: string | null;
   submission?: models.DtoChatSubmissionUpdate | null;
