@@ -37,6 +37,7 @@ export const DtoActionType = {
   Miro: "miro",
   Monday: "monday",
   Notion: "notion",
+  OaizChat: "oaiz-chat",
   Omnivery: "omnivery",
   Pleo: "pleo",
   Posthog: "posthog",

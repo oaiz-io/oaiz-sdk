@@ -2,6 +2,7 @@ import { Client, type ListAppUsersParams } from "../client";
 import type { DtoAppUserPage } from "../models";
 import { AppAuth, type OaizAuth } from "./auth";
 import { OaizChat } from "./chat";
+import { OaizConversations } from "./conversations";
 import { OaizEmbeddings } from "./embeddings";
 import { OaizEvents } from "./events";
 import { OaizLLM } from "./llm";
@@ -16,14 +17,14 @@ import type { FunctionName, FunctionReturns, GenericDatabase, RelationName, RpcA
 interface OaizClientBaseOptions {
   /** The OAIZ API base URL. */
   url: string;
-  /** The id of the database `from` reads and writes and `rpc` calls. */
-  database: string;
 }
 
 /** A client that sends one credential. */
 export interface OaizKeyClientOptions extends OaizClientBaseOptions {
   /** An API key, a member access token or an app access token. */
   key: string;
+  /** The database for `from` and `rpc`, if you use those methods. */
+  database?: string;
   app?: never;
 }
 
@@ -31,13 +32,17 @@ export interface OaizKeyClientOptions extends OaizClientBaseOptions {
 export interface OaizAppClientOptions extends OaizClientBaseOptions {
   /** The app's ID, which `oaiz view create` prints when it creates the app. */
   app: string;
+  /** The id of the database `from` reads and writes and `rpc` calls. */
+  database: string;
   key?: never;
 }
 
 export type OaizClientOptions = OaizKeyClientOptions | OaizAppClientOptions;
 
-/** Reads and writes the tables, reads the views and calls the functions of one OAIZ database. */
+/** Works with OAIZ using one credential and, when selected, one database. */
 export class OaizClient<Database extends GenericDatabase = any> {
+  /** Sends messages to OAIZ Chat and reads committed thread messages. Use a service account key on your server. */
+  readonly conversations: OaizConversations;
   /** Publishes events with this client's credential. */
   readonly events: OaizEvents;
   /** Runs tools with this client's credential. */
@@ -53,10 +58,11 @@ export class OaizClient<Database extends GenericDatabase = any> {
   constructor(
     /** @internal */
     protected readonly client: Client,
-    private readonly databaseId: string,
+    private readonly databaseId: string | undefined,
     /** @internal */
     protected readonly open: OpenStream,
   ) {
+    this.conversations = new OaizConversations(client, open);
     this.events = new OaizEvents(client);
     this.tools = new OaizTools(client);
     this.embeddings = new OaizEmbeddings(client);
@@ -66,7 +72,7 @@ export class OaizClient<Database extends GenericDatabase = any> {
 
   /** Starts a request on a table or a view of this client's database. A view only reads. */
   from<Table extends RelationName<Database>>(table: Table): OaizQueryBuilder<Database, Table> {
-    return new OaizQueryBuilder(this.client, this.databaseId, table);
+    return new OaizQueryBuilder(this.client, this.selectedDatabase(), table);
   }
 
   /**
@@ -81,7 +87,7 @@ export class OaizClient<Database extends GenericDatabase = any> {
   ): Promise<OaizResponse<FunctionReturns<Database, Name>>> {
     try {
       const answer = await this.client.callStorageDatabaseFunction(
-        this.databaseId,
+        this.selectedDatabase(),
         args === undefined ? { name } : { name, args: args as Record<string, unknown> },
       );
       return { data: (answer.data ?? null) as FunctionReturns<Database, Name>, error: null, count: null, status: 200 };
@@ -93,6 +99,11 @@ export class OaizClient<Database extends GenericDatabase = any> {
   /** The same client on another database, with the same key. */
   database(id: string): OaizClient<Database> {
     return new OaizClient<Database>(this.client, id, this.open);
+  }
+
+  private selectedDatabase(): string {
+    if (this.databaseId === undefined) throw new TypeError("Select an OAIZ database with client.database(id) first.");
+    return this.databaseId;
   }
 }
 
@@ -129,7 +140,7 @@ export class OaizAppClient<Database extends GenericDatabase = any> extends OaizC
 }
 
 /**
- * A client for one database; pass the `Database` type `oaiz db types` writes to type its tables.
+ * An OAIZ client. Pass `database` and the `Database` type `oaiz db types` writes to type its tables.
  * With `app` it also signs the app's member in: creating it in a browser completes a sign-in the
  * page came back from.
  */

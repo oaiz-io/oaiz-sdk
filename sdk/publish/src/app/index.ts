@@ -12,6 +12,8 @@ export type {
   OaizVoiceTurnSource,
 } from "./voice";
 export { createClient, OaizAppClient, OaizClient } from "./client";
+export { OaizConversations } from "./conversations";
+export type { OaizConversationFollowOptions, OaizConversationFrame, OaizConversationHistoryOptions } from "./conversations";
 export { OaizEmbeddings } from "./embeddings";
 export type { OaizEmbeddingsResult } from "./embeddings";
 export { OaizEvents } from "./events";
@@ -197,6 +199,13 @@ export type {
   DtoMessageRole,
   DtoMessageType,
   DtoOperationOutput,
+  DtoOaizChatMessage,
+  DtoOaizChatMessagePage,
+  DtoOaizChatMessageRole,
+  DtoOaizChatSendMessageReceipt,
+  DtoOaizChatSendMessageRequest,
+  DtoOaizChatThreadState,
+  DtoOaizChatThreadStateFrame,
   DtoOutputEventConfig,
   DtoPeopleAndTeamsChangePreview,
   DtoPlanArtifactOutput,

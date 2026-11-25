@@ -4,18 +4,22 @@ import { failure, failureFrom, type OaizResponse } from "./response";
 /** Opens one SSE request with this client's credential. */
 export type OpenStream = (request: RawRequest, body?: unknown, signal?: AbortSignal) => Promise<Response>;
 
-/** One frame's JSON payload and its `id`. */
+/** One named frame's JSON payload and its `id`. */
 export interface SseFrame<T> {
+  name: string;
   data: T;
   id?: string;
 }
 
-/** Splits an SSE byte stream into the frames of one event name. A frame cut off at the end is dropped. */
+/** Splits an SSE byte stream into the selected named frames. A frame cut off at the end is dropped. */
 export class SseFrames<T> {
   private readonly decoder = new TextDecoder();
+  private readonly names: ReadonlySet<string>;
   private buffer = "";
 
-  constructor(private readonly eventName: string) {}
+  constructor(eventNames: string | readonly string[]) {
+    this.names = new Set(typeof eventNames === "string" ? [eventNames] : eventNames);
+  }
 
   *push(bytes?: Uint8Array): Generator<SseFrame<T>> {
     this.buffer += this.decoder.decode(bytes, { stream: bytes !== undefined });
@@ -38,8 +42,8 @@ export class SseFrames<T> {
         if (field === "id") id = value;
         if (field === "data") data.push(value);
       }
-      if (name === this.eventName && data.length > 0) {
-        yield { data: JSON.parse(data.join("\n")) as T, id };
+      if (this.names.has(name) && data.length > 0) {
+        yield { name, data: JSON.parse(data.join("\n")) as T, id };
       }
     }
   }
@@ -55,8 +59,8 @@ export async function* readSseStream<T>(
   request: RawRequest,
   body: unknown,
   signal: AbortSignal | undefined,
-  eventName: string,
-  isLast: (data: T) => boolean,
+  eventName: string | readonly string[],
+  isLast?: (data: T) => boolean,
 ): AsyncGenerator<OaizResponse<SseFrame<T>>> {
   let reader: ReadableStreamDefaultReader<Uint8Array> | undefined;
   try {
@@ -77,7 +81,7 @@ export async function* readSseStream<T>(
       const { done, value } = await reader.read();
       for (const frame of frames.push(done ? undefined : value)) {
         yield { data: frame, error: null, count: null, status: 200 };
-        if (isLast(frame.data)) return;
+        if (isLast?.(frame.data)) return;
       }
       if (done) return;
     }

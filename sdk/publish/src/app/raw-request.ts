@@ -5,6 +5,7 @@
 export const rawOperations = {
   createWorkflowRunStream: { method: "POST", path: "/ingest/workflows/{workflowUuid}/runs/stream" },
   streamActionExecutionEvents: { method: "GET", path: "/ingest/action/log/{uuid}/events" },
+  followOaizChatThread: { method: "GET", path: "/ingest/oaiz-chat/{connectionId}/threads/{threadId}/events" },
   createAppChatMessage: { method: "POST", path: "/internalagents/chat/apps/{appUuid}/messages" },
   createAppChatApproval: {
     method: "POST",
