@@ -22,6 +22,7 @@ export * from "./dto-app-chat-pending-approval";
 export * from "./dto-app-chat-session-detail";
 export * from "./dto-app-draft-target";
 export * from "./dto-app-edit-artifact";
+export * from "./dto-app-handoff-revision-status";
 export * from "./dto-app-live-voice-session-input";
 export * from "./dto-app-live-voice-session-output";
 export * from "./dto-app-user";

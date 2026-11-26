@@ -14,6 +14,7 @@ export interface DtoAppEditArtifact {
   createdDraft?: boolean;
   dependencyChanged?: boolean;
   parentVersionId?: string;
+  revisionStatus?: models.DtoAppHandoffRevisionStatus;
   versionId?: string;
   versionNumber?: number;
 }

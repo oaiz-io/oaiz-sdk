@@ -73,6 +73,7 @@ export type {
   DtoAppChatSessionDetail,
   DtoAppDraftTarget,
   DtoAppEditArtifact,
+  DtoAppHandoffRevisionStatus,
   DtoAppLiveVoiceSessionInput,
   DtoAppLiveVoiceSessionOutput,
   DtoAppUser,
