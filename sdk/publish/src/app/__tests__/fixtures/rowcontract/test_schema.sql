@@ -319,7 +319,7 @@ SELECT id,
     owner_id,
     title,
     status
-   FROM tasks
+   FROM data.tasks
   WHERE status <> 'done'::text;
 
 CREATE OR REPLACE FUNCTION data.my_open_tasks()
@@ -332,7 +332,7 @@ AS $function$
 $function$;
 ALTER FUNCTION "data"."my_open_tasks"() OWNER TO "oaiz_test_owner";
 
-CREATE TRIGGER task_audit AFTER INSERT OR UPDATE ON data.tasks FOR EACH ROW EXECUTE FUNCTION task_audit_write();
+CREATE TRIGGER task_audit AFTER INSERT OR UPDATE ON data.tasks FOR EACH ROW EXECUTE FUNCTION data.task_audit_write();
 
 ALTER TABLE "data"."notes" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "data"."notes" NO FORCE ROW LEVEL SECURITY;

@@ -11,6 +11,8 @@ export * from "./dto-action-execution-run-summary";
 export * from "./dto-action-execution-tool-call";
 export * from "./dto-action-log-output";
 export * from "./dto-action-type";
+export * from "./dto-agent-integration-tool-dto";
+export * from "./dto-agent-tool-dto";
 export * from "./dto-app-available-version";
 export * from "./dto-app-build-handoff";
 export * from "./dto-app-chat-approval-request";

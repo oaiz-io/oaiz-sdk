@@ -62,6 +62,8 @@ export type {
   DtoActionLogOutput,
   DtoActionOutput,
   DtoActionType,
+  DtoAgentIntegrationToolDTO,
+  DtoAgentToolDTO,
   DtoAppAvailableVersion,
   DtoAppBuildHandoff,
   DtoAppChatApprovalRequest,
