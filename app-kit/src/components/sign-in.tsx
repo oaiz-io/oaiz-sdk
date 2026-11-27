@@ -107,9 +107,9 @@ export type SessionGateProps = Omit<
   /** `client.auth` of the app's `@oaiz/sdk` client. */
   auth: OaizAuth;
   /**
-   * Signs the member in without a click, once, while the page is framed.
-   * OAIZ frames only an app's canvas preview, where the member is already
-   * signed in to OAIZ. Pass `false` to always show the sign-in screen.
+   * Signs the member in without a click, once, while the page is embedded in
+   * OAIZ (a canvas iframe or the OAIZ mobile WebView), where the member is
+   * already signed in to OAIZ. Pass `false` to always show the sign-in screen.
    */
   autoSignIn?: boolean;
   /** The app, for a signed-in member. */
@@ -120,6 +120,7 @@ export type SessionGateProps = Omit<
 };
 
 const AUTO_SIGN_IN_KEY = 'oaiz.autoSignIn';
+const OAIZ_MOBILE_WEBVIEW_UA_TOKEN = 'OaizMobileApp';
 
 function isFramed() {
   try {
@@ -129,16 +130,24 @@ function isFramed() {
   }
 }
 
+function isEmbeddedInOaiz() {
+  if (isFramed()) return true;
+  return (
+    typeof navigator !== 'undefined' &&
+    navigator.userAgent.includes(OAIZ_MOBILE_WEBVIEW_UA_TOKEN)
+  );
+}
+
 /**
- * Shows the sign-in screen until a member is signed in, then the app. In a
- * frame it starts the sign-in itself, once per tab: the mark it leaves stops a
- * refused sign-in or a sign-out from starting another until the member is
- * signed in again.
+ * Shows the sign-in screen until a member is signed in, then the app. When
+ * embedded in OAIZ it starts the sign-in itself, once per tab: the mark it
+ * leaves stops a refused sign-in or a sign-out from starting another until the
+ * member is signed in again.
  */
 export function SessionGate({
   auth,
   children,
-  autoSignIn = isFramed(),
+  autoSignIn = isEmbeddedInOaiz(),
   ...screen
 }: SessionGateProps) {
   const session = useOaizSession(auth);
