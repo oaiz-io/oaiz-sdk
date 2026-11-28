@@ -1,4 +1,5 @@
 export const DtoActionType = {
+  Accounted: "accounted",
   Agent: "agent",
   Airtable: "airtable",
   Attio: "attio",
